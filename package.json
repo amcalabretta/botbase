@@ -10,6 +10,7 @@
   "dependencies": {
     "candlestick": "^0.0.3",
     "coinbase-pro": "^0.9.0",
+    "moment": "^2.29.1",
     "sleep": "^6.3.0"
   },
   "scripts": {

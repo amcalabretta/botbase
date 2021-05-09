@@ -26,7 +26,12 @@ if (isMainThread) {
       secret: process.env.apiSecret,
       passphrase: process.env.apiPassphrase,
     },
-    { channels: ['full', 'level2'] }
+    { channels: [{
+            "name": "ticker",
+            "product_ids": [
+                "LTC-EUR"
+            ]
+        }] }
   );
   websocket.on('message', data => {
     tickerChannel.postMessage(data);
@@ -34,8 +39,10 @@ if (isMainThread) {
 } else {//worker part
     console.log(`Worker instantiated for ${strategies[workerData.strategy].type()}`);
     tickerChannel.onmessage = (event) => {
-      console.log(`[Worker: ticker]`)
-      strategies[workerData.strategy].ticker();
-      strategies[workerData.strategy].action();
+      //console.log(`[Worker: ticker ${JSON.stringify(event.data)}]`)
+      if (event.data.type==='ticker') {
+        strategies[workerData.strategy].ticker(event.data.price); 
+        strategies[workerData.strategy].action();
+      }
     }
 }

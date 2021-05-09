@@ -4,9 +4,12 @@
  * https://github.com/cm45t3r/candlestick
  * or 
  * https://github.com/anandanand84/technicalindicators
+ * 
+ * Another one that might be interesting:
+ * https://github.com/ttezel/nn
 */
 const candleStick = () => {
 
 };
 
-export default { candleStick };
+exports.candleStick = candleStick;

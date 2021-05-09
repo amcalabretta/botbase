@@ -1,8 +1,10 @@
 'use strict'
-const { Worker, isMainThread, parentPort } = require('worker_threads');
+const { Worker, isMainThread, workerData, BroadcastChannel} = require('worker_threads');
+
 const CoinbasePro = require('coinbase-pro');
-const sleep = require('sleep');
-const { wsUrl } = require('./model/constants')
+//const sleep = require('sleep');
+const { wsUrl } = require('./model/constants');
+const { strategies } = require('./strategies/all_strategies');
 
 //const client = new CoinbasePro.AuthenticatedClient(
 //  process.env.apiKey,
@@ -10,8 +12,14 @@ const { wsUrl } = require('./model/constants')
 //  process.env.apiPassphrase
 //);
 
+const tickerChannel = new BroadcastChannel('ticker');
+
 if (isMainThread) {
-  console.log(`Starting up..`);
+  console.log(`Starting up...${strategies.length} strategy(ies) defined`);
+  strategies.forEach((strategy,idx)=>{
+    console.log(` [${idx+1}] ${strategy.type()}`)
+    new Worker(__filename,{workerData:{strategy:idx}});
+  });
   const websocket = new CoinbasePro.WebsocketClient(
     ['LTC-EUR'],
     wsUrl,
@@ -23,12 +31,16 @@ if (isMainThread) {
     { channels: ['full', 'level2'] }
   );
   websocket.on('message', data => {
-      console.log(`Type: ${data.type}`);
+    tickerChannel.postMessage(data);
+      //console.log(`Type: ${data.type}`);
       //console.log(` getting stuff:${JSON.stringify(data)}`);
   });
-  
-} else {
-  //parentPort.postMessage('This is Worker');
+} else {//worker part
+    console.log(`Worker instantiated for ${strategies[workerData.strategy].type()}`);
+    tickerChannel.onmessage = (event) => {
+      console.log(`[Worker: ticker]`)
+    }
+    //parentPort.postMessage('This is Worker');
 }
 
 /*

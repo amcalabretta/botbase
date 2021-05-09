@@ -8,19 +8,25 @@
  * Another one that might be interesting:
  * https://github.com/ttezel/nn
 */
+const cs = require('candlestick');
 
-class  KickerPatternCandleStickStrategy {
-    
+class KickerPatternCandleStickStrategy {
+
     constructor() {
-      
+        this.candles=[];
     }
 
+    action() {
+        
+    }
     
+    ticker(value){
+
+    }
     
     type() {
-    return 'KickerPatternCandleStick';
+     return 'KickerPatternCandleStick';
     }
-
 };
 
-exports.candleStick = candleStick;
+exports.KickerPatternCandleStickStrategy = KickerPatternCandleStickStrategy;

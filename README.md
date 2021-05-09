@@ -7,5 +7,7 @@ An experimental bot to do HFT on coinbase
 
 
 
+dd
+
 
 

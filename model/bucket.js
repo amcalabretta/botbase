@@ -1,6 +1,7 @@
 /**
 * Bucket data structure.
 */
+
 class Bucket {
   constructor(type, amount, currency) {
     this.type = type;
@@ -13,4 +14,4 @@ class Bucket {
   }
 }
 
-export default { Bucket };
+exports.Bucket = Bucket;

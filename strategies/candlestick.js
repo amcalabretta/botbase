@@ -8,7 +8,18 @@
  * Another one that might be interesting:
  * https://github.com/ttezel/nn
 */
-const candleStick = () => {
+
+class  KickerPatternCandleStickStrategy {
+    
+    constructor() {
+      
+    }
+
+    
+    
+    type() {
+    return 'KickerPatternCandleStick';
+    }
 
 };
 

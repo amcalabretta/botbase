@@ -11,7 +11,7 @@ const { wsUrl } = require('./model/constants')
 //);
 
 if (isMainThread) {
-  console.log(` Starting up..`);
+  console.log(`Starting up..`);
   const websocket = new CoinbasePro.WebsocketClient(
     ['LTC-EUR'],
     wsUrl,

@@ -18,7 +18,8 @@
   "scripts": {
     "lint": "eslint **/*.js",
     "lint-fix": "eslint **/*.js",
-    "test": "nyc --reporter=html mocha --recursive --exit"
+    "test": "mocha --recursive --exit",
+    "test-coverage": "nyc --reporter=html mocha --recursive --exit"
   },
   "devDependencies": {
     "eslint": "^7.24.0",

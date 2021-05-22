@@ -2,10 +2,10 @@
 [![GitHub license](https://img.shields.io/github/issues/amcalabretta/botbase?style=plastic)](https://github.com/amcalabretta/botbase/issues)
 
 
-# Cryptotrade
-An experimental bot to do HFT on coinbase
+# BotBase
+An experimental bot to automatically make trades on coinbase
 
-## How to run it
+## How does it work
 
 
 

@@ -5,9 +5,14 @@
 # BotBase
 An experimental bot to automatically make trades on coinbase
 
-## How does it work
+## Howtos
 
+### How to run it.
+The core part of the bot is the main.js file, in order to start it, load a set of strategies in the all_strategies.js file (under the strategies folder) and then:
 
+```
+node main.js
+```
 
 
 

@@ -1,9 +1,10 @@
 'use strict'
 const { Worker, isMainThread, workerData, BroadcastChannel } = require('worker_threads');
 const CoinbasePro = require('coinbase-pro');
+const stringTable = require('string-table');
 const { wsUrl } = require('./model/constants');
 const { strategies } = require('./strategies/all_strategies');
-
+const moment = require('moment');
 const client = new CoinbasePro.AuthenticatedClient(
   process.env.apiKey,
   process.env.apiSecret,
@@ -11,15 +12,42 @@ const client = new CoinbasePro.AuthenticatedClient(
 );
 
 const tickerChannel = new BroadcastChannel('ticker');
+const candleChannel = new BroadcastChannel('candles-minute-10');
 
 if (isMainThread) {
-  console.log(`Starting up...${strategies.length} strategy(ies) defined`);
+  console.log(`Starting up...${strategies.length} strategy(ies) loaded`);
+  let globalConfig = {strategies:[],markets:[]};
+  strategies.forEach(strategy=>{
+    strategy.markets().forEach(mkt=>{
+      if (globalConfig.markets.indexOf(mkt)===-1) globalConfig.markets.push(mkt);
+    })
+    globalConfig.strategies.push({type:strategy.type(),
+      markets:strategy.markets().join()})
+  });
+  console.log(`${stringTable.create(globalConfig.strategies)}`);
+  //get every minute the market data of the previous 10 minutes
+  setInterval(()=>{
+    client.getTime().then(
+      (t=>{
+        const currentTimeStamp = moment(t.iso);
+        const previousTimeStamp = moment(t.iso).subtract(10, 'minutes');  
+        globalConfig.markets.forEach(mkt=>{
+          client.getProductHistoricRates(mkt, {
+            start:previousTimeStamp.utc().format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'),
+            end:currentTimeStamp.utc().format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'),
+            granularity:60
+          }, (err,res,marketData)=>{
+            if (err) console.log(`%{err}`);
+            candleChannel.postMessage({type:'candles',market:mkt,payload:marketData});
+          });      
+        })
+      }))}, 60000);
   strategies.forEach((strategy,idx)=>{
-    console.log(` [${idx+1}] ${strategy.type()}`)
+    console.log(` [${idx+1}] Instantiating worker for ${strategy.type()}`)
     new Worker(__filename,{workerData:{strategy:idx}});
   });
   const websocket = new CoinbasePro.WebsocketClient(
-    ['LTC-EUR'],
+    globalConfig.markets,
     wsUrl,
     {
       key: process.env.apiKey,
@@ -31,10 +59,19 @@ if (isMainThread) {
   });
 } else {
     console.log(`Worker instantiated for ${strategies[workerData.strategy].type()}`);
-    tickerChannel.onmessage = (event) => {
-      if (event.data.type==='ticker') {
-        const order = strategies[workerData.strategy].ticker(event.data.price); 
-        console.log(`[${strategies[workerData.strategy].type()}(${event.data.price})] Order:${order.orderType}`);
+    if (strategies[workerData.strategy].channels.indexOf('ticker')!==-1) {
+      tickerChannel.onmessage = (event) => {
+        if (event.data.type==='ticker') {
+          const order = strategies[workerData.strategy].ticker(event.data.price); 
+        }
       }
+      console.log(' - Subscribed to ticker channel');
     }
+    if (strategies[workerData.strategy].channels.indexOf('candles-minute-10')!==-1) {
+      candleChannel.onmessage = (event) => {
+        strategies[workerData.strategy].candles(event.data.payload);
+      }
+      console.log(' - Subscribed to channel candles-minute-10');
+    }
+    
 }

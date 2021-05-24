@@ -16,60 +16,25 @@ const {isBullishKicker,isBearishKicker} = require('candlestick');
 class KickerPatternCandleStickStrategy {
 
     constructor(conf) {
-        this.candles=[];
-        this.values=[];
-        this.tickInSeconds = conf.tickInSeconds;
-        this.min = Number.MIN_SAFE_INTEGER;
-        this.max = 0;
+        this.mkts = conf.markets;
+        this.channels = conf.channels;
+    }
+    
+    candles(value) {
+      console.log(' Received candles');
+      return {}
     }
     
     ticker(value){
-       var currentTs = moment().unix();  
-       if (this.values.length > 0) {
-        console.log(`${currentTs - this.values[0].ts} - ${currentTs}`);
-       }
-       let res = {orderType:OrderType.NO_OP};
-       this.values.push({ts:currentTs,price:parseFloat(value)}); 
-       if (parseFloat(value) > this.max) {
-           this.max = parseFloat(value);
-       }
-       if (parseFloat(value) < this.min) {
-         this.min = parseFloat(value);
-       }
-
-       if (this.values.length>0 && currentTs - this.values[0].ts>this.tickInSeconds) {
-         console.log('candles!');
-         this.candles.push({
-                open: this.values[0].price,
-                high: this.max,
-                low: this.min,
-                close: this.values[this.values.length-1].price
-              });
-          if (this.candles.length==2) {//we prepare the action
-            if (isBullishKicker(this.candles[0], this.candles[1])) {
-                res = {orderType:OrderType.BUY_SELL};     
-            }
-            if (isBearishKicker(this.candles[0], this.candles[1])) {
-                res = {orderType:OrderType.SELL_BUY};     
-            }
-            this.candles.shift();
-          }
-          this.values = [];
-          this.min = 0;
-          this.max = Number.MAX_SAFE_INTEGER;
-          this.candles.forEach(el=>{
-             console.log(`H:${el.high}`);
-             console.log(`L:${el.low}`);
-             console.log(`O:${el.open}`);
-             console.log(`C:${el.close}`);
-             console.log('===========')
-          })
-        }
-       return res
+      return {} 
     }
     
     type() {
       return 'KickerPatternCandleStick';
+    }
+
+    markets() {
+      return this.mkts;
     }
 };
 

@@ -31,13 +31,18 @@ nvm use v16.2.0
 
 else install it (it will set 16.2.0 as default automatically)
 
+```
+nvm install v16.2.0
+```
+
 The core part of the bot is the main.js file, in order to start it, load a set of strategies in the all_strategies.js file (under the strategies folder) and then export as *environment variables* the authentication data for codebase:
 
 ```
-export key=<>
-export secret=<>
-export name=<>
+export key=<your-api-key>
+export secret=<your-api-secret>
+export name=<your-api-name>
 ```
+
 for more details on how to create the values above, refer to the wiki.
 
 Now you are ready to run botbase:
@@ -45,6 +50,8 @@ Now you are ready to run botbase:
 ```
 node main.js
 ```
+
+### How to unit test.
 
 
 

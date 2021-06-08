@@ -22,7 +22,7 @@ class KickerPatternCandleStickStrategy {
     
     candles(value) {
       console.log(' Received candles');
-      return {}
+      return new Order(OrderType.NO_OP,0,0,0,0)
     }
     
     ticker(value){

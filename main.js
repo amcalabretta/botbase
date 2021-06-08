@@ -12,7 +12,7 @@ const client = new CoinbasePro.AuthenticatedClient(
 );
 
 const tickerChannel = new BroadcastChannel('ticker');
-const candleChannel = new BroadcastChannel('candles-minute-10');
+const candleChannel = new BroadcastChannel('candles-every-minute-past-10-minutes');
 
 if (isMainThread) {
   console.log(`Starting up...${strategies.length} strategy(ies) loaded`);
@@ -73,5 +73,4 @@ if (isMainThread) {
       }
       console.log(' - Subscribed to channel candles-minute-10');
     }
-    
 }

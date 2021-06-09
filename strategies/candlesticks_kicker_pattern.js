@@ -7,6 +7,15 @@
  * 
  * Another one that might be interesting:
  * https://github.com/ttezel/nn
+ * 
+ * Or this:
+ * https://www.altcointrading.net/ichimoku-cloud/
+ * 
+ * Another technical indicator
+ * https://canvasjs.com/javascript-stockcharts/stockchart-annotation-indexlabel/
+ * 
+ * this is for thefront end
+ * https://github.com/Mobius1/Vanilla-DataTables
 */
 const cs = require('candlestick');
 const moment = require('moment');
@@ -18,11 +27,12 @@ class KickerPatternCandleStickStrategy {
     constructor(conf) {
         this.mkts = conf.markets;
         this.channels = conf.channels;
+        this.orderCallback = conf.orderCallback;
     }
     
     candles(value) {
       console.log(' Received candles');
-      return new Order(OrderType.NO_OP,0,0,0,0)
+      this.orderCallback(new Order(OrderType.NO_OP,0,0,0,0));
     }
     
     ticker(value){

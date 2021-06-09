@@ -1,5 +1,5 @@
 'use strict'
-const { Worker, isMainThread, workerData, BroadcastChannel } = require('worker_threads');
+const { Worker, isMainThread, workerData, BroadcastChannel, parentPort } = require('worker_threads');
 const CoinbasePro = require('coinbase-pro');
 const stringTable = require('string-table');
 const { wsUrl } = require('./model/constants');
@@ -59,10 +59,12 @@ if (isMainThread) {
   });
 } else {
     console.log(`Worker instantiated for ${strategies[workerData.strategy].type()}`);
+    let order = {};
     if (strategies[workerData.strategy].channels.indexOf('ticker')!==-1) {
       tickerChannel.onmessage = (event) => {
         if (event.data.type==='ticker') {
-          const order = strategies[workerData.strategy].ticker(event.data.price); 
+          strategies[workerData.strategy].ticker(event.data.price); 
+          parentPort.postMessage(parse(strategies[workerData.strategy].order()));
         }
       }
       console.log(' - Subscribed to ticker channel');
@@ -70,6 +72,7 @@ if (isMainThread) {
     if (strategies[workerData.strategy].channels.indexOf('candles-minute-10')!==-1) {
       candleChannel.onmessage = (event) => {
         strategies[workerData.strategy].candles(event.data.payload);
+        parentPort.postMessage(parse(strategies[workerData.strategy].order()));
       }
       console.log(' - Subscribed to channel candles-minute-10');
     }

@@ -1,5 +1,5 @@
 'use strict'
-const { Worker, isMainThread, workerData, BroadcastChannel, parentPort } = require('worker_threads');
+const { Worker, isMainThread, workerData, BroadcastChannel, MessageChannel } = require('worker_threads');
 const CoinbasePro = require('coinbase-pro');
 const stringTable = require('string-table');
 const { wsUrl } = require('./model/constants');
@@ -10,6 +10,7 @@ const client = new CoinbasePro.AuthenticatedClient(
   process.env.apiSecret,
   process.env.apiPassphrase
 );
+const { port1, port2 } = new MessageChannel();
 
 const tickerChannel = new BroadcastChannel('ticker');
 const candleChannel = new BroadcastChannel('candles-every-minute-past-10-minutes');
@@ -44,6 +45,7 @@ if (isMainThread) {
       }))}, 60000);
   strategies.forEach((strategy,idx)=>{
     console.log(` [${idx+1}] Instantiating worker for ${strategy.type()}`)
+    strategy.orderCallback = (order) => {port2.postMessage({ 'order':order  })}
     new Worker(__filename,{workerData:{strategy:idx}});
   });
   const websocket = new CoinbasePro.WebsocketClient(
@@ -57,6 +59,7 @@ if (isMainThread) {
   websocket.on('message', data => {
     tickerChannel.postMessage(data);
   });
+  port1.on('message', (message) => console.log('received:', message));
 } else {
     console.log(`Worker instantiated for ${strategies[workerData.strategy].type()}`);
     let order = {};
@@ -64,15 +67,14 @@ if (isMainThread) {
       tickerChannel.onmessage = (event) => {
         if (event.data.type==='ticker') {
           strategies[workerData.strategy].ticker(event.data.price); 
-          parentPort.postMessage(parse(strategies[workerData.strategy].order()));
         }
       }
       console.log(' - Subscribed to ticker channel');
     }
-    if (strategies[workerData.strategy].channels.indexOf('candles-minute-10')!==-1) {
+    if (strategies[workerData.strategy].channels.indexOf('candles-every-minute-past-10-minutes')!==-1) {
       candleChannel.onmessage = (event) => {
         strategies[workerData.strategy].candles(event.data.payload);
-        parentPort.postMessage(parse(strategies[workerData.strategy].order()));
+        port2.postMessage({ foo: 'bar' });
       }
       console.log(' - Subscribed to channel candles-minute-10');
     }

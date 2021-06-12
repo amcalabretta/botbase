@@ -28,10 +28,9 @@ class WhiteShark {
   constructor(conf) {
     this.mkts = conf.markets;
     this.channels = conf.channels;
-    this.cryptoAmounts = conf.cryptoAmounts;
-    this.moneyAmounts = conf.moneyAmounts;
+    this.cryptoAmount = conf.cryptoAmount;
+    this.moneyAmount = conf.moneyAmount;
     this.lastValue = 0.00;
-    this.numCandles = conf.numCandles;
     this.orderCallback = (order) => { console.log(`${JSON.stringify(order)}`); };
     this.strategyType = 'CandleStick';
     this.strategyName = 'White Shark';
@@ -50,7 +49,14 @@ class WhiteShark {
         && lastCandle[3] > lastCandle[4] // most recent is 'green' (e.g. 'open' is higher than 'close')
         && lastCandle[1] - secondLastCandle[2] > 0 // 'low' of the last higher than the 'high' of the second last
     ) {
-      this.orderCallback(new Order(OrderType.NO_OP, 0, 0, 0, 0));
+      console.log(' Bullish Pattern detected');
+      console.log(` Liquidity:${this.moneyAmount}`);
+      if (this.moneyAmount > 0) { // we bet 1% of our current Money Amount
+        const amountToBeBought = (this.moneyAmount / 100) * this.lastValue;
+        this.orderCallback(new Order(OrderType.BUY_SELL, this.markets[0], this.lastValue, amountToBeBought, 0, 0));
+      } else {
+        this.orderCallback(new Order(OrderType.NO_OP, 0, 0, 0, 0));
+      }
     }
   }
 

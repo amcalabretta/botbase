@@ -33,8 +33,8 @@ class WhiteShark {
     this.lastValue = 0.00;
     this.numCandles = conf.numCandles;
     this.orderCallback = (order) => { console.log(`${JSON.stringify(order)}`); };
-    this.type = 'CandleStick';
-    this.name = 'White Shark';
+    this.strategyType = 'CandleStick';
+    this.startegyName = 'White Shark';
   }
 
   // format of the single candle: [ time, low, high, open, close, volume ]
@@ -59,11 +59,11 @@ class WhiteShark {
   }
 
   type() {
-    return this.type;
+    return this.strategyType;
   }
 
   name() {
-    return this.name;
+    return this.strategyName;
   }
 
   markets() {

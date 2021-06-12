@@ -3,13 +3,12 @@ const { describe } = mocha;
 const { it } = mocha;
 const assert = require('assert');
 const { expect } = require('chai');
-const { sleep } = require('sleep');
 const sinon = require('sinon');
-const { KickerPatternCandleStickStrategy } = require('../strategies/candlesticks/white_shark');
+const { WhiteShark } = require('../strategies/candlesticks/white_shark');
 require('../strategies/candlesticks/white_shark');
 
-const strategy = new KickerPatternCandleStickStrategy({ markets: ['LTC-EUR'], channels: ['candles-every-minute-past-10-minutes'] });
-const stub = sinon.stub(strategy, "orderCallback").returns(stubValue);
+const strategy = new WhiteShark({ markets: ['LTC-EUR'], channels: ['candles-every-minute-past-10-minutes'] });
+const stub = sinon.stub(strategy, "orderCallback").returns({});
 
 /***
  * 
@@ -29,13 +28,10 @@ describe('White Shark Bullish Detection', () => {
     // [ time, low, high, open, close, volume ]
     strategy.candles(
        [[
-          
+
 
        ]] 
-
-
-    )
-
+    );
     done();
   }).timeout(60000);
 });

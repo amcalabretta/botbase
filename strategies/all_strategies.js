@@ -1,7 +1,7 @@
-const KickerPatternCandleStickStrategy = require('./candlesticks_kicker_pattern').KickerPatternCandleStickStrategy;
+const WhiteShark = require('./candlesticks/white_shark').WhiteShark;
 
 const strategies=[
-    new KickerPatternCandleStickStrategy({markets:['LTC-EUR'],channels:['candles-every-minute-past-10-minutes']})
+    new WhiteShark({markets:['LTC-EUR'],channels:['candles-every-minute-past-10-minutes','ticker']})
 ];
 
 exports.strategies = strategies;

@@ -13,7 +13,6 @@
     "coinbase-pro": "^0.9.0",
     "moment": "^2.29.1",
     "nyc": "^15.1.0",
-    "sleep": "^6.3.0",
     "string-table": "^0.1.5"
   },
   "scripts": {
@@ -26,6 +25,7 @@
     "eslint": "^7.24.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.22.1",
-    "mocha": "^8.4.0"
+    "mocha": "^8.4.0",
+    "sinon": "^11.1.1"
   }
 }

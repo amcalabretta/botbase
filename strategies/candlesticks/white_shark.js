@@ -34,7 +34,7 @@ class WhiteShark {
     this.numCandles = conf.numCandles;
     this.orderCallback = (order) => { console.log(`${JSON.stringify(order)}`); };
     this.strategyType = 'CandleStick';
-    this.startegyName = 'White Shark';
+    this.strategyName = 'White Shark';
   }
 
   // format of the single candle: [ time, low, high, open, close, volume ]

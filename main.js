@@ -4,6 +4,8 @@ const {
 const CoinbasePro = require('coinbase-pro');
 const stringTable = require('string-table');
 const moment = require('moment');
+const log4js = require('log4js');
+const { v4 } = require('uuid');
 const { wsUrl } = require('./model/constants');
 const { strategies } = require('./strategies/all_strategies');
 
@@ -14,11 +16,32 @@ const client = new CoinbasePro.AuthenticatedClient(
 );
 const { port1, port2 } = new MessageChannel();
 
+// print process.argv
+process.argv.forEach(function (val, index, array) {
+  console.log(index + ': ' + val);
+});
+console.log(`${process.argv.length}`);
 const tickerChannel = new BroadcastChannel('ticker');
 const candleChannel = new BroadcastChannel('candles-every-minute-past-10-minutes');
-
+const logAppenders = { main: { type: 'file', filename: './logs/main.log' } };
+const appendersName = ['main'];
+const logCategories = { default: { appenders: 'main', level: 'trace' }};
+// logging configuration
+strategies.forEach((strategy) => {
+  const identifier = v4();
+  logAppenders[identifier] = { type: 'file', filename: `./logs/${strategy.name().replace(' ', '-')}-${identifier}.log` };
+  logCategories[identifier] = { default: { appenders: identifier, level: 'trace' }};
+  appendersName.push(identifier);
+  console.log(` Strategy: ${strategy.name()}, logId:${identifier}`);
+});
+log4js.configure({
+  appenders: logAppenders,
+  categories: { default: { appenders: appendersName, level: 'trace' } },
+  disableClustering: false,
+});
+const mainLogger = log4js.getLogger('main');
 if (isMainThread) {
-  console.log(`Starting up...${strategies.length} strategy(ies) loaded`);
+  // mainLogger.debug(`Starting up...${strategies.length} strategy(ies) loaded`);
   const globalConfig = { strategies: [], markets: [] };
   strategies.forEach((strategy) => {
     strategy.markets().forEach((mkt) => {
@@ -30,7 +53,7 @@ if (isMainThread) {
       markets: strategy.markets().join(),
     });
   });
-  console.log(`${stringTable.create(globalConfig.strategies)}`);
+  //mainLogger.debug(`${stringTable.create(globalConfig.strategies)}`);
   // get every minute the market data of the previous 10 minutes
   setInterval(() => {
     client.getTime().then(
@@ -51,9 +74,24 @@ if (isMainThread) {
     );
   }, 60000);
   strategies.forEach((strategy, idx) => {
-    console.log(` [${idx + 1}] Instantiating worker for ${strategy.name()}`);
+    mainLogger.debug(` [${idx + 1}] Instantiating worker for ${strategy.name()} - ${strategy.type()}`);
+    const identifier = v4();
+    logAppenders[identifier] = { type: 'file', filename: `./logs/${strategy.name().replace(' ', '-')}-${identifier}.log` };
+    appendersName.push(identifier);
     strategy.orderCallback = (order) => { port2.postMessage({ order }); };
-    new Worker(__filename, { workerData: { strategy: idx } });
+    new Worker(__filename, { workerData: { strategy: idx, logId: identifier } });
+  });
+  console.log(`${JSON.stringify(logAppenders, null, 2)}`);
+  console.log(`${appendersName}`);
+  appendersName.forEach((n) => {
+    console.log(` getting appender ${n}`);
+    const logger = log4js.getLogger(n);
+    logger.trace('Entering cheese testing');
+    logger.debug('Got cheese.');
+    logger.info('Cheese is Comté.');
+    logger.warn('Cheese is quite smelly.');
+    logger.error('Cheese is too ripe!');
+    logger.fatal('Cheese was breeding ground for listeria.');
   });
   const websocket = new CoinbasePro.WebsocketClient(
     globalConfig.markets,
@@ -69,21 +107,27 @@ if (isMainThread) {
   });
   port1.on('message', (message) => console.log('received:', message));
 } else {
-  console.log(`Worker instantiated for ${strategies[workerData.strategy].type()}`);
-  const order = {};
-  if (strategies[workerData.strategy].channels.indexOf('ticker') !== -1) {
+  const actualStrategy = strategies[workerData.strategy];
+  // mainLogger.debug(`Worker instantiated for ${actualStrategy.name()}`);
+  console.log(`${JSON.stringify(log4js.getLogger(workerData.logId))}`);
+  log4js.getLogger(workerData.logId).debug('hello');
+  actualStrategy.logger = log4js.getLogger(workerData.logId);
+  // actualStrategy.logger.level = 'debug';
+  // actualStrategy.logger.type = 'file';
+  // actualStrategy.logger.filename = './logs/fff.log';
+
+  if (actualStrategy.channels.indexOf('ticker') !== -1) {
     tickerChannel.onmessage = (event) => {
       if (event.data.type === 'ticker') {
-        strategies[workerData.strategy].ticker(event.data.price);
+        actualStrategy.ticker(event.data.price);
       }
     };
-    console.log(' - Subscribed to ticker channel');
+    // mainLogger.debug(' - Subscribed to ticker channel');
   }
-  if (strategies[workerData.strategy].channels.indexOf('candles-every-minute-past-10-minutes') !== -1) {
+  if (actualStrategy.channels.indexOf('candles-every-minute-past-10-minutes') !== -1) {
     candleChannel.onmessage = (event) => {
-      strategies[workerData.strategy].candles(event.data.payload);
-      port2.postMessage({ foo: 'bar' });
+      actualStrategy.candles(event.data.payload);
     };
-    console.log(' - Subscribed to channel candles-minute-10');
+    // mainLogger.debug(' - Subscribed to channel candles-minute-10');
   }
 }

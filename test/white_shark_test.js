@@ -5,7 +5,7 @@ const assert = require('assert');
 const { expect } = require('chai');
 const sinon = require('sinon');
 const { WhiteShark } = require('../strategies/candlesticks/white_shark');
-require('../strategies/candlesticks/white_shark');
+
 
 const strategy = new WhiteShark({ markets: ['LTC-EUR'], channels: ['candles-every-minute-past-10-minutes'] });
 const stub = sinon.stub(strategy, "orderCallback").returns({});
@@ -26,12 +26,6 @@ describe('White Shark Bullish Detection', () => {
   it('Should trigger a bullish order', (done) => {
     strategy.ticker(134.78);
     // [ time, low, high, open, close, volume ]
-    strategy.candles(
-       [[
-
-
-       ]] 
-    );
     done();
   }).timeout(60000);
 });

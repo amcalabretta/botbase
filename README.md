@@ -62,8 +62,14 @@ npm test
 to run the test and measure the coverage:
 
 ```
-npm test-coverage
+npm run test-coverage
 ```
+after running the above command, you can open the report (on mac):
+
+```
+open coverage/index.html
+```
+
 
 
 

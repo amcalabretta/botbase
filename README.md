@@ -53,6 +53,18 @@ node main.js
 
 ### How to unit test.
 
+Unit tests are, as you probably guesses, in the 'test' directory, to run all the unit tests:
+
+```
+npm test
+```
+
+to run the test and measure the coverage:
+
+```
+npm test-coverage
+```
+
 
 
 

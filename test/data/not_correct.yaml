@@ -1,0 +1,2 @@
+logging:
+  logDir: "/some/non/existing/dir"

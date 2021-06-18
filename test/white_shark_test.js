@@ -6,7 +6,6 @@ const { expect } = require('chai');
 const sinon = require('sinon');
 const { WhiteShark } = require('../strategies/candlesticks/white_shark');
 
-
 const strategy = new WhiteShark({ markets: ['LTC-EUR'], channels: ['candles-every-minute-past-10-minutes'] });
 const stub = sinon.stub(strategy, "orderCallback").returns({});
 

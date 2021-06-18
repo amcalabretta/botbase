@@ -8,6 +8,7 @@ const log4js = require('log4js');
 const { v4 } = require('uuid');
 const { wsUrl } = require('./model/constants');
 const { strategies } = require('./strategies/all_strategies');
+const { loadConfigurationFile } = require('./utils/utils');
 
 const client = new CoinbasePro.AuthenticatedClient(
   process.env.apiKey,
@@ -15,12 +16,7 @@ const client = new CoinbasePro.AuthenticatedClient(
   process.env.apiPassphrase,
 );
 const { port1, port2 } = new MessageChannel();
-
-// print process.argv
-process.argv.forEach(function (val, index, array) {
-  console.log(index + ': ' + val);
-});
-console.log(`${process.argv.length}`);
+const appConfiguration =  loadConfigurationFile(process.argv);
 const tickerChannel = new BroadcastChannel('ticker');
 const candleChannel = new BroadcastChannel('candles-every-minute-past-10-minutes');
 const logAppenders = { main: { type: 'file', filename: './logs/main.log' } };

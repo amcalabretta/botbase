@@ -17,7 +17,7 @@ const loadConfigurationFile = (argv) => {
   try {
     const data = yaml.safeLoad(fs.readFileSync(paramTokens[1], 'utf8'));
     if (!data.logging.logDir) throw new Error('Logging directory not found is file ${paramTokens[1]}');
-    if (!fs.existsSync(data.logging.logDir)) throw new Error('Logging directory  ${data.logging.logDir} does not exists');
+    if (!fs.existsSync(data.logging.logDir)) throw new Error(`Logging directory  ${data.logging.logDir} does not exists`);
     return data;
   } catch (e) {
     throw new Error(`${e}`);

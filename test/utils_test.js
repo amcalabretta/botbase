@@ -23,8 +23,17 @@ describe('loadConfigurationFile', () => {
     assert.throws(() => { loadConfigurationFile(['node','main','confff=dss=./data/non_existent.yaml']) }, 'Error');
     done();
   });
-  it('Should throw an error right file but not existing log dir', (done) => {
-    assert.throws(() => { loadConfigurationFile(['node','main','conf=./test/data/not_correct.yaml'])}, 'Error');
+  it('Should throw an error right file but wrong formats', (done) => {
+    assert.throws(() => { loadConfigurationFile(['node','main','conf=./test/data/log_dir_not_given.yaml'])}, 'Error');
+    done();
+  });
+  it('Should throw an error when log dir does not exists', (done) => {
+    assert.throws(() => { loadConfigurationFile(['node','main','conf=./test/data/log_dir_not_existing.yaml'])}, 'Error');
+    done();
+  });
+  it('Should read the logdir correctly', (done) => {
+    const data = loadConfigurationFile(['node','main','conf=./test/data/real.yaml'])
+    console.log(`Data:${JSON.stringify(data)}`);
     done();
   });
 });

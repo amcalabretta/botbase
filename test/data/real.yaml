@@ -1,2 +1,2 @@
 logging:
-  logDir: "./logs"
+  logDir: "./test/logs"

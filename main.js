@@ -8,7 +8,11 @@ const log4js = require('log4js');
 const { v4 } = require('uuid');
 const { wsUrl } = require('./model/constants');
 const { strategies } = require('./strategies/all_strategies');
-const { loadConfigurationFile } = require('./utils/utils');
+const { loadConfigurationFile } = require('./utils/loadConfigurationFile');
+const { checkEnvironmentVariables } = require('./utils/checkEnvironmentVariables');
+
+checkEnvironmentVariables(process.env);
+const appConfiguration = loadConfigurationFile(process.argv);
 
 const client = new CoinbasePro.AuthenticatedClient(
   process.env.apiKey,
@@ -16,17 +20,17 @@ const client = new CoinbasePro.AuthenticatedClient(
   process.env.apiPassphrase,
 );
 const { port1, port2 } = new MessageChannel();
-const appConfiguration =  loadConfigurationFile(process.argv);
+
 const tickerChannel = new BroadcastChannel('ticker');
 const candleChannel = new BroadcastChannel('candles-every-minute-past-10-minutes');
 const logAppenders = { main: { type: 'file', filename: './logs/main.log' } };
 const appendersName = ['main'];
-const logCategories = { default: { appenders: 'main', level: 'trace' }};
+const logCategories = { main: { appenders: 'main', level: 'trace' } };
 // logging configuration
 strategies.forEach((strategy) => {
   const identifier = v4();
   logAppenders[identifier] = { type: 'file', filename: `./logs/${strategy.name().replace(' ', '-')}-${identifier}.log` };
-  logCategories[identifier] = { default: { appenders: identifier, level: 'trace' }};
+  logCategories[identifier] = { default: { appenders: identifier, level: 'trace' } };
   appendersName.push(identifier);
   console.log(` Strategy: ${strategy.name()}, logId:${identifier}`);
 });
@@ -49,7 +53,7 @@ if (isMainThread) {
       markets: strategy.markets().join(),
     });
   });
-  //mainLogger.debug(`${stringTable.create(globalConfig.strategies)}`);
+  // mainLogger.debug(`${stringTable.create(globalConfig.strategies)}`);
   // get every minute the market data of the previous 10 minutes
   setInterval(() => {
     client.getTime().then(

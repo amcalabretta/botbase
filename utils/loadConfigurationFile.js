@@ -8,12 +8,12 @@ const yaml = require('js-yaml');
 
 const loadConfigurationFile = (argv) => {
   if (argv.length !== 3) {
-    throw new Error('');
+    throw new Error('Usage: node main --conf=/path/to/yaml/file');
   }
   const confParam = argv[2];
   const paramTokens = confParam.split('=');
-  if (paramTokens.length !== 2) throw new Error('File');
-  if (paramTokens[0] !== 'conf') throw new Error('File');
+  if (paramTokens.length !== 2) throw new Error('Usage: node main --conf=/path/to/yaml/file');
+  if (paramTokens[0] !== 'conf') throw new Error('Usage: node main --conf=/path/to/yaml/file');
   try {
     const data = yaml.safeLoad(fs.readFileSync(paramTokens[1], 'utf8'));
     if (!data.logging.logDir) throw new Error('Logging directory not found is file ${paramTokens[1]}');

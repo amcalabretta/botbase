@@ -1,5 +1,5 @@
 {
-  "name": "cryptotrade",
+  "name": "botbase",
   "version": "1.0.0",
   "description": "An experimental bot to do HFT on coinbase",
   "main": "index.js",
@@ -28,7 +28,7 @@
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.22.1",
     "mocha": "^8.4.0",
-    "sinon": "^11.1.1",
-    "nyc": "^15.1.0"
+    "nyc": "^15.1.0",
+    "sinon": "^11.1.1"
   }
 }

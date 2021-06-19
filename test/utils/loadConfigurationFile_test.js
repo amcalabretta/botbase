@@ -3,8 +3,7 @@ const mocha = require('mocha');
 const { describe } = mocha;
 const { it } = mocha;
 const assert = require('assert');
-const { expect } = require('chai');
-const { loadConfigurationFile } = require('../utils/utils');
+const { loadConfigurationFile } = require('../../utils/loadConfigurationFile');
 
 describe('loadConfigurationFile', () => {
   it('Should throw an error if not 3 values are in argv', (done) => {

@@ -33,7 +33,7 @@ describe('loadConfigurationFile', () => {
   });
   it('Should read the logdir correctly', (done) => {
     const data = loadConfigurationFile(['node','main','conf=./test/data/real.yaml'])
-    console.log(`Data:${JSON.stringify(data)}`);
+    assert.strictEqual(data.logging.logDir,'./test/logs');
     done();
   });
 });

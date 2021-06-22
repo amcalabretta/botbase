@@ -14,4 +14,10 @@ describe('checkEnvironmentVariables', () => {
     });
     done();
   });
+  it('Should throw an error if any of the 3 variables are missing', (done) => {
+    assert.throws(() => { checkEnvironmentVariables({ apiKey: 'ak', apiSecret: 'as' }); }, 'Error');
+    assert.throws(() => { checkEnvironmentVariables({ apiKey: 'ak', apiPassphrase: 'app' }); }, 'Error');
+    assert.throws(() => { checkEnvironmentVariables({ apiPassphrase: 'app', apiSecret: 'as' }); }, 'Error');
+    done();
+  });
 });

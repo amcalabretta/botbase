@@ -14,7 +14,7 @@ const checkEnvironmentVariables = (env) => {
   if (!env.apiPassphrase) {
     errorMessage.push('\n - apiPassphrase');
   }
-  if (errorMessage.length>1) {
+  if (errorMessage.length > 1) {
     throw new Error(`${errorMessage.join('')}`);
   }
 };

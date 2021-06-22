@@ -1,14 +1,13 @@
 [![GitHub license](https://img.shields.io/github/license/amcalabretta/botbase?style=plastic)](https://github.com/amcalabretta/botbase/blob/master/LICENSE)
-[![GitHub license](https://img.shields.io/github/issues/amcalabretta/botbase?style=plastic)](https://github.com/amcalabretta/botbase/issues)
-
+[![Issues](https://img.shields.io/github/issues/amcalabretta/botbase?style=plastic)](https://github.com/amcalabretta/botbase/issues)
+![Codacy grade](https://img.shields.io/codacy/grade/18b28f4cd13647bbb3d1e15d8c637b82?style=plastic)
 
 # BotBase
-An experimental bot to automatically make trades on coinbase
+An experimental bot to automatically trade on coinbase
 
 ## Howtos
 
-### How to run it.
-
+### How to set up the environment.
 Notice that, being based on the use of workers ([more details here](https://nodejs.org/api/worker_threads.html)), it required to use node version 16.2.0 at least, in  order to do so, run the following command to check the current version being used locally:
 
 ```
@@ -44,11 +43,10 @@ export name=<your-api-name>
 ```
 
 for more details on how to create the values above, refer to the wiki.
-
-Now you are ready to run botbase:
-
+### How to run it.
+To run the bot, type:
 ```
-node main.js
+node main.js --conf=/path/to/the/configuration/yaml/file.yaml
 ```
 
 ### How to unit test.
@@ -64,11 +62,8 @@ to run the test and measure the coverage:
 ```
 npm run test-coverage
 ```
-after running the above command, you can open the report (on mac):
+after running the above command, coverage is shown in the *coverage/index.html* file:
 
-```
-open coverage/index.html
-```
 
 
 

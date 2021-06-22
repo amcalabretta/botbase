@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "An experimental bot to do HFT on coinbase",
   "main": "index.js",
-  "repository": "git@github.com:amcalabretta/cryptotrade.git",
+  "repository": "git@github.com:amcalabretta/botbase.git",
   "author": "Antonio Calabretta <amc@betsystem.io>",
   "license": "MIT",
   "private": false,
@@ -14,6 +14,7 @@
     "js-yaml": "^3.14.1",
     "log4js": "^6.3.0",
     "moment": "^2.29.1",
+    "node-dependency-injection": "^2.7.0",
     "string-table": "^0.1.5",
     "uuid": "^3.4.0"
   },

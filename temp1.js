@@ -13,7 +13,7 @@ const {
   const botConfiguration = loadConfigurationFile(process.argv);
   const tickerChannel = new BroadcastChannel('ticker');
   const candleChannel = new BroadcastChannel('candles-every-minute-past-10-minutes');
-  const logAppenders = {};
+const logAppenders = {};
   const appendersName = ['main'];
   const logCategories = {};
   strategies.forEach((strategy) => {

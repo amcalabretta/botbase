@@ -26,10 +26,11 @@ const { Order } = require('../../model/order');
 
 class WhiteShark {
   constructor(conf) {
-    this.mkts = conf.markets;
+    this.markets = conf.markets;
     this.cryptoAmounts = conf.cryptoAmounts;
-    this.moneyAmounts = conf.moneyAmounts;
-    if (this.cryptoAmounts.length !== 1 || this.moneyAmounts.length!==1 || this.markets.length!==1) {
+    this.euroAmount = conf.euroAmount;
+    this.dollarAmount = conf.dollarAmount;
+    if (this.cryptoAmounts.length !== 1 || this.markets.length!==1) {
       throw new Error(`White shark Strategy shall have one market, one amount for each (money and crypto)`);
     }
     this.lastValue = 0.00;
@@ -61,9 +62,9 @@ class WhiteShark {
   }
 
   valueCallBack(value) {
-    this.logger.info(` Strategy: Got value:${JSON.stringify(value)}`);
     switch(value.type){
       case 'ticker': 
+          this.logger.info(`Updating price to ${value.price}`);
           this.lastValue = value.price;
           break;
       case 'candlesPastTenMinutes':

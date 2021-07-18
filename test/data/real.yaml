@@ -1,2 +1,2 @@
 logging:
-  logDir: "./test/logs"
+  logDir: "./test/fake"

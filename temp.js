@@ -25,7 +25,7 @@ const {
       const tickerChannel = new BroadcastChannel('ticker');
       const candleChannel = new BroadcastChannel('candles-every-minute-past-10-minutes');
       const logAppenders = {};
-      const appendersName = ['main'];
+    const appendersName = ['main'];
       const logCategories = {};
       // logging configuration
       strategies.forEach((strategy) => {

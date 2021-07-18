@@ -22,9 +22,11 @@
     "lint": "eslint **/*.js",
     "lint-fix": "eslint **/*.js",
     "test": "mocha --recursive --exit",
-    "test-coverage": "nyc --reporter=html mocha --recursive --exit"
+    "test-coverage": "nyc --reporter=html mocha --recursive --exit",
+    "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
   "devDependencies": {
+    "coveralls": "^3.1.1",
     "eslint": "^7.24.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.22.1",

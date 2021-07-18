@@ -27,11 +27,10 @@ const { Order } = require('../../model/order');
 class WhiteShark {
   constructor(conf) {
     this.mkts = conf.markets;
-    this.channels = conf.channels;
-    this.cryptoAmount = conf.cryptoAmount;
-    this.moneyAmount = conf.moneyAmount;
+    this.cryptoAmounts = conf.cryptoAmounts;
+    this.moneyAmounts = conf.moneyAmounts;
     this.lastValue = 0.00;
-    this.orderCallback = (order) => { console.log(`${JSON.stringify(order)}`); };
+    this.orderCallback = (order) => { return order};
     this.strategyType = 'CandleStick';
     this.strategyName = 'White Shark';
   }
@@ -48,8 +47,7 @@ class WhiteShark {
         && lastCandle[3] > lastCandle[4] // most recent is 'green' (e.g. 'open' is higher than 'close')
         && lastCandle[1] - secondLastCandle[2] > 0 // 'low' of the last higher than the 'high' of the second last
     ) {
-      //this.logger.debug(' Bullish Pattern detected');
-      //this.logger.debug(` Liquidity:${this.moneyAmount}`);
+      this.logger.debug(' Bullish Pattern detected');
       if (this.moneyAmount > 0) { // we bet 1% of our current Money Amount
         const amountToBeBought = (this.moneyAmount / 100) * this.lastValue;
         this.orderCallback(new Order(OrderType.BUY_SELL, this.markets[0], this.lastValue, amountToBeBought, 0, 0));
@@ -60,8 +58,11 @@ class WhiteShark {
   }
 
   ticker(value) {
-    //this.logger.debug(` - Value:${value}`);
     this.lastValue = value;
+  }
+
+  valueCallBack(value) {
+    this.logger.info(` Strategy: Got value`);
   }
 
   type() {
@@ -72,9 +73,6 @@ class WhiteShark {
     return this.strategyName;
   }
 
-  markets() {
-    return this.mkts;
-  }
 }
 
 exports.WhiteShark = WhiteShark;

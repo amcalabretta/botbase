@@ -7,14 +7,17 @@ const sinon = require('sinon');
 const { WhiteShark } = require('../strategies/candlesticks/white_shark');
 const log4js = require('log4js');
 
+
+
+const strategy = new WhiteShark({ markets: ['LTC-EUR'], cryptoAmounts: [10], euroAmount: 30, dollarAmount: 0 });
+const stub = sinon.stub(strategy, "orderCallback").returns({});
+
 log4js.configure({
   appenders: { out: { type: 'stdout' } },
   categories: { default: { appenders: ['out'], level: 'info' } },
 });
-
-const strategy = new WhiteShark({ markets: ['LTC-EUR'], cryptoAmounts: [10], euroAmount: 30, dollarAmount: 0 });
 strategy.logger = log4js.getLogger();
-const stub = sinon.stub(strategy, "orderCallback").returns({});
+
 
 /***
  * 

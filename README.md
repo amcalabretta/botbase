@@ -48,6 +48,7 @@ export name=<your-api-name>
 ```
 
 for more details on how to create the values above, refer to the wiki.
+
 ### How to run it
 To run the bot, type:
 ```

@@ -1,9 +1,9 @@
 {
-  "name": "cryptotrade",
+  "name": "botbase",
   "version": "1.0.0",
   "description": "An experimental bot to do HFT on coinbase",
   "main": "index.js",
-  "repository": "git@github.com:amcalabretta/cryptotrade.git",
+  "repository": "git@github.com:amcalabretta/botbase.git",
   "author": "Antonio Calabretta <amc@betsystem.io>",
   "license": "MIT",
   "private": false,
@@ -11,9 +11,12 @@
     "candlestick": "^0.0.3",
     "chai": "^4.3.4",
     "coinbase-pro": "^0.9.0",
+    "js-yaml": "^3.14.1",
+    "log4js": "^6.3.0",
     "moment": "^2.29.1",
-    "nyc": "^15.1.0",
-    "string-table": "^0.1.5"
+    "node-dependency-injection": "^2.7.0",
+    "string-table": "^0.1.5",
+    "uuid": "^3.4.0"
   },
   "scripts": {
     "lint": "eslint **/*.js",
@@ -26,6 +29,7 @@
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.22.1",
     "mocha": "^8.4.0",
+    "nyc": "^15.1.0",
     "sinon": "^11.1.1"
   }
 }

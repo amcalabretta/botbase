@@ -27,20 +27,21 @@ const { Order } = require('../../model/order');
 class WhiteShark {
   constructor(conf) {
     this.mkts = conf.markets;
-    this.channels = conf.channels;
-    this.cryptoAmount = conf.cryptoAmount;
-    this.moneyAmount = conf.moneyAmount;
+    this.cryptoAmounts = conf.cryptoAmounts;
+    this.moneyAmounts = conf.moneyAmounts;
+    if (this.cryptoAmounts.length !== 1 || this.moneyAmounts.length!==1 || this.markets.length!==1) {
+      throw new Error(`White shark Strategy shall have one market, one amount for each (money and crypto)`);
+    }
     this.lastValue = 0.00;
-    this.orderCallback = (order) => { console.log(`${JSON.stringify(order)}`); };
+    this.orderCallback = (order) => { return order};
     this.strategyType = 'CandleStick';
     this.strategyName = 'White Shark';
   }
 
   // format of the single candle: [ time, low, high, open, close, volume ]
   candles(values) {
-    console.log(' Received candles ');
-    values.array.forEach((el) => {
-      console.log(`Ts:${moment.unix(el[0]).format('DD/MM/YYYY@HH:mm:00')}, 
+    values.forEach((el) => {
+      this.logger.debug(`Ts:${moment.unix(el[0]).format('DD/MM/YYYY@HH:mm:00')}, 
                    lo:${el[1]}, hi:${el[2]}, op:${el[4]}, close:${el[5]}, vol:${el[6]}`);
     });
     const lastCandle = values[0];
@@ -49,8 +50,7 @@ class WhiteShark {
         && lastCandle[3] > lastCandle[4] // most recent is 'green' (e.g. 'open' is higher than 'close')
         && lastCandle[1] - secondLastCandle[2] > 0 // 'low' of the last higher than the 'high' of the second last
     ) {
-      console.log(' Bullish Pattern detected');
-      console.log(` Liquidity:${this.moneyAmount}`);
+      this.logger.debug(' Bullish Pattern detected');
       if (this.moneyAmount > 0) { // we bet 1% of our current Money Amount
         const amountToBeBought = (this.moneyAmount / 100) * this.lastValue;
         this.orderCallback(new Order(OrderType.BUY_SELL, this.markets[0], this.lastValue, amountToBeBought, 0, 0));
@@ -60,20 +60,18 @@ class WhiteShark {
     }
   }
 
-  ticker(value) {
-    this.lastValue = value;
-  }
-
-  type() {
-    return this.strategyType;
-  }
-
-  name() {
-    return this.strategyName;
-  }
-
-  markets() {
-    return this.mkts;
+  valueCallBack(value) {
+    this.logger.info(` Strategy: Got value:${JSON.stringify(value)}`);
+    switch(value.type){
+      case 'ticker': 
+          this.lastValue = value.price;
+          break;
+      case 'candlesPastTenMinutes':
+          this.values(value.payload);
+          break;
+      default:
+        this.logger.warn(`Unknown message type received`);
+    }
   }
 }
 

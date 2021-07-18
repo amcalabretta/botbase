@@ -29,6 +29,9 @@ class WhiteShark {
     this.mkts = conf.markets;
     this.cryptoAmounts = conf.cryptoAmounts;
     this.moneyAmounts = conf.moneyAmounts;
+    if (this.cryptoAmounts.length !== 1 || this.moneyAmounts.length!==1 || this.markets.length!==1) {
+      throw new Error(`White shark Strategy shall have one market, one amount for each (money and crypto)`);
+    }
     this.lastValue = 0.00;
     this.orderCallback = (order) => { return order};
     this.strategyType = 'CandleStick';
@@ -57,22 +60,19 @@ class WhiteShark {
     }
   }
 
-  ticker(value) {
-    this.lastValue = value;
-  }
-
   valueCallBack(value) {
-    this.logger.info(` Strategy: Got value`);
+    this.logger.info(` Strategy: Got value:${JSON.stringify(value)}`);
+    switch(value.type){
+      case 'ticker': 
+          this.lastValue = value.price;
+          break;
+      case 'candlesPastTenMinutes':
+          this.values(value.payload);
+          break;
+      default:
+        this.logger.warn(`Unknown message type received`);
+    }
   }
-
-  type() {
-    return this.strategyType;
-  }
-
-  name() {
-    return this.strategyName;
-  }
-
 }
 
 exports.WhiteShark = WhiteShark;

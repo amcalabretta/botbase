@@ -9,11 +9,7 @@ const moment = require('moment');
 const { wsUrl } = require('./model/constants');
 
 
-const broadCastChannel = new BroadcastChannel('botbase.broadcast', {
-  type: 'node',
-  webWorkerSupport: true
-});
-
+const broadCastChannel = new BroadcastChannel('botbase.broadcast');
 
 try {
   checkEnvironmentVariables(process.env);
@@ -45,7 +41,6 @@ try {
             allMarkets.push(market);
        }
     });
-
     new Worker('./worker.js', { workerData: { conf: botConfiguration, index: idx } });
   });
   mainLogger.info('Setting up the channels');
@@ -64,7 +59,8 @@ try {
               mainLogger.warn('%{err}');
             } else {
               candleChannelMinutePastTenLogger.info(`${marketData}`);
-              //candleChannelMinutePastTen.postMessage({ type: 'candles', market: mkt, payload: marketData });
+              mainLogger.info(` - Candles 10 mins:${marketData}`);
+              broadCastChannel.postMessage({ type: 'candlesPastTenMinutes', market: mkt, payload: marketData });
             }
           });
         });

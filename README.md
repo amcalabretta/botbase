@@ -2,6 +2,8 @@
 [![Issues](https://img.shields.io/github/issues/amcalabretta/botbase?style=plastic)](https://github.com/amcalabretta/botbase/issues)
 [![Codacy grade](https://img.shields.io/codacy/grade/18b28f4cd13647bbb3d1e15d8c637b82?style=plastic)](https://app.codacy.com/gh/amcalabretta/botbase/dashboard?branch=master)
 
+
+
 # BotBase
 An experimental bot to automatically trade on coinbase
 

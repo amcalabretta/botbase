@@ -8,12 +8,11 @@ const { WhiteShark } = require('../strategies/candlesticks/white_shark');
 const log4js = require('log4js');
 
 log4js.configure({
-  appenders: { 'out': { type: 'stdout' } },
-  categories: { default: { appenders: ['out'], level: 'info' } }
+  appenders: { out: { type: 'stdout' } },
+  categories: { default: { appenders: ['out'], level: 'info' } },
 });
 
-
-const strategy = new WhiteShark({markets: ['LTC-EUR'], cryptoAmounts: [10],euroAmount: 30,dollarAmount: 0 });
+const strategy = new WhiteShark({ markets: ['LTC-EUR'], cryptoAmounts: [10], euroAmount: 30, dollarAmount: 0 });
 strategy.logger = log4js.getLogger();
 const stub = sinon.stub(strategy, "orderCallback").returns({});
 
@@ -31,7 +30,7 @@ assert.equal(firstArgument, expectedValue);
 
 describe('White Shark Bullish Detection', () => {
   it('Should trigger a bullish order', (done) => {
-    strategy.valueCallBack({type:'ticker',price:107});
+    strategy.valueCallBack({ type: 'ticker', price: 107 });
     done();
   }).timeout(60000);
 });

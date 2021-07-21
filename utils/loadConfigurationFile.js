@@ -12,7 +12,7 @@ const loadConfigurationFile = (argv) => {
   }
   const confParam = argv[2];
   const paramTokens = confParam.split('=');
-  if (paramTokens.length !== 2) throw new Error(`Usage: node main --conf=/path/to/yaml/file, tokens:${paramTokens.length}`);
+  if (paramTokens.length !== 2) throw new Error('Usage: node main --conf=/path/to/yaml/file');
   if (paramTokens[0] !== '--conf') throw new Error('Usage: node main --conf=/path/to/yaml/file, firts token is not --conf');
   try {
     const data = yaml.safeLoad(fs.readFileSync(paramTokens[1], 'utf8'));

@@ -6,7 +6,9 @@
 [![Codacy grade](https://img.shields.io/codacy/grade/18b28f4cd13647bbb3d1e15d8c637b82?style=plastic)](https://app.codacy.com/gh/amcalabretta/botbase/dashboard?branch=master)
 [![Code Climate maintainability](https://img.shields.io/codeclimate/maintainability/amcalabretta/botbase?style=plastic)](https://codeclimate.com/github/amcalabretta/botbase)
 [![Travis (.com)](https://img.shields.io/travis/com/amcalabretta/botbase?style=plastic)](https://travis-ci.com/github/amcalabretta/botbase)
-[![Codacy Badge](https://app.codacy.com/project/badge/Coverage/9f70ddcd2145481e9583135836795477)](https://www.codacy.com/gh/amcalabretta/botbase/dashboard?utm_source=github.com&utm_medium=referral&utm_content=amcalabretta/botbase&utm_campaign=Badge_Coverage)
+
+[![Codacy coverage](https://img.shields.io/codacy/coverage/18b28f4cd13647bbb3d1e15d8c637b82?style=plastic)](https://app.codacy.com/gh/amcalabretta/botbase/dashboard?branch=master)
+
 An experimental bot to automatically trade on coinbase
 
 ## Howtos

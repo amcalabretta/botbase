@@ -1,0 +1,14 @@
+language: node_js
+node_js:
+  - 16
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build  
+script:
+  - npm audit
+  - npm run coverage
+after_script:
+  - bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r ./coverage/lcov.info
+
+  

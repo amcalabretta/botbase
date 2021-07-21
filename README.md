@@ -1,15 +1,18 @@
+
+# BotBase
+
 [![GitHub license](https://img.shields.io/github/license/amcalabretta/botbase?style=plastic)](https://github.com/amcalabretta/botbase/blob/master/LICENSE)
 [![Issues](https://img.shields.io/github/issues/amcalabretta/botbase?style=plastic)](https://github.com/amcalabretta/botbase/issues)
 [![Codacy grade](https://img.shields.io/codacy/grade/18b28f4cd13647bbb3d1e15d8c637b82?style=plastic)](https://app.codacy.com/gh/amcalabretta/botbase/dashboard?branch=master)
-
-
-
-# BotBase
+[![Code Climate maintainability](https://img.shields.io/codeclimate/maintainability/amcalabretta/botbase?style=plastic)](https://codeclimate.com/github/amcalabretta/botbase)
+[![Travis (.com)](https://img.shields.io/travis/com/amcalabretta/botbase?style=plastic)](https://travis-ci.com/github/amcalabretta/botbase)
+[![Codacy Badge](https://app.codacy.com/project/badge/Coverage/9f70ddcd2145481e9583135836795477)](https://www.codacy.com/gh/amcalabretta/botbase/dashboard?utm_source=github.com&utm_medium=referral&utm_content=amcalabretta/botbase&utm_campaign=Badge_Coverage)
 An experimental bot to automatically trade on coinbase
 
 ## Howtos
 
-### How to set up the environment.
+### How to set up the environment
+
 Notice that, being based on the use of workers ([more details here](https://nodejs.org/api/worker_threads.html)), it required to use node version 16.2.0 at least, in  order to do so, run the following command to check the current version being used locally:
 
 ```
@@ -45,13 +48,16 @@ export name=<your-api-name>
 ```
 
 for more details on how to create the values above, refer to the wiki.
-### How to run it.
+
+### How to run it
+
 To run the bot, type:
 ```
 node main.js --conf=/path/to/the/configuration/yaml/file.yaml
 ```
 
-### How to unit test.
+
+### How to unit test
 
 Unit tests are, as you probably guesses, in the 'test' directory, to run all the unit tests:
 

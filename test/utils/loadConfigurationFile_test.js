@@ -32,7 +32,7 @@ describe('loadConfigurationFile', () => {
   });
   it('Should read the logdir correctly', (done) => {
     const data = loadConfigurationFile(['node', 'main', '--conf=./test/data/real.yaml']);
-    assert.strictEqual(data.logging.logDir, './test/logs');
+    assert.strictEqual(data.logging.logDir, './test/fake');
     done();
   });
 });

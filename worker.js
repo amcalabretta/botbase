@@ -1,5 +1,5 @@
 const {
-  Worker, isMainThread, workerData, BroadcastChannel, MessageChannel,
+  workerData, BroadcastChannel, MessageChannel,
 } = require('worker_threads');
 const {strategyFactory} = require('./utils/loadAllStrategies');
 const broadCastChannel = new BroadcastChannel('botbase.broadcast');

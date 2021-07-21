@@ -8,7 +8,7 @@ const yaml = require('js-yaml');
 
 const loadConfigurationFile = (argv) => {
   if (argv.length !== 3) {
-    throw new Error(`Usage: node main --conf=/path/to/yaml/file, lenght:${argv.length} - ${argv}`);
+    throw new Error('Usage: node main --conf=/path/to/yaml/file');
   }
   const confParam = argv[2];
   const paramTokens = confParam.split('=');

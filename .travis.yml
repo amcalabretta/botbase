@@ -9,6 +9,6 @@ script:
   - npm audit
   - npm run coverage
 after_script:
-  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+  - bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r ./coverage/lcov.info
 
   

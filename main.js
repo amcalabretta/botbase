@@ -30,14 +30,14 @@ try {
   });
   const mainLogger = log4js.getLogger('main');
   const candleChannelMinutePastTenLogger = log4js.getLogger('candleChannelMinutePastTenCategory');
-  let allMarkets = [];
+  const allMarkets = [];
   botConfiguration.strategies.forEach((strategy, idx) => {
     mainLogger.info(` Setting up instance for strategy ${strategy.name}`);
-    strategy.markets.forEach((market)=>{
-       if (allMarkets.indexOf(market) === -1) {
-            mainLogger.info(`Adding market ${market} to the main engine`);
-            allMarkets.push(market);
-       }
+    strategy.markets.forEach((market) =>{
+      if (allMarkets.indexOf(market) === -1) {
+        mainLogger.info(`Adding market ${market} to the main engine`);
+        allMarkets.push(market);
+      }
     });
     new Worker('./worker.js', { workerData: { conf: botConfiguration, index: idx } });
   });

@@ -1,9 +1,11 @@
 const {
   workerData, BroadcastChannel, MessageChannel,
 } = require('worker_threads');
-const {strategyFactory} = require('./utils/loadAllStrategies');
+const { strategyFactory } = require('./utils/loadAllStrategies');
+
 const broadCastChannel = new BroadcastChannel('botbase.broadcast');
 const { v4 } = require('uuid');
+
 const identifier = v4();
 const log4js = require('log4js');
 
@@ -24,8 +26,6 @@ try {
       strategy.valueCallBack(event.data);
     }
   };
-}  catch (error) {
-   localLogger.error(` Error:${error}`);
+} catch (error) {
+  localLogger.error(` Error:${error}`);
 }
-
-

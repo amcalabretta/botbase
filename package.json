@@ -19,8 +19,8 @@
     "uuid": "^8.3.2"
   },
   "scripts": {
-    "lint": "eslint **/*.js",
-    "lint-fix": "eslint **/*.js",
+    "lint": "eslint *.js",
+    "lint-fix": "eslint *.js --fix",
     "test": "mocha --recursive --exit",
     "test-coverage": "nyc --reporter=html mocha --recursive --exit",
     "coverage": "nyc --reporter=lcovonly mocha --recursive --exit"

@@ -1,10 +1,9 @@
-const {
-  Worker,  BroadcastChannel} = require('worker_threads');
+const { Worker, BroadcastChannel } = require('worker_threads');
 const log4js = require('log4js');
-const { loadConfigurationFile } = require('./utils/loadConfigurationFile');
-const { checkEnvironmentVariables } = require('./utils/checkEnvironmentVariables');
 const CoinbasePro = require('coinbase-pro');
 const moment = require('moment');
+const { loadConfigurationFile } = require('./utils/loadConfigurationFile');
+const { checkEnvironmentVariables } = require('./utils/checkEnvironmentVariables');
 const { wsUrl } = require('./model/constants');
 
 const broadCastChannel = new BroadcastChannel('botbase.broadcast');
@@ -24,8 +23,8 @@ try {
       ticker: { type: 'file', filename: `${botConfiguration.logging.logDir}/ticker.log` },
     },
     categories: {
-      default:{ appenders:['main'],level:'trace' },
-      candleChannelMinutePastTenCategory: { appenders: ['candleChannelMinutePastTen'], level: 'trace' }
+      default: { appenders: ['main'], level: 'trace' },
+      candleChannelMinutePastTenCategory: { appenders: ['candleChannelMinutePastTen'], level: 'trace' },
     },
   });
   const mainLogger = log4js.getLogger('main');
@@ -33,7 +32,7 @@ try {
   const allMarkets = [];
   botConfiguration.strategies.forEach((strategy, idx) => {
     mainLogger.info(` Setting up instance for strategy ${strategy.name}`);
-    strategy.markets.forEach((market) =>{
+    strategy.markets.forEach((market) => {
       if (allMarkets.indexOf(market) === -1) {
         mainLogger.info(`Adding market ${market} to the main engine`);
         allMarkets.push(market);

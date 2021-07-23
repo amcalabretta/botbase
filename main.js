@@ -1,13 +1,11 @@
 const {
-  Worker, isMainThread, workerData, BroadcastChannel, MessageChannel,
-} = require('worker_threads');
+  Worker,  BroadcastChannel} = require('worker_threads');
 const log4js = require('log4js');
 const { loadConfigurationFile } = require('./utils/loadConfigurationFile');
 const { checkEnvironmentVariables } = require('./utils/checkEnvironmentVariables');
 const CoinbasePro = require('coinbase-pro');
 const moment = require('moment');
 const { wsUrl } = require('./model/constants');
-
 
 const broadCastChannel = new BroadcastChannel('botbase.broadcast');
 
@@ -23,10 +21,10 @@ try {
     appenders: {
       main: { type: 'file', filename: `${botConfiguration.logging.logDir}/main.log` },
       candleChannelMinutePastTen: { type: 'file', filename: `${botConfiguration.logging.logDir}/channels-candles-every-minute-past-10-minutes.log` },
-      ticker: { type: 'file', filename: `${botConfiguration.logging.logDir}/ticker.log` }
+      ticker: { type: 'file', filename: `${botConfiguration.logging.logDir}/ticker.log` },
     },
     categories: {
-      default:{appenders:['main'],level:'trace'},
+      default:{ appenders:['main'],level:'trace' },
       candleChannelMinutePastTenCategory: { appenders: ['candleChannelMinutePastTen'], level: 'trace' }
     },
   });

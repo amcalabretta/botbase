@@ -30,11 +30,11 @@ class WhiteShark {
     this.cryptoAmounts = conf.cryptoAmounts;
     this.euroAmount = conf.euroAmount;
     this.dollarAmount = conf.dollarAmount;
-    if (this.cryptoAmounts.length !== 1 || this.markets.length!==1) {
-      throw new Error(`White shark Strategy shall have one market, one amount for each (money and crypto)`);
+    if (this.cryptoAmounts.length !== 1 || this.markets.length !== 1) {
+      throw new Error('White shark Strategy shall have one market, one amount for each (money and crypto)');
     }
     this.lastValue = 0.00;
-    this.orderCallback = (order) => { return order};
+    this.orderCallback = (order) => order;
     this.strategyType = 'CandleStick';
     this.strategyName = 'White Shark';
   }
@@ -62,16 +62,16 @@ class WhiteShark {
   }
 
   valueCallBack(value) {
-    switch(value.type){
-      case 'ticker': 
-          this.logger.info(`Updating price to ${value.price}`);
-          this.lastValue = value.price;
-          break;
+    switch (value.type) {
+      case 'ticker':
+        this.logger.info(`Updating price to ${value.price}`);
+        this.lastValue = value.price;
+        break;
       case 'candlesPastTenMinutes':
-          this.values(value.payload);
-          break;
+        this.values(value.payload);
+        break;
       default:
-        this.logger.warn(`Unknown message type received`);
+        this.logger.warn('Unknown message type received');
     }
   }
 }

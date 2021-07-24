@@ -1,13 +1,17 @@
 const mocha = require('mocha');
+
 const { describe } = mocha;
 const { it } = mocha;
 const assert = require('assert');
 const { expect } = require('chai');
 const sinon = require('sinon');
-const { WhiteShark } = require('../strategies/candlesticks/white_shark');
 const log4js = require('log4js');
-const strategy = new WhiteShark({ markets: ['LTC-EUR'], cryptoAmounts: [10], euroAmount: 30, dollarAmount: 0 });
-const stub = sinon.stub(strategy, "orderCallback").returns({});
+const { WhiteShark } = require('../strategies/candlesticks/white_shark');
+
+const strategy = new WhiteShark({
+  markets: ['LTC-EUR'], cryptoAmounts: [10], euroAmount: 30, dollarAmount: 0
+});
+const stub = sinon.stub(strategy, 'orderCallback').returns({});
 
 log4js.configure({
   appenders: { out: { type: 'stdout' } },
@@ -15,9 +19,8 @@ log4js.configure({
 });
 strategy.logger = log4js.getLogger();
 
-
-/***
- * 
+/** *
+ *
  * var expectedValue = [1, 2, 3];
 var myStub = sinon.stub;
 

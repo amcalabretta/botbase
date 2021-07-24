@@ -1,11 +1,10 @@
-const { Worker, BroadcastChannel } = require('worker_threads');
+const { Worker, BroadcastChannel, parentPort } = require('worker_threads');
 const log4js = require('log4js');
 const CoinbasePro = require('coinbase-pro');
 const moment = require('moment');
 const { loadConfigurationFile } = require('./utils/loadConfigurationFile');
 const { checkEnvironmentVariables } = require('./utils/checkEnvironmentVariables');
 const { wsUrl } = require('./model/constants');
-
 const broadCastChannel = new BroadcastChannel('botbase.broadcast');
 
 try {
@@ -56,7 +55,6 @@ try {
               mainLogger.warn('%{err}');
             } else {
               candleChannelMinutePastTenLogger.info(`${marketData}`);
-              mainLogger.info(` - Candles 10 mins:${marketData}`);
               broadCastChannel.postMessage({ type: 'candlesPastTenMinutes', market: mkt, payload: marketData });
             }
           });
@@ -76,6 +74,7 @@ try {
   websocket.on('message', (data) => {
     broadCastChannel.postMessage(data);
   });
+  
 } catch (error) {
   console.error(`${error.message}`);
 }

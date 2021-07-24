@@ -5,7 +5,7 @@ const { strategyFactory } = require('./utils/loadAllStrategies');
 
 const broadCastChannel = new BroadcastChannel('botbase.broadcast');
 const { v4 } = require('uuid');
-
+const { mainChannel } = new MessageChannel();
 const identifier = v4();
 const log4js = require('log4js');
 
@@ -20,7 +20,7 @@ try {
   localLogger.info(` Starting worker for ${strategyName}`);
   const strategy = strategyFactory(workerData.conf.strategies[workerData.index]);
   strategy.logger = localLogger;
-  strategy.orderCallback = (order) => { port2.postMessage({ order }); };
+  strategy.orderCallback = (order) => { mainChannel.postMessage({ order }); };
   broadCastChannel.onmessage = (event) => {
     if (allowedMessageType.includes(event.data.type)) {
       strategy.valueCallBack(event.data);

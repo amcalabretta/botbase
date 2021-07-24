@@ -13,4 +13,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: install dependencies
+        run: npm install depcheck -g
+      - name: install 
         run: depcheck

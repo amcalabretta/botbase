@@ -19,5 +19,5 @@ jobs:
           audit_level: moderate
           github_token: ${{ secrets.GITHUB_TOKEN }}
           issue_assignees: amcalabretta
-          issue_labels: vulnerability,test
+          issue_labels: vulnerability
           dedupe_issues: true

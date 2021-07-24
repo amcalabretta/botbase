@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: install mocha
+        run: npm install mocha -g
       - name: run test
         run: npm run test
-        

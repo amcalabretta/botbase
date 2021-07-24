@@ -68,7 +68,7 @@ class WhiteShark {
         this.lastValue = value.price;
         break;
       case 'candlesPastTenMinutes':
-        this.values(value.payload);
+        this.candles(value.payload);
         break;
       default:
         this.logger.warn('Unknown message type received');

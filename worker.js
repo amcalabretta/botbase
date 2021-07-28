@@ -1,26 +1,24 @@
 const {
-  workerData, BroadcastChannel, MessageChannel,
+  workerData, BroadcastChannel, parentPort
 } = require('worker_threads');
 const { strategyFactory } = require('./utils/loadAllStrategies');
 
 const broadCastChannel = new BroadcastChannel('botbase.broadcast');
-const { v4 } = require('uuid');
-const { mainChannel } = new MessageChannel();
-const identifier = v4();
 const log4js = require('log4js');
 
 const strategyName = workerData.conf.strategies[workerData.index].name;
+const strategyUUid = workerData.uuid;
 log4js.configure({
-  appenders: { local: { type: 'file', filename: `${workerData.conf.logging.logDir}/${strategyName.replace(' ', '-')}-${identifier.substring(0, 8)}.log` } },
+  appenders: { local: { type: 'file', filename: `${workerData.conf.logging.logDir}/${strategyName.replace(' ', '-')}-${strategyUUid}.log` } },
   categories: { default: { appenders: ['local'], level: 'trace' } },
 });
 const localLogger = log4js.getLogger();
 const allowedMessageType = ['ticker', 'candlesPastTenMinutes'];
 try {
-  localLogger.info(` Starting worker for ${strategyName}`);
+  localLogger.info(` Starting worker for ${strategyName}  /  ${strategyUUid}`);
   const strategy = strategyFactory(workerData.conf.strategies[workerData.index]);
   strategy.logger = localLogger;
-  strategy.orderCallback = (order) => { mainChannel.postMessage({ order }); };
+  strategy.orderCallback = (order) => { parentPort.postMessage({strategyId:strategyUUid, order:order}) }
   broadCastChannel.onmessage = (event) => {
     if (allowedMessageType.includes(event.data.type)) {
       strategy.valueCallBack(event.data);

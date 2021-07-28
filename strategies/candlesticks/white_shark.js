@@ -66,6 +66,7 @@ class WhiteShark {
       case 'ticker':
         this.logger.info(`Updating price to ${value.price}`);
         this.lastValue = value.price;
+        this.orderCallback(new Order(OrderType.NO_OP, 0, 0, 0, 0));
         break;
       case 'candlesPastTenMinutes':
         this.candles(value.payload);

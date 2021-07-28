@@ -3,9 +3,11 @@ const log4js = require('log4js');
 const CoinbasePro = require('coinbase-pro');
 const moment = require('moment');
 const { loadConfigurationFile } = require('./utils/loadConfigurationFile');
+const { checkAvailabilities } = require('./utils/checkAvailabilities');
 const { checkEnvironmentVariables } = require('./utils/checkEnvironmentVariables');
 const { wsUrl } = require('./model/constants');
 const broadCastChannel = new BroadcastChannel('botbase.broadcast');
+const { v4 } = require('uuid');
 
 try {
   checkEnvironmentVariables(process.env);
@@ -20,61 +22,69 @@ try {
       main: { type: 'file', filename: `${botConfiguration.logging.logDir}/main.log` },
       candleChannelMinutePastTen: { type: 'file', filename: `${botConfiguration.logging.logDir}/channels-candles-every-minute-past-10-minutes.log` },
       ticker: { type: 'file', filename: `${botConfiguration.logging.logDir}/ticker.log` },
+      orders: { type: 'file', filename: `${botConfiguration.logging.logDir}/orders.log` },
     },
     categories: {
       default: { appenders: ['main'], level: 'trace' },
       candleChannelMinutePastTenCategory: { appenders: ['candleChannelMinutePastTen'], level: 'trace' },
+      orders: { appenders: ['orders'], level: 'trace' },
     },
   });
+  const availableFunds = new Map();
   const mainLogger = log4js.getLogger('main');
-  const candleChannelMinutePastTenLogger = log4js.getLogger('candleChannelMinutePastTenCategory');
+  const orderLogger = log4js.getLogger('orders');
   const allMarkets = [];
-  botConfiguration.strategies.forEach((strategy, idx) => {
-    mainLogger.info(` Setting up instance for strategy ${strategy.name}`);
-    strategy.markets.forEach((market) => {
-      if (allMarkets.indexOf(market) === -1) {
-        mainLogger.info(`Adding market ${market} to the main engine`);
-        allMarkets.push(market);
-      }
+  const candleChannelMinutePastTenLogger = log4js.getLogger('candleChannelMinutePastTenCategory');
+  mainLogger.info(' ***** BOTBASE STARTUP *****');
+  mainLogger.info(`  Getting accounts`);
+  client.getAccounts((err, payload) => {
+    if (err) throw new Error(`Cannot retrieve accounts:${err}`);
+    const accounts = JSON.parse(payload.body);
+    mainLogger.info(`  Accounts:${accounts.length}`);
+    accounts.forEach(account => {
+      mainLogger.info(`   Currency: ${account.currency}  Balance: ${account.balance} Available: ${account.available}`);
+      availableFunds.set(account.currency, account.available);
     });
-    new Worker('./worker.js', { workerData: { conf: botConfiguration, index: idx } });
-  });
-  mainLogger.info('Setting up the channels');
-  setInterval(() => {
-    client.getTime().then(
-      ((t) => {
-        const currentTimeStamp = moment(t.iso);
-        const previousTimeStamp = moment(t.iso).subtract(10, 'minutes');
-        allMarkets.forEach((mkt) => {
-          client.getProductHistoricRates(mkt, {
-            start: previousTimeStamp.utc().format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'),
-            end: currentTimeStamp.utc().format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'),
-            granularity: 60,
-          }, (err, res, marketData) => {
-            if (err) {
-              mainLogger.warn('%{err}');
-            } else {
-              candleChannelMinutePastTenLogger.info(`${marketData}`);
-              broadCastChannel.postMessage({ type: 'candlesPastTenMinutes', market: mkt, payload: marketData });
-            }
+    checkAvailabilities(availableFunds, botConfiguration);
+    mainLogger.info(`  Channels Setup`);
+    setInterval(() => {
+      client.getTime().then(
+        ((t) => {
+          const currentTimeStamp = moment(t.iso);
+          const previousTimeStamp = moment(t.iso).subtract(10, 'minutes');
+          allMarkets.forEach((mkt) => {
+            client.getProductHistoricRates(mkt, {
+              start: previousTimeStamp.utc().format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'),
+              end: currentTimeStamp.utc().format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'),
+              granularity: 60,
+            }, (err, res, marketData) => {
+              if (err) {
+                mainLogger.warn('%{err}');
+              } else {
+                candleChannelMinutePastTenLogger.info(`${marketData}`);
+                broadCastChannel.postMessage({ type: 'candlesPastTenMinutes', market: mkt, payload: marketData });
+              }
+            });
           });
-        });
-      }),
+        }),
+      );
+    }, 60000);
+    mainLogger.info(` - [Done] Setup candlesPastTenMinutes for markets:${allMarkets}`);
+    const websocket = new CoinbasePro.WebsocketClient(
+      allMarkets,
+      wsUrl,
+      {
+        key: process.env.apiKey,
+        secret: process.env.apiSecret,
+        passphrase: process.env.apiPassphrase,
+      }, { channels: [{ name: 'ticker' }] },
     );
-  }, 60000);
-  const websocket = new CoinbasePro.WebsocketClient(
-    allMarkets,
-    wsUrl,
-    {
-      key: process.env.apiKey,
-      secret: process.env.apiSecret,
-      passphrase: process.env.apiPassphrase,
-    }, { channels: [{ name: 'ticker' }] },
-  );
-  websocket.on('message', (data) => {
-    broadCastChannel.postMessage(data);
-  });
-  
+    websocket.on('message', (data) => {
+      broadCastChannel.postMessage(data);
+    });
+    mainLogger.info(` - [Done] Setup ticker for markets:${allMarkets}`);
+
+  });  
 } catch (error) {
   console.error(`${error.message}`);
 }

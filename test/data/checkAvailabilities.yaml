@@ -1,0 +1,23 @@
+main:
+  mode: 'SYM'
+logging:
+  logDir: "./logs"
+flat: 
+  maxLossEur: 300
+  maxLossUsd: 300
+strategies:
+  - name: 'White Shark'
+    markets: ['LTC-EUR']
+    cryptoAmounts: [10]
+    euroAmount: 30
+    dollarAmount: 0
+  - name: 'Black Crow'
+    markets: ['ETH-EUR','BTC-EUR']
+    cryptoAmounts: [10,4]
+    euroAmount: 300
+    dollarAmount: 0  
+  - name: 'White Cow'
+    markets: ['ETH-EUR','BTC-EUR','LTC-EUR']
+    cryptoAmounts: [10,4,45]
+    euroAmount: 234.6
+    dollarAmount: 0    

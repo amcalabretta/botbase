@@ -14,7 +14,7 @@ const checkAvailabilities = (availabilityMap,confData) => {
             //console.log(`${currency} - ${amount.getPrettyValue()}`);
             if (requestedMap.has(currency)) {//sum
                  const currentAmount = requestedMap.get(currency);
-                 requestedMap.set(currency,currentAmount+amount);
+                 requestedMap.set(currency,currentAmount.add(amount));
             } else {//add
                 requestedMap.set(currency, amount);
             }
@@ -23,8 +23,8 @@ const checkAvailabilities = (availabilityMap,confData) => {
     availabilityMap.forEach((value, key) => {
         if (requestedMap.has(key)) {
             const availableAmount = new bigDecimal(value);
-            if (bigDecimal.compareTo(availableAmount, requestedMap.get(key)) === -1) {
-                throw new Error(` Currency:${key}, available funds:${availableAmount.getPrettyValue()}, funds needed:${equestedMap.get(key).getPrettyValue()}`)
+            if (availableAmount.compareTo(requestedMap.get(key)) === -1) {
+                throw new Error(` Currency:${key}, available funds:${availableAmount.getPrettyValue()}, funds needed:${requestedMap.get(key).getPrettyValue()}`);
             }
         } 
     });

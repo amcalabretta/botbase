@@ -11,7 +11,7 @@ describe('checkAvailabilities', () => {
         const availableFunds = new Map();
         availableFunds.set('LTC', 34.354543543);
         const data = loadConfigurationFile(['node', 'main', '--conf=./test/data/checkAvailabilities.yaml']);
-        checkAvailabilities(availableFunds, data);
+        //checkAvailabilities(availableFunds, data);
         assert.throws(() => { checkAvailabilities(availableFunds, data) }, 'Error');
         done();
     });

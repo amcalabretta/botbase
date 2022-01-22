@@ -74,6 +74,11 @@ npm run test-coverage
 ```
 after running the above command, coverage is shown in the *coverage/index.html* file:
 
+to run the test continuously whilst you are developing:
+
+```bash
+npm run test-dev
+```
 
 
 

@@ -61,9 +61,9 @@ node main.js --conf=/path/to/the/configuration/yaml/file.yaml
 
 ### How to unit test
 
-Unit tests are, as you probably guesses, in the 'test' directory, to run all the unit tests:
+Unit tests are, as you probably guessed, in the 'test' directory, to run all the unit tests:
 
-```bash
+```bash 
 npm test
 ```
 

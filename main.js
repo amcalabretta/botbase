@@ -6,6 +6,7 @@ const { loadConfigurationFile } = require('./utils/loadConfigurationFile');
 const { checkAvailabilities } = require('./utils/checkAvailabilities');
 const { checkEnvironmentVariables } = require('./utils/checkEnvironmentVariables');
 const { wsUrl } = require('./model/constants');
+
 const broadCastChannel = new BroadcastChannel('botbase.broadcast');
 const { v4 } = require('uuid');
 
@@ -36,17 +37,17 @@ try {
   const allMarkets = [];
   const candleChannelMinutePastTenLogger = log4js.getLogger('candleChannelMinutePastTenCategory');
   mainLogger.info(' ***** BOTBASE STARTUP *****');
-  mainLogger.info(`  Getting accounts`);
+  mainLogger.info('  Getting accounts');
   client.getAccounts((err, payload) => {
     if (err) throw new Error(`Cannot retrieve accounts:${err}`);
     const accounts = JSON.parse(payload.body);
     mainLogger.info(`  Accounts:${accounts.length}`);
-    accounts.forEach(account => {
+    accounts.forEach((account) => {
       mainLogger.info(`   Currency: ${account.currency}  Balance: ${account.balance} Available: ${account.available}`);
       availableFunds.set(account.currency, account.available);
     });
     checkAvailabilities(availableFunds, botConfiguration);
-    mainLogger.info(`  Channels Setup`);
+    mainLogger.info('  Channels Setup');
     setInterval(() => {
       client.getTime().then(
         ((t) => {
@@ -83,8 +84,7 @@ try {
       broadCastChannel.postMessage(data);
     });
     mainLogger.info(` - [Done] Setup ticker for markets:${allMarkets}`);
-
-  });  
+  });
 } catch (error) {
   console.error(`${error.message}`);
 }

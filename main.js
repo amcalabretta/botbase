@@ -1,4 +1,4 @@
-const { Worker, BroadcastChannel, parentPort } = require('worker_threads');
+const { BroadcastChannel } = require('worker_threads');
 const log4js = require('log4js');
 const CoinbasePro = require('coinbase-pro');
 const moment = require('moment');
@@ -8,7 +8,6 @@ const { checkEnvironmentVariables } = require('./utils/checkEnvironmentVariables
 const { wsUrl } = require('./model/constants');
 
 const broadCastChannel = new BroadcastChannel('botbase.broadcast');
-const { v4 } = require('uuid');
 
 try {
   checkEnvironmentVariables(process.env);
@@ -33,7 +32,6 @@ try {
   });
   const availableFunds = new Map();
   const mainLogger = log4js.getLogger('main');
-  const orderLogger = log4js.getLogger('orders');
   const allMarkets = [];
   const candleChannelMinutePastTenLogger = log4js.getLogger('candleChannelMinutePastTenCategory');
   mainLogger.info(' ***** BOTBASE STARTUP *****');
@@ -87,4 +85,5 @@ try {
   });
 } catch (error) {
   console.error(`${error.message}`);
+  process.exit(0);
 }

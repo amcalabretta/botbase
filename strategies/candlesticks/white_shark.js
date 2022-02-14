@@ -39,7 +39,15 @@ class WhiteShark {
     this.strategyName = 'White Shark';
   }
 
-  // format of the single candle: [ time, low, high, open, close, volume ]
+  
+  /**
+   * 
+   * Internal function receiving the candles
+   * 
+   * format of the single candle: [ time, low, high, open, close, volume ]
+   * @param {*} values 
+   */
+  
   candles(values) {
     values.forEach((el) => {
       this.logger.debug(`Ts:${moment.unix(el[0]).format('DD/MM/YYYY@HH:mm:00')}, 

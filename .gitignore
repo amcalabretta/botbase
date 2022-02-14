@@ -7,4 +7,5 @@ yarn.lock
 botbase.yaml
 *log*/
 config.yaml
+test/fake/*.log
 

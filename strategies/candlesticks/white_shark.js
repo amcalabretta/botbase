@@ -50,8 +50,7 @@ class WhiteShark {
   
   candles(values) {
     values.forEach((el) => {
-      this.logger.debug(`Ts:${moment.unix(el[0]).format('DD/MM/YYYY@HH:mm:00')}, 
-                   lo:${el[1]}, hi:${el[2]}, op:${el[4]}, close:${el[5]}, vol:${el[6]}`);
+      this.logger.debug(`Ts:${moment.unix(el[0]).format('DD/MM/YYYY@HH:mm:00')}, lo:${el[1]}, hi:${el[2]}, op:${el[3]}, close:${el[4]}, vol:${el[5]}`);
     });
     const lastCandle = values[0];
     const secondLastCandle = values[1];

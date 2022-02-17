@@ -81,6 +81,13 @@ to run the test continuously whilst you are developing:
 npm run test-dev
 ```
 
+you can also run continuous testing on a particular test (quite handy to have the results fast)
+
+
+```bash
+npm run test-dev path/to/your/test/file
+```
+
 
 
 

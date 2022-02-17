@@ -10,12 +10,12 @@ strategies:
     markets: ['LTC-EUR']
     cryptoAmounts: [10]
     euroAmount: 30
-    dollarAmount: 0
+    dollarAmount: 10
   - name: 'Black Crow'
     markets: ['ETH-EUR','BTC-EUR']
     cryptoAmounts: [10,4]
     euroAmount: 300
-    dollarAmount: 0  
+    dollarAmount: 12  
   - name: 'White Cow'
     markets: ['ETH-EUR','BTC-EUR','LTC-EUR']
     cryptoAmounts: [10,4,45]

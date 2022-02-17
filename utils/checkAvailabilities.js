@@ -6,11 +6,9 @@ const bigDecimal = require('js-big-decimal');
 const checkAvailabilities = (availabilityMap, confData) => {
   const requestedMap = new Map();
   confData.strategies.forEach((str) => {
-    // console.log(`Strategy:${str.name}`);
     str.markets.forEach((mkt, idx) => {
       const currency = mkt.substring(0, 3);
       const amount = new bigDecimal(str.cryptoAmounts[idx]);
-      // console.log(`${currency} - ${amount.getPrettyValue()}`);
       if (requestedMap.has(currency)) { // sum
         const currentAmount = requestedMap.get(currency);
         requestedMap.set(currency, currentAmount.add(amount));
@@ -18,7 +16,21 @@ const checkAvailabilities = (availabilityMap, confData) => {
         requestedMap.set(currency, amount);
       }
     });
+    if (requestedMap.has('EUR')) { // sum
+      const currentAmount = requestedMap.get('EUR');
+      requestedMap.set('EUR', currentAmount.add(new bigDecimal(str.euroAmount)));
+    } else { // add
+      requestedMap.set('EUR', new bigDecimal(str.euroAmount));
+    }
+    if (requestedMap.has('USD')) { // sum
+      const currentAmount = requestedMap.get('USD');
+      requestedMap.set('USD', currentAmount.add(new bigDecimal(str.dollarAmount)));
+    } else { // add
+      requestedMap.set('USD', new bigDecimal(str.dollarAmount));
+    }
   });
+
+
   availabilityMap.forEach((value, key) => {
     if (requestedMap.has(key)) {
       const availableAmount = new bigDecimal(value);

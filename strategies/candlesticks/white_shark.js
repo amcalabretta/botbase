@@ -1,10 +1,10 @@
 /**
-* Candlestick strategy, detects the bullish pattern
+* Candlestick strategy, detects a bullish pattern
  * based on those conditions:
  *
- *  1. The pattern starts with a bearish (red/black) candle
- *  2. The second candle gaps to the upside, and opens above the previous day’s close.
- *      It continues straight up and ends as a bullish candlestick.
+ *  1. The pattern starts with a number of bearish candles, the number of bearish candles to 
+ * trigger the detection is passed as a parameter.
+ *  2. 
  *  3. The gap should not be filled by the wick of the second candlestick,
  *      but be left untouched.
  *      In other words, the candlestick has a tiny or nonexisting lower wick.
@@ -21,15 +21,32 @@
 */
 /* eslint max-len: ["error", { "code": 120 }] */
 const moment = require('moment');
+const Joi = require('joi');
 const { OrderType } = require('../../model/constants');
 const { Order } = require('../../model/order');
 
+const subConfSchema = Joi.object().keys({
+  numBearishCandles: Joi.number().integer().min(1),
+  gapRatio: Joi.number().positive().required(),
+  wickRatio: Joi.number().positive().required(),
+  volumeRatio: Joi.number().positive().required(),
+});
+
 class WhiteShark {
-  constructor(conf) {
-    this.markets = conf.markets;
-    this.cryptoAmounts = conf.cryptoAmounts;
-    this.euroAmount = conf.euroAmount;
-    this.dollarAmount = conf.dollarAmount;
+  constructor(mainConf) {
+    this.markets = mainConf.markets;
+    this.cryptoAmounts = mainConf.cryptoAmounts;
+    this.euroAmount = mainConf.euroAmount;
+    this.dollarAmount = mainConf.dollarAmount;
+    if (!mainConf.subConf) {
+      throw new Error('mainConf Section missing');
+    }
+    subConfSchema.assert(mainConf.subConf,subConfSchema);
+    if (error) throw error;
+    this.numBearishCandles = mainConf.subConf.numBearishCandles;
+    this.gapRatio = mainConf.subConf.gapRatio;
+    this.wickRatio = mainConf.subConf.wickRatio;
+    this.volumeRatio = mainConf.subConf.volumeRatio;
     if (this.cryptoAmounts.length !== 1 || this.markets.length !== 1) {
       throw new Error('White shark Strategy shall have one market, one amount for each (money and crypto)');
     }

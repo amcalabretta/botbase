@@ -12,7 +12,8 @@ const { Order } = require('../model/order');
 
 
 const strategy = new WhiteShark({
-  markets: ['LTC-EUR'], cryptoAmounts: [10], euroAmount: 30, dollarAmount: 0
+  markets: ['LTC-EUR'], cryptoAmounts: [10], euroAmount: 30, dollarAmount: 0,
+  subConf:{numBearishCandles: 3, gapRatio: 0.2, wickRatio: 0.05, volumeRatio: 0.9}
 });
 const stub = sinon.stub(strategy, 'orderCallback').returns({});
 
@@ -21,6 +22,65 @@ log4js.configure({
   categories: { default: { appenders: ['out'], level: 'info' } },
 });
 strategy.logger = log4js.getLogger();
+
+
+it('Should throw an error when No subconf is given', (done) => {
+  assert.throws(() => 
+    new WhiteShark({
+      markets: ['LTC-EUR'], cryptoAmounts: [10], euroAmount: 30, dollarAmount: 0
+    })
+    , { name: 'Error', message: 'mainConf Section missing' });
+  done();
+});
+
+it('Should throw an error when subConf is missing one parameter (1)', (done) => {
+  assert.throws(() =>
+    new WhiteShark({
+      markets: ['LTC-EUR'], cryptoAmounts: [10], euroAmount: 30, dollarAmount: 0,
+      subConf: {
+         gapRatio: 0.2, wickRatio: 0.05, volumeRatio: 0.9
+    }})
+    , { name: 'ValidationError', message: 'mainConf Section missing' });
+  done();
+});
+
+it('Should throw an error when subConf is missing one parameter (2)', (done) => {
+  assert.throws(() =>
+    new WhiteShark({
+      markets: ['LTC-EUR'], cryptoAmounts: [10], euroAmount: 30, dollarAmount: 0,
+      subConf: {
+        numBearishCandles: 3,  wickRatio: 0.05, volumeRatio: 0.9
+      }
+    })
+    , { name: 'ValidationError', message: 'mainConf Section missing' });
+  done();
+});
+
+it('Should throw an error when subConf is missing one parameter (3)', (done) => {
+  assert.throws(() =>
+    new WhiteShark({
+      markets: ['LTC-EUR'], cryptoAmounts: [10], euroAmount: 30, dollarAmount: 0,
+      subConf: {
+        numBearishCandles: 3, gapRatio: 0.2, volumeRatio: 0.9
+      }
+    })
+    , { name: 'ValidationError', message: 'mainConf Section missing' });
+  done();
+});
+
+it('Should throw an error when subConf is missing one parameter (volumeRatio)', (done) => {
+  assert.throws(() =>
+    new WhiteShark({
+      markets: ['LTC-EUR'], cryptoAmounts: [10], euroAmount: 30, dollarAmount: 0,
+      subConf: {
+        numBearishCandles: 3, gapRatio: 0.2, wickRatio: 0.05
+      }
+    })
+    , { name: 'ValidationError', message: '"volumeRatio" is required' });
+  done();
+});
+
+
 
 /** *
  *
@@ -34,13 +94,13 @@ var firstArgument = myStub.getCall(0).args[0];
 assert.equal(firstArgument, expectedValue);
  */
 
-describe('White Shark Ticker response', () => {
+/*describe('White Shark Ticker response', () => {
   it('Should trigger a NO_OP when a ticker is send', (done) => {
     strategy.valueCallBack({ type: 'ticker', price: 107 });
     sinon.assert.calledWith(stub, new Order(OrderType.NO_OP, 0, 0, 0, 0));
     done();
   }).timeout(60000);
-});
+});*/
 
 /*describe('White Shark Bullish reponse', () => {
   it('Should detect a bullish pattern', (done) => {

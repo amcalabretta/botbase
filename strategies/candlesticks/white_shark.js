@@ -24,35 +24,32 @@ const moment = require('moment');
 const Joi = require('joi');
 const { OrderType } = require('../../model/constants');
 const { Order } = require('../../model/order');
+const { checkConfiguration } = require('../../utils/checkConfiguration');
 
 const subConfSchema = Joi.object().keys({
-  numBearishCandles: Joi.number().integer().min(1).max(10).required().messages({
-    'any.required': 'numBearishCandles is missing'
-  }),
-  gapRatio: Joi.number().positive().required().messages({
-    'any.required': 'gapRatio is missing'
-  }),
+  numBearishCandles: Joi.number().integer().min(1).max(10).required(),
+  gapRatio: Joi.number().positive().required(),
   wickRatio: Joi.number().positive().required(),
   volumeRatio: Joi.number().positive().required(),
 });
 
+const confSchema = Joi.object().keys({
+  cryptoAmounts: Joi.array().length(1),
+  markets: Joi.array().length(1),
+}).unknown(true);
+
+
 class WhiteShark {
   constructor(mainConf) {
+    checkConfiguration(mainConf,confSchema,subConfSchema);
     this.markets = mainConf.markets;
     this.cryptoAmounts = mainConf.cryptoAmounts;
     this.euroAmount = mainConf.euroAmount;
     this.dollarAmount = mainConf.dollarAmount;
-    if (!mainConf.subConf) {
-      throw new Error('mainConf Section missing');
-    }
-    Joi.assert(mainConf.subConf,subConfSchema);
     this.numBearishCandles = mainConf.subConf.numBearishCandles;
     this.gapRatio = mainConf.subConf.gapRatio;
     this.wickRatio = mainConf.subConf.wickRatio;
     this.volumeRatio = mainConf.subConf.volumeRatio;
-    if (this.cryptoAmounts.length !== 1 || this.markets.length !== 1) {
-      throw new Error('White shark Strategy shall have one market, one amount for each (money and crypto)');
-    }
     this.lastValue = 0.00;
     this.orderCallback = (order) => order;
     this.strategyType = 'CandleStick';

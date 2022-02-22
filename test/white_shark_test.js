@@ -33,6 +33,7 @@ it('Should throw an error when No subconf is given', (done) => {
   done();
 });
 
+
 it('Should throw an error when subConf is missing one parameter (numBearishCandles)', (done) => {
   assert.throws(() =>
     new WhiteShark({
@@ -41,14 +42,98 @@ it('Should throw an error when subConf is missing one parameter (numBearishCandl
          gapRatio: 0.2, wickRatio: 0.05, volumeRatio: 0.9
     }})
     , {
-      name: 'ValidationError', message: 'ValidationError: {"wickRatio": 0.05,"volumeRatio": 0.9, "numBearishCandles" [1]: -- missing--}[1] numBearishCandles is missing' });
+      name: 'Error', message: 'ValidationError: numBearishCandles is required' });
+  done();
+});
+
+it('Should throw an error when numBearishCandles is negative', (done) => {
+  assert.throws(() =>
+    new WhiteShark({
+      markets: ['LTC-EUR'], cryptoAmounts: [10], euroAmount: 30, dollarAmount: 0,
+      subConf: {
+        gapRatio: 0.2, wickRatio: 0.05, volumeRatio: 0.9, numBearishCandles:-1
+      }
+    })
+    , {
+      name: 'Error', message: 'ValidationError: numBearishCandles must be greater than or equal to 1'
+    });
   done();
 });
 
 
+it('Should throw an error when numBearishCandles is zero', (done) => {
+  assert.throws(() =>
+    new WhiteShark({
+      markets: ['LTC-EUR'], cryptoAmounts: [10], euroAmount: 30, dollarAmount: 0,
+      subConf: {
+        gapRatio: 0.2, wickRatio: 0.05, volumeRatio: 0.9, numBearishCandles: 0
+      }
+    })
+    , {
+      name: 'Error', message: 'ValidationError: numBearishCandles must be greater than or equal to 1'
+    });
+  done();
+});
+
+it('Should throw an error when numBearishCandles is not a number', (done) => {
+  assert.throws(() =>
+    new WhiteShark({
+      markets: ['LTC-EUR'], cryptoAmounts: [10], euroAmount: 30, dollarAmount: 0,
+      subConf: {
+        gapRatio: 0.2, wickRatio: 0.05, volumeRatio: 0.9, numBearishCandles: 'a'
+      }
+    })
+    , {
+      name: 'Error', message: 'ValidationError: numBearishCandles must be a number'
+    });
+  done();
+});
+
+it('Should throw an error when numBearishCandles is higher than 10', (done) => {
+  assert.throws(() =>
+    new WhiteShark({
+      markets: ['LTC-EUR'], cryptoAmounts: [10], euroAmount: 30, dollarAmount: 0,
+      subConf: {
+        gapRatio: 0.2, wickRatio: 0.05, volumeRatio: 0.9, numBearishCandles: 11
+      }
+    })
+    , {
+      name: 'Error', message: 'ValidationError: numBearishCandles must be less than or equal to 10'
+    });
+  done();
+});
 
 
-it('Should throw an error when subConf is missing one parameter (2)', (done) => {
+it('Should throw an error when markets and cryptoamounts are not exactly 1 (1)', (done) => {
+  assert.throws(() =>
+    new WhiteShark({
+      markets: ['LTC-EUR','BTC-EUR'], cryptoAmounts: [10,34], euroAmount: 30, dollarAmount: 0,
+      subConf: {
+        gapRatio: 0.2, wickRatio: 0.05, volumeRatio: 0.9, numBearishCandles: 10
+      }
+    })
+    , {
+      name: 'Error', message: 'ValidationError: cryptoAmounts must contain 1 items'
+    });
+  done();
+});
+
+it('Should throw an error when markets and cryptoamounts are not exactly 1 (2)', (done) => {
+  assert.throws(() =>
+    new WhiteShark({
+      markets: ['LTC-EUR', 'BTC-EUR'], cryptoAmounts: [10], euroAmount: 30, dollarAmount: 0,
+      subConf: {
+        gapRatio: 0.2, wickRatio: 0.05, volumeRatio: 0.9, numBearishCandles: 10
+      }
+    })
+    , {
+      name: 'Error', message: 'ValidationError: markets must contain 1 items'
+    });
+  done();
+});
+
+
+it('Should throw an error when subConf is missing one parameter (gapRatio)', (done) => {
   assert.throws(() =>
     new WhiteShark({
       markets: ['LTC-EUR'], cryptoAmounts: [10], euroAmount: 30, dollarAmount: 0,
@@ -56,11 +141,13 @@ it('Should throw an error when subConf is missing one parameter (2)', (done) => 
         numBearishCandles: 3,  wickRatio: 0.05, volumeRatio: 0.9
       }
     })
-    , { name: 'ValidationError', message: 'mainConf Section missing' });
+    , { name: 'Error', message: 'ValidationError: gapRatio is required' });
   done();
 });
 
-it('Should throw an error when subConf is missing one parameter (3)', (done) => {
+
+
+it('Should throw an error when subConf is missing one parameter (wickRatio)', (done) => {
   assert.throws(() =>
     new WhiteShark({
       markets: ['LTC-EUR'], cryptoAmounts: [10], euroAmount: 30, dollarAmount: 0,
@@ -68,9 +155,11 @@ it('Should throw an error when subConf is missing one parameter (3)', (done) => 
         numBearishCandles: 3, gapRatio: 0.2, volumeRatio: 0.9
       }
     })
-    , { name: 'ValidationError', message: 'mainConf Section missing' });
+    , { name: 'Error', message: 'ValidationError: wickRatio is required' });
   done();
 });
+
+
 
 it('Should throw an error when subConf is missing one parameter (volumeRatio)', (done) => {
   assert.throws(() =>
@@ -80,9 +169,11 @@ it('Should throw an error when subConf is missing one parameter (volumeRatio)', 
         numBearishCandles: 3, gapRatio: 0.2, wickRatio: 0.05
       }
     })
-    , { name: 'ValidationError', message: '"volumeRatio" is required' });
+    , { name: 'Error', message: 'ValidationError: volumeRatio is required'  });
   done();
 });
+
+
 
 
 

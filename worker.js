@@ -25,5 +25,9 @@ try {
     }
   };
 } catch (error) {
-  localLogger.error(` Error:${error}`);
+  //const payload = JSON.parse(`${ error }`);
+  
+
+
+  localLogger.error(` Worker Error:${error.message}**${JSON.stringify(error)}`);
 }

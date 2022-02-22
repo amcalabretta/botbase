@@ -26,8 +26,12 @@ const { OrderType } = require('../../model/constants');
 const { Order } = require('../../model/order');
 
 const subConfSchema = Joi.object().keys({
-  numBearishCandles: Joi.number().integer().min(1),
-  gapRatio: Joi.number().positive().required(),
+  numBearishCandles: Joi.number().integer().min(1).max(10).required().messages({
+    'any.required': 'numBearishCandles is missing'
+  }),
+  gapRatio: Joi.number().positive().required().messages({
+    'any.required': 'gapRatio is missing'
+  }),
   wickRatio: Joi.number().positive().required(),
   volumeRatio: Joi.number().positive().required(),
 });
@@ -41,8 +45,7 @@ class WhiteShark {
     if (!mainConf.subConf) {
       throw new Error('mainConf Section missing');
     }
-    subConfSchema.assert(mainConf.subConf,subConfSchema);
-    if (error) throw error;
+    Joi.assert(mainConf.subConf,subConfSchema);
     this.numBearishCandles = mainConf.subConf.numBearishCandles;
     this.gapRatio = mainConf.subConf.gapRatio;
     this.wickRatio = mainConf.subConf.wickRatio;

@@ -33,16 +33,20 @@ it('Should throw an error when No subconf is given', (done) => {
   done();
 });
 
-it('Should throw an error when subConf is missing one parameter (1)', (done) => {
+it('Should throw an error when subConf is missing one parameter (numBearishCandles)', (done) => {
   assert.throws(() =>
     new WhiteShark({
       markets: ['LTC-EUR'], cryptoAmounts: [10], euroAmount: 30, dollarAmount: 0,
       subConf: {
          gapRatio: 0.2, wickRatio: 0.05, volumeRatio: 0.9
     }})
-    , { name: 'ValidationError', message: 'mainConf Section missing' });
+    , {
+      name: 'ValidationError', message: 'ValidationError: {"wickRatio": 0.05,"volumeRatio": 0.9, "numBearishCandles" [1]: -- missing--}[1] numBearishCandles is missing' });
   done();
 });
+
+
+
 
 it('Should throw an error when subConf is missing one parameter (2)', (done) => {
   assert.throws(() =>

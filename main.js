@@ -71,7 +71,7 @@ async function main() {
               if (err) {
                 mainLogger.warn('%{err}');
               } else {
-                candleChannelMinutePastTenLogger.info(`${marketData}`);
+                candleChannelMinutePastTenLogger.info(`${mkt} - ${marketData}`);
                 broadCastChannel.postMessage({ type: 'candlesPastTenMinutes', market: mkt, payload: marketData });
               }
             });

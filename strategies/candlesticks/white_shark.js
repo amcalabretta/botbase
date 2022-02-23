@@ -20,11 +20,12 @@
  *  - Add the wick calculation
 */
 /* eslint max-len: ["error", { "code": 120 }] */
-const moment = require('moment');
 const Joi = require('joi');
 const { OrderType } = require('../../model/constants');
 const { Order } = require('../../model/order');
+const { Candle } = require('../../model/candle');
 const { checkConfiguration } = require('../../utils/checkConfiguration');
+const bigDecimal = require('js-big-decimal');
 
 const subConfSchema = Joi.object().keys({
   numBearishCandles: Joi.number().integer().min(1).max(10).required(),
@@ -66,11 +67,46 @@ class WhiteShark {
    */
   
   candles(values) {
-    values.forEach((el) => {
-      this.logger.debug(`Ts:${moment.unix(el[0]).format('DD/MM/YYYY@HH:mm:00')}, lo:${el[1]}, hi:${el[2]}, op:${el[3]}, close:${el[4]}, vol:${el[5]}`);
+    let candles = values.map(value => new Candle(value));
+    candles.forEach((candle) => {
+      this.logger.debug(`Ts:${candle.getTs()},${candle.isBullish()?`Bullish`:`Bearish`}, lo:${candle.getLow()}, hi:${candle.getHigh()}, op:${candle.getOpen()}, close:${candle.getClose()}, vol:${candle.getVolume()}`);
     });
-    const lastCandle = values[0];
-    const secondLastCandle = values[1];
+    const lastCandle = candles[0];
+    const secondLastCandle = candles[1];
+    //first check: the last candle is green.
+    if (lastCandle.isBearish()) {
+      this.logger.debug(` Last candle is not bullish, bailing out.`)
+      this.orderCallback(new Order(OrderType.NO_OP, 0, 0, 0, 0));
+      return;
+    } 
+    //second check, the last numBearishCandles are red.
+    let allBearish = true;
+    for (let i=1;i<this.numBearishCandles;i++) {
+       allBearish = allBearish && candles[i].isBearish();
+    }
+    if (!allBearish) {
+      this.logger.debug(` Last ${this.numBearishCandles} are not bearish, bailing out.`)
+      this.orderCallback(new Order(OrderType.NO_OP, 0, 0, 0, 0));
+      return;
+    }
+    const gap = lastCandle.getOpen() - secondLastCandle.getOpen();
+    //third check: gap is positive
+    if (gap < 0) {
+      this.logger.debug(` Gap ${gap} is negative, bailing out.`)
+      this.orderCallback(new Order(OrderType.NO_OP, 0, 0, 0, 0));
+      return;
+    }
+    //fourth check: the ratio between the wick of the last candle and the gap between it and the previous one must be below the wickRatio parameter.
+    const wick = new bigDecimal(lastCandle.getOpen() - lastCandle.getLow());
+    
+    const actualWickRatio = 
+    
+
+    
+    
+
+    
+    /*const secondLastCandle = values[1];
     if (secondLastCandle[3] < secondLastCandle[4] // second last is 'red' (e.g. 'open' is lower than 'close')
         && lastCandle[3] > lastCandle[4] // most recent is 'green' (e.g. 'open' is higher than 'close')
         && lastCandle[1] - secondLastCandle[2] > 0 // 'low' of the last higher than the 'high' of the second last
@@ -82,7 +118,7 @@ class WhiteShark {
       } else {
         this.orderCallback(new Order(OrderType.NO_OP, 0, 0, 0, 0));
       }
-    }
+    }*/
   }
 
   valueCallBack(value) {

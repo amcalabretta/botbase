@@ -69,7 +69,7 @@ class WhiteShark {
   candles(values) {
     let candles = values.map(value => new Candle(value));
     candles.forEach((candle) => {
-      this.logger.debug(`Ts:${candle.getTs()},${candle.isBullish()?`Bullish`:`Bearish`}, lo:${candle.getLow()}, hi:${candle.getHigh()}, op:${candle.getOpen()}, close:${candle.getClose()}, vol:${candle.getVolume()}`);
+      this.logger.debug(`Ts:${candle.getTs()},${candle.isBullish() ? `Bullish` : `Bearish`}, lo:${candle.getLow().getValue()}, hi:${candle.getHigh().getValue()}, op:${candle.getOpen().getValue()}, close:${candle.getClose().getValue()}, vol:${candle.getVolume().getValue()}`);
     });
     const lastCandle = candles[0];
     const secondLastCandle = candles[1];
@@ -99,7 +99,7 @@ class WhiteShark {
     //fourth check: the ratio between the wick of the last candle and the gap between it and the previous one must be below the wickRatio parameter.
     const wick = new bigDecimal(lastCandle.getOpen() - lastCandle.getLow());
     
-    const actualWickRatio = 
+    //const actualWickRatio = 
     
 
     

@@ -22,7 +22,8 @@
     "lint-fix": "eslint -c .eslintrc . --fix",
     "test": "mocha --recursive --exit",
     "test-dev": "mocha -w --recursive",
-    "test-coverage": "nyc --reporter=html mocha --recursive --exit",
+    "test-coverage-html": "nyc --reporter=html mocha --recursive --exit",
+    "test-coverage-text": "nyc --reporter=text mocha --recursive --exit",
     "coverage": "nyc --reporter=lcovonly mocha --recursive --exit"
   },
   "devDependencies": {

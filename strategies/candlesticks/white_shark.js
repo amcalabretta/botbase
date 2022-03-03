@@ -12,8 +12,9 @@
  * This strategy has been written after the following article:
  * https://therobusttrader.com/bullish-kicker-candlestick-pattern/
  *
- * When the above pattern is detected (only on the last two candles) the following order is issued:
+ * When the above pattern is detected (only on the last x candles) the following order is issued:
  *
+ * 
  * Possible improvements (from the link above):
  *  - Take into account the volume.
  *  - Use the technical indicators to take into account volatility.
@@ -25,13 +26,15 @@ const { OrderType } = require('../../model/constants');
 const { Order } = require('../../model/order');
 const { Candle } = require('../../model/candle');
 const { checkConfiguration } = require('../../utils/checkConfiguration');
-const bigDecimal = require('js-big-decimal');
+const bigDecimal = require('../../utils/bigDecimal');
 
 const subConfSchema = Joi.object().keys({
   numBearishCandles: Joi.number().integer().min(1).max(10).required(),
   gapRatio: Joi.number().positive().required(),
   wickRatio: Joi.number().positive().required(),
   volumeRatio: Joi.number().positive().required(),
+  buyRatio: Joi.number().precision(2).required(),
+  sellRatio: Joi.number().precision(2).required()
 });
 
 const confSchema = Joi.object().keys({
@@ -69,35 +72,37 @@ class WhiteShark {
   candles(values) {
     let candles = values.map(value => new Candle(value));
     candles.forEach((candle) => {
-      this.logger.debug(`Ts:${candle.getTs()},${candle.isBullish() ? `Bullish` : `Bearish`}, lo:${candle.getLow().getValue()}, hi:${candle.getHigh().getValue()}, op:${candle.getOpen().getValue()}, close:${candle.getClose().getValue()}, vol:${candle.getVolume().getValue()}`);
+      this.logger.info(`Ts:${candle.ts},${candle.isBullish ? `Bullish` : `Bearish`}, lo:${candle.low.getValue()}, hi:${candle.high.getValue()}, op:${candle.open.getValue()}, close:${candle.close.getValue()}, vol:${candle.volume.getValue()}`);
     });
     const lastCandle = candles[0];
     const secondLastCandle = candles[1];
     //first check: the last candle is green.
-    if (lastCandle.isBearish()) {
-      this.logger.debug(` Last candle is not bullish, bailing out.`)
-      this.orderCallback(new Order(OrderType.NO_OP, 0, 0, 0, 0));
+    if (lastCandle.isBearish) {
+      this.logger.info(` Last candle is not bullish, bailing out.`)
+      this.orderCallback(new Order(OrderType.NO_OP, this.markets[0],0, 0, 0, 0,0));
       return;
     } 
     //second check, the last numBearishCandles are red.
     let allBearish = true;
     for (let i=1;i<this.numBearishCandles;i++) {
-       allBearish = allBearish && candles[i].isBearish();
+       allBearish = allBearish && candles[i].isBearish;
     }
     if (!allBearish) {
-      this.logger.debug(` Last ${this.numBearishCandles} are not bearish, bailing out.`)
-      this.orderCallback(new Order(OrderType.NO_OP, 0, 0, 0, 0));
+      this.logger.info(` Last ${this.numBearishCandles} are not bearish, bailing out.`)
+      this.orderCallback(new Order(OrderType.NO_OP, 0, 0, 0, 0, 0));
       return;
     }
-    const gap = lastCandle.getOpen() - secondLastCandle.getOpen();
+    const gap = lastCandle.open.subtract(secondLastCandle.open);
     //third check: gap is positive
-    if (gap < 0) {
-      this.logger.debug(` Gap ${gap} is negative, bailing out.`)
-      this.orderCallback(new Order(OrderType.NO_OP, 0, 0, 0, 0));
+    if (gap.isNegative()) {
+      this.logger.info(` Gap ${gap.getValue()} is negative, bailing out.`)
+      this.orderCallback(new Order(OrderType.NO_OP, 0, 0, 0, 0, 0));
       return;
+    } else {
+      this.logger.info(` Gap ${gap.getValue()} is positive`) 
     }
     //fourth check: the ratio between the wick of the last candle and the gap between it and the previous one must be below the wickRatio parameter.
-    const wick = new bigDecimal(lastCandle.getOpen() - lastCandle.getLow());
+    const wick = lastCandle.lowerWick;
     
     //const actualWickRatio = 
     
@@ -124,7 +129,7 @@ class WhiteShark {
   valueCallBack(value) {
     switch (value.type) {
       case 'ticker':
-        this.logger.info(`Updating price to ${value.price}`);
+        this.logger.debug(`Updating price to ${value.price}`);
         this.lastValue = value.price;
         this.orderCallback(new Order(OrderType.NO_OP, 0, 0, 0, 0));
         break;

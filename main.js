@@ -79,6 +79,7 @@ async function main() {
         }),
       );
     }, 60000);
+
     mainLogger.info(`    Setup candlesPastTenMinutes for markets:${allMarkets}`);
     const websocket = new CoinbasePro.WebsocketClient(
       allMarkets,

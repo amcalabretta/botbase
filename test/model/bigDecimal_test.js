@@ -136,4 +136,68 @@ describe('BigDecimal Wrapper', () => {
       done();
     });
   });
+
+  describe('The negative Function', () => {
+    it('Should be true for a negative number (1)', (done) => {
+      const testValue = new BigDecimal(-10);
+      assert.equal(testValue.isNegative(),true);
+      done();
+    });
+
+    it('Should be true for a negative number (2)', (done) => {
+      const testValue = new BigDecimal(-0.001);
+      assert.equal(testValue.isNegative(), true);
+      done();
+    });
+
+    it('Should be false for a positive number (1)', (done) => {
+      const testValue = new BigDecimal(10);
+      assert.equal(testValue.isNegative(), false);
+      done();
+    });
+
+    it('Should be false for a positive number (2)', (done) => {
+      const testValue = new BigDecimal(0.001);
+      assert.equal(testValue.isNegative(), false);
+      done();
+    });
+
+    it('Should be false for zero', (done) => {
+      const testValue = new BigDecimal(0);
+      assert.equal(testValue.isNegative(), false);
+      done();
+    });
+  });
+
+  describe('The zero Function', () => {
+    it('Should be false for a negative number (1)', (done) => {
+      const testValue = new BigDecimal(-10);
+      assert.equal(testValue.isZero(), false);
+      done();
+    });
+
+    it('Should be false for a negative number (2)', (done) => {
+      const testValue = new BigDecimal(-0.001);
+      assert.equal(testValue.isZero(), false);
+      done();
+    });
+
+    it('Should be false for a positive number (1)', (done) => {
+      const testValue = new BigDecimal(10);
+      assert.equal(testValue.isZero(), false);
+      done();
+    });
+
+    it('Should be false for a positive number (2)', (done) => {
+      const testValue = new BigDecimal(0.001);
+      assert.equal(testValue.isZero(), false);
+      done();
+    });
+
+    it('Should be true for zero', (done) => {
+      const testValue = new BigDecimal(0);
+      assert.equal(testValue.isZero(), true);
+      done();
+    });
+  });
 });

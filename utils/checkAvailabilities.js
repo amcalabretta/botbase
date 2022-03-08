@@ -30,7 +30,6 @@ const checkAvailabilities = (availabilityMap, confData) => {
     }
   });
 
-
   availabilityMap.forEach((value, key) => {
     if (requestedMap.has(key)) {
       const availableAmount = new bigDecimal(value);

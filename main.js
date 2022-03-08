@@ -6,6 +6,7 @@ const { loadConfigurationFile } = require('./utils/loadConfigurationFile');
 const { checkAvailabilities } = require('./utils/checkAvailabilities');
 const { checkEnvironmentVariables } = require('./utils/checkEnvironmentVariables');
 const { wsUrl } = require('./model/constants');
+
 const broadCastChannel = new BroadcastChannel('botbase.broadcast');
 const { v4 } = require('uuid');
 
@@ -37,20 +38,20 @@ async function main() {
     mainLogger.info(' ***** BOTBASE STARTUP *****');
     mainLogger.info('  [1] Setting strategies up:');
     botConfiguration.strategies.forEach((strategy, idx) => {
-      const workerId = v4().substring(0,8);
+      const workerId = v4().substring(0, 8);
       mainLogger.info(`    ${idx + 1}/${botConfiguration.strategies.length} - Setting up instance for strategy ${strategy.name} id:${workerId}`);
       strategy.markets.forEach((market) => {
         if (allMarkets.indexOf(market) === -1) {
           allMarkets.push(market);
         }
       });
-      new Worker('./worker.js', { workerData: { conf: botConfiguration, index: idx, uuid: workerId} });
+      new Worker('./worker.js', { workerData: { conf: botConfiguration, index: idx, uuid: workerId } });
     });
     const candleChannelMinutePastTenLogger = log4js.getLogger('candleChannelMinutePastTenCategory');
     mainLogger.info('  [2] Getting accounts');
     const accounts = await client.getAccounts();
-    accounts.forEach(account =>{
-      if (account.balance>0) {
+    accounts.forEach((account) => {
+      if (account.balance > 0) {
         mainLogger.info(`    Currency: ${account.currency}  Balance: ${account.balance} Available: ${account.available}`);
         availableFunds.set(account.currency, account.available);
       }
@@ -101,5 +102,3 @@ async function main() {
 }
 
 main();
-
-

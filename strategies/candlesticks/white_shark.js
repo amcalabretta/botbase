@@ -2,9 +2,9 @@
 * Candlestick strategy, detects a bullish pattern
  * based on those conditions:
  *
- *  1. The pattern starts with a number of bearish candles, the number of bearish candles to 
+ *  1. The pattern starts with a number of bearish candles, the number of bearish candles to
  * trigger the detection is passed as a parameter.
- *  2. 
+ *  2.
  *  3. The gap should not be filled by the wick of the second candlestick,
  *      but be left untouched.
  *      In other words, the candlestick has a tiny or nonexisting lower wick.
@@ -14,7 +14,7 @@
  *
  * When the above pattern is detected (only on the last x candles) the following order is issued:
  *
- * 
+ *
  * Possible improvements (from the link above):
  *  - Take into account the volume.
  *  - Use the technical indicators to take into account volatility.
@@ -26,10 +26,11 @@ const { OrderType } = require('../../model/constants');
 const { Order } = require('../../model/order');
 const { Candle } = require('../../model/candle');
 const { checkConfiguration } = require('../../utils/checkConfiguration');
-const bigDecimal = require('../../utils/bigDecimal');
+const BigDecimal = require('../../model/bigdecimal');
 
 const subConfSchema = Joi.object().keys({
-  numBearishCandles: Joi.number().integer().min(1).max(10).required(),
+  numBearishCandles: Joi.number().integer().min(1).max(10)
+    .required(),
   gapRatio: Joi.number().positive().required(),
   wickRatio: Joi.number().positive().required(),
   volumeRatio: Joi.number().positive().required(),
@@ -42,10 +43,9 @@ const confSchema = Joi.object().keys({
   markets: Joi.array().length(1),
 }).unknown(true);
 
-
 class WhiteShark {
   constructor(mainConf) {
-    checkConfiguration(mainConf,confSchema,subConfSchema);
+    checkConfiguration(mainConf, confSchema, subConfSchema);
     this.markets = mainConf.markets;
     this.cryptoAmounts = mainConf.cryptoAmounts;
     this.euroAmount = mainConf.euroAmount;
@@ -60,58 +60,52 @@ class WhiteShark {
     this.strategyName = 'White Shark';
   }
 
-  
   /**
-   * 
+   *
    * Internal function receiving the candles
-   * 
+   *
    * format of the single candle: [ time, low, high, open, close, volume ]
-   * @param {*} values 
+   * @param {*} values
    */
-  
+
   candles(values) {
-    let candles = values.map(value => new Candle(value));
+    const candles = values.map((value) => new Candle(value));
     candles.forEach((candle) => {
-      this.logger.info(`Ts:${candle.ts},${candle.isBullish ? `Bullish` : `Bearish`}, lo:${candle.low.getValue()}, hi:${candle.high.getValue()}, op:${candle.open.getValue()}, close:${candle.close.getValue()}, vol:${candle.volume.getValue()}`);
+      this.logger.info(`Ts:${candle.ts},${candle.isBullish ? 'Bullish' : 'Bearish'}, lo:${candle.low.getValue()}, hi:${candle.high.getValue()}, op:${candle.open.getValue()}, close:${candle.close.getValue()}, vol:${candle.volume.getValue()}`);
     });
     const lastCandle = candles[0];
     const secondLastCandle = candles[1];
-    //first check: the last candle is green.
+    // first check: the last candle is green.
     if (lastCandle.isBearish) {
-      this.logger.info(` Last candle is not bullish, bailing out.`)
-      this.orderCallback(new Order(OrderType.NO_OP, this.markets[0],0, 0, 0, 0,0));
+      this.logger.info(' Last candle is not bullish, bailing out.');
+      this.orderCallback(new Order(OrderType.NO_OP, this.markets[0], 0, 0, 0, 0, 0));
       return;
-    } 
-    //second check, the last numBearishCandles are red.
+    }
+    // second check, the last numBearishCandles are red.
     let allBearish = true;
-    for (let i=1;i<this.numBearishCandles;i++) {
-       allBearish = allBearish && candles[i].isBearish;
+    for (let i = 1; i < this.numBearishCandles; i++) {
+      allBearish = allBearish && candles[i].isBearish;
     }
     if (!allBearish) {
-      this.logger.info(` Last ${this.numBearishCandles} are not bearish, bailing out.`)
+      this.logger.info(` Last ${this.numBearishCandles} are not bearish, bailing out.`);
       this.orderCallback(new Order(OrderType.NO_OP, 0, 0, 0, 0, 0));
       return;
     }
     const gap = lastCandle.open.subtract(secondLastCandle.open);
-    //third check: gap is positive
+    // third check: gap is positive
     if (gap.isNegative()) {
-      this.logger.info(` Gap ${gap.getValue()} is negative, bailing out.`)
+      this.logger.info(` Gap ${gap.getValue()} is negative, bailing out.`);
       this.orderCallback(new Order(OrderType.NO_OP, 0, 0, 0, 0, 0));
       return;
-    } else {
-      this.logger.info(` Gap ${gap.getValue()} is positive`) 
     }
-    //fourth check: the ratio between the wick of the last candle and the gap between it and the previous one must be below the wickRatio parameter.
+    this.logger.info(` Gap ${gap.getValue()} is positive`);
+
+    // fourth check: the ratio between the wick of the last candle and the gap between it and the previous one must be below the wickRatio parameter.
     const wick = lastCandle.lowerWick;
-    
-    //const actualWickRatio = 
-    
 
-    
-    
+    // const actualWickRatio =
 
-    
-    /*const secondLastCandle = values[1];
+    /* const secondLastCandle = values[1];
     if (secondLastCandle[3] < secondLastCandle[4] // second last is 'red' (e.g. 'open' is lower than 'close')
         && lastCandle[3] > lastCandle[4] // most recent is 'green' (e.g. 'open' is higher than 'close')
         && lastCandle[1] - secondLastCandle[2] > 0 // 'low' of the last higher than the 'high' of the second last
@@ -123,7 +117,7 @@ class WhiteShark {
       } else {
         this.orderCallback(new Order(OrderType.NO_OP, 0, 0, 0, 0));
       }
-    }*/
+    } */
   }
 
   valueCallBack(value) {

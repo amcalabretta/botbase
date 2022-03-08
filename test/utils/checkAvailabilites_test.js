@@ -13,7 +13,7 @@ describe('checkAvailabilities', () => {
     availableFunds.set('ETH', 12);
     availableFunds.set('BTC', 7);
     const data = loadConfigurationFile(['node', 'main', '--conf=./test/data/checkAvailabilities.yaml']);
-    assert.throws(() => checkAvailabilities(availableFunds, data), { name: 'Error', message: ' Currency:LTC, available funds:34.354543543, funds needed:55'});
+    assert.throws(() => checkAvailabilities(availableFunds, data), { name: 'Error', message: ' Currency:LTC, available funds:34.354543543, funds needed:55' });
     done();
   });
 
@@ -47,7 +47,6 @@ describe('checkAvailabilities', () => {
     done();
   });
 
-
   it('Should throw an error when EUROS are not available', (done) => {
     const availableFunds = new Map();
     availableFunds.set('EUR', 12);
@@ -75,6 +74,4 @@ describe('checkAvailabilities', () => {
     checkAvailabilities(availableFunds, data);
     done();
   });
-
-
 });

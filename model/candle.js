@@ -5,7 +5,7 @@ const { BigDecimal }  = require('./bigdecimal');
 
 class Candle {
   constructor(values) {
-    this.ts = moment.unix(values[0]).format('DD/MM/YYYY@HH:mm:00');
+    this.ts = moment.unix(values[0]).utc().format('DD/MM/YYYY@HH:mm:00');
     this.low = new BigDecimal(values[1]);
     this.high = new BigDecimal(values[2]);
     this.open = new BigDecimal(values[3]);

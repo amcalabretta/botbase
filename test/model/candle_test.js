@@ -78,7 +78,7 @@ describe('Candles Testing', () => {
   describe('Timestamp formatting', () => {
     it('Should report the right timestamp', (done) => {
       const candle = new Candle([1646131080, 0.7821, 0.7829, 0.7821, 0.7826, 2165.68]);
-      assert.strictEqual(candle.ts, '01/03/2022@11:38:00');
+      assert.strictEqual(candle.ts, '01/03/2022@10:38:00');
       done();
     });
   });

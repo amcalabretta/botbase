@@ -22,11 +22,11 @@ class BigDecimal extends bigDecimal {
     
     asPercentageOf = (oTherValue) => {
         const div = bigDecimal.prototype.divide.call(this,oTherValue);
-        return div.multiply(HUNDRED);
+        return div.multiply(HUNDRED).round(6, bigDecimal.RoundingModes.HALF_EVEN);
     }
     
     asRatioOf = (oTherValue) => {
-        return bigDecimal.prototype.divide.call(this,oTherValue);;
+        return bigDecimal.prototype.divide.call(this, oTherValue).round(6, bigDecimal.RoundingModes.HALF_EVEN);
     }
     
     isNegative = () => {

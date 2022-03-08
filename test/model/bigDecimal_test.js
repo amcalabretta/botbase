@@ -90,7 +90,7 @@ describe('BigDecimal Wrapper', () => {
       const testValue1 = new BigDecimal(10);
       const testValue2 = new BigDecimal(200);
       const perc = testValue1.asPercentageOf(testValue2);
-      assert.strictEqual(perc.getPrettyValue(2, '.'), '5');
+      assert.strictEqual(perc.getValue(), '5.000000');
       done();
     });
 
@@ -98,7 +98,7 @@ describe('BigDecimal Wrapper', () => {
       const testValue1 = new BigDecimal(16.56);
       const testValue2 = new BigDecimal(200);
       const perc = testValue1.asPercentageOf(testValue2);
-      assert.strictEqual(perc.getPrettyValue(2, '.'), '8.28');
+      assert.strictEqual(perc.getValue(), '8.280000');
       done();
     });
 
@@ -106,7 +106,7 @@ describe('BigDecimal Wrapper', () => {
       const testValue1 = new BigDecimal(0.001);
       const testValue2 = new BigDecimal(200);
       const perc = testValue1.asPercentageOf(testValue2);
-      assert.strictEqual(perc.getPrettyValue(2, '.'), '0.0005');
+      assert.strictEqual(perc.getValue(), '0.000500');
       done();
     });
   });
@@ -115,24 +115,24 @@ describe('BigDecimal Wrapper', () => {
     it('Normal case (1)', (done) => {
       const testValue1 = new BigDecimal(10);
       const testValue2 = new BigDecimal(200);
-      const perc = testValue1.asPercentageOf(testValue2);
-      assert.strictEqual(perc.getPrettyValue(2, '.'), '0.05');
+      const perc = testValue1.asRatioOf(testValue2);
+      assert.strictEqual(perc.getValue(), '0.050000');
       done();
     });
 
     it('Normal case (2)', (done) => {
       const testValue1 = new BigDecimal(23.76);
       const testValue2 = new BigDecimal(2353.45);
-      const perc = testValue1.asPercentageOf(testValue2);
-      assert.strictEqual(perc.getPrettyValue(2, '.'), '0.01');
+      const perc = testValue1.asRatioOf(testValue2);
+      assert.strictEqual(perc.getValue(), '0.010096');
       done();
     });
 
     it('Low case', (done) => {
       const testValue1 = new BigDecimal(0.001);
       const testValue2 = new BigDecimal(200);
-      const perc = testValue1.asPercentageOf(testValue2);
-      assert.strictEqual(perc.getPrettyValue(2, '.'), '0.0005');
+      const perc = testValue1.asRatioOf(testValue2);
+      assert.strictEqual(perc.getPrettyValue(2, '.'), '0.000005');
       done();
     });
   });

@@ -25,11 +25,11 @@ class BigDecimal extends bigDecimal {
     
     asPercentageOf = (oTherValue) => {
         const div = bigDecimal.prototype.divide.call(this,oTherValue);
-        return div.multiply(HUNDRED).round(6, bigDecimal.RoundingModes.HALF_EVEN);
+        return new BigDecimal(div.multiply(HUNDRED).round(6, bigDecimal.RoundingModes.HALF_EVEN).getValue());
     }
     
     asRatioOf = (oTherValue) => {
-        return bigDecimal.prototype.divide.call(this, oTherValue).round(6, bigDecimal.RoundingModes.HALF_EVEN);
+        return new BigDecimal(bigDecimal.prototype.divide.call(this, oTherValue).round(6, bigDecimal.RoundingModes.HALF_EVEN).getValue());
     }
     
     isNegative = () => {
@@ -42,6 +42,15 @@ class BigDecimal extends bigDecimal {
 
     isZero = () => {
         return (bigDecimal.prototype.compareTo.call(this, ZERO) === 0)
+    }
+
+    isNotZero = () => {
+        return (bigDecimal.prototype.compareTo.call(this, ZERO) !== 0)
+    }
+
+    asInt = () => {
+        const value = bigDecimal.prototype.getValue.call(this);
+        return parseInt(value);
     }
 
 }

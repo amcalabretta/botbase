@@ -88,7 +88,11 @@ you can also run continuous testing on a particular test (quite handy to have th
 npm run test-dev path/to/your/test/file
 ```
 
+Going further down, you can also continuously running a particular single test:
 
+```bash
+npm run test-dev-one --test_file=<file containing the test> --pattern='<Pattern in the description>'
+```
 
 
 

@@ -14,13 +14,13 @@ class Candle {
     if (this.close.lessThan(this.open)) { // bearish
       this.isBearish = true;
       this.isBullish = false;
-      this.lowerWick = this.close.subtract(this.low);
-      this.upperWick = this.high.subtract(this.open);
+      this.lowerWick = new BigDecimal(this.close.subtract(this.low).getValue());
+      this.upperWick = new BigDecimal(this.high.subtract(this.open).getValue());
     } else if (this.close.moreThan(this.open) || this.open.equalsTo(this.close)) { // bullish
       this.isBearish = false;
       this.isBullish = true;
-      this.lowerWick = this.high.subtract(this.close);
-      this.upperWick = this.open.subtract(this.low);
+      this.lowerWick = new BigDecimal(this.high.subtract(this.close).getValue());
+      this.upperWick = new BigDecimal(this.open.subtract(this.low).getValue());
     }
     Object.freeze(this);
   }

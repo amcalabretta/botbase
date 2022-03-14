@@ -6,7 +6,8 @@ const { loadConfigurationFile } = require('./utils/loadConfigurationFile');
 const { checkAvailabilities } = require('./utils/checkAvailabilities');
 const { checkEnvironmentVariables } = require('./utils/checkEnvironmentVariables');
 const { wsUrl } = require('./model/constants');
-
+const Table = require('easy-table')
+const { BigDecimal } = require('./model/bigdecimal');
 const broadCastChannel = new BroadcastChannel('botbase.broadcast');
 const { v4 } = require('uuid');
 
@@ -45,7 +46,7 @@ async function main() {
           allMarkets.push(market);
         }
       });
-      new Worker('./worker.js', { workerData: { conf: botConfiguration, index: idx, uuid: workerId } });
+      const currentWorker = new Worker('./worker.js', { workerData: { conf: botConfiguration, index: idx, uuid: workerId } });
     });
     const candleChannelMinutePastTenLogger = log4js.getLogger('candleChannelMinutePastTenCategory');
     mainLogger.info('  [2] Getting accounts');
@@ -63,6 +64,8 @@ async function main() {
         ((t) => {
           const currentTimeStamp = moment(t.iso);
           const previousTimeStamp = moment(t.iso).subtract(10, 'minutes');
+          candleChannelMinutePastTenLogger.info(`Current: ${currentTimeStamp.utc().format('YYYY-MM-DDTHH:mm:ss.SSS[Z]')}`);  
+          candleChannelMinutePastTenLogger.info(`Previous: ${previousTimeStamp.utc().format('YYYY-MM-DDTHH:mm:ss.SSS[Z]')}`);
           allMarkets.forEach((mkt) => {
             client.getProductHistoricRates(mkt, {
               start: previousTimeStamp.utc().format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'),
@@ -72,7 +75,17 @@ async function main() {
               if (err) {
                 mainLogger.warn('%{err}');
               } else {
-                candleChannelMinutePastTenLogger.info(`${mkt} - ${marketData}`);
+                var t = new Table();
+                marketData.forEach(m=>{
+                  t.cell('Timestamp', moment.unix(m[0]).utc().format('DD/MM/YYYY@HH:mm:00'));
+                  t.cell('Low', (new BigDecimal(m[1])).getValue());
+                  t.cell('High', (new BigDecimal(m[2])).getValue());
+                  t.cell('Open', (new BigDecimal(m[3])).getValue());
+                  t.cell('Close', (new BigDecimal(m[4])).getValue());
+                  t.cell('Volume', (new BigDecimal(m[5])).getValue());
+                  t.newRow();
+                });  
+                candleChannelMinutePastTenLogger.info(`${mkt} - \n ${t.toString()}`);
                 broadCastChannel.postMessage({ type: 'candlesPastTenMinutes', market: mkt, payload: marketData });
               }
             });

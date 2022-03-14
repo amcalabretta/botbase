@@ -150,6 +150,13 @@ describe('BigDecimal Wrapper', () => {
       done();
     });
 
+    it('Should be true for a negative number (3)', (done) => {
+      const testValue = new BigDecimal(-0.0015);
+      assert.equal(testValue.isNegative(), true);
+      done();
+    });
+    
+
     it('Should be false for a positive number (1)', (done) => {
       const testValue = new BigDecimal(10);
       assert.equal(testValue.isNegative(), false);
@@ -169,7 +176,7 @@ describe('BigDecimal Wrapper', () => {
     });
   });
 
-  describe('The zero Function', () => {
+  describe('The zero Functions', () => {
     it('Should be false for a negative number (1)', (done) => {
       const testValue = new BigDecimal(-10);
       assert.equal(testValue.isZero(), false);
@@ -197,6 +204,20 @@ describe('BigDecimal Wrapper', () => {
     it('Should be true for zero', (done) => {
       const testValue = new BigDecimal(0);
       assert.equal(testValue.isZero(), true);
+      done();
+    });
+
+    it('Should be false for non zero', (done) => {
+      const testValue = new BigDecimal(0.000009);
+      assert.equal(testValue.isZero(), false);
+      done();
+    });
+  });
+
+  describe('The asInt Function', () => {
+    it('Normal case', (done) => {
+      const testValue = new BigDecimal(10.23);
+      assert.strictEqual(testValue.asInt(), 10);
       done();
     });
   });

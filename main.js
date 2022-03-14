@@ -2,14 +2,15 @@ const { Worker, BroadcastChannel } = require('worker_threads');
 const log4js = require('log4js');
 const CoinbasePro = require('coinbase-pro');
 const moment = require('moment');
+const { v4 } = require('uuid');
+const Table = require('easy-table');
 const { loadConfigurationFile } = require('./utils/loadConfigurationFile');
 const { checkAvailabilities } = require('./utils/checkAvailabilities');
 const { checkEnvironmentVariables } = require('./utils/checkEnvironmentVariables');
 const { wsUrl } = require('./model/constants');
-const Table = require('easy-table')
 const { BigDecimal } = require('./model/bigdecimal');
+
 const broadCastChannel = new BroadcastChannel('botbase.broadcast');
-const { v4 } = require('uuid');
 
 async function main() {
   try {

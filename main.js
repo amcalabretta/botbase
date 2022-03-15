@@ -10,6 +10,7 @@ const Table = require('easy-table')
 const { BigDecimal } = require('./model/bigdecimal');
 const broadCastChannel = new BroadcastChannel('botbase.broadcast');
 const { v4 } = require('uuid');
+const { Candle } = require('./model/candle');
 
 async function main() {
   try {
@@ -64,8 +65,8 @@ async function main() {
         ((t) => {
           const currentTimeStamp = moment(t.iso);
           const previousTimeStamp = moment(t.iso).subtract(10, 'minutes');
-          candleChannelMinutePastTenLogger.info(`Current: ${currentTimeStamp.utc().format('YYYY-MM-DDTHH:mm:ss.SSS[Z]')}`);  
-          candleChannelMinutePastTenLogger.info(`Previous: ${previousTimeStamp.utc().format('YYYY-MM-DDTHH:mm:ss.SSS[Z]')}`);
+          candleChannelMinutePastTenLogger.info(`Current: ${currentTimeStamp.utc().format('YYYY-MM-DDTHH:mm:00')}`);  
+          candleChannelMinutePastTenLogger.info(`Previous: ${previousTimeStamp.utc().format('YYYY-MM-DDTHH:mm:00')}`);
           allMarkets.forEach((mkt) => {
             client.getProductHistoricRates(mkt, {
               start: previousTimeStamp.utc().format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'),
@@ -78,11 +79,12 @@ async function main() {
                 var t = new Table();
                 marketData.forEach(m=>{
                   t.cell('Timestamp', moment.unix(m[0]).utc().format('DD/MM/YYYY@HH:mm:00'));
-                  t.cell('Low', (new BigDecimal(m[1])).getValue());
-                  t.cell('High', (new BigDecimal(m[2])).getValue());
-                  t.cell('Open', (new BigDecimal(m[3])).getValue());
-                  t.cell('Close', (new BigDecimal(m[4])).getValue());
-                  t.cell('Volume', (new BigDecimal(m[5])).getValue());
+                  t.cell('Low', m[1], Table.number(3));
+                  t.cell('High', m[2], Table.number(3));
+                  t.cell('Open', m[3], Table.number(3));
+                  t.cell('Close', m[4], Table.number(3));
+                  t.cell('Volume', m[5], Table.number(3));
+                  t.cell('Raw TS', m[0]);
                   t.newRow();
                 });  
                 candleChannelMinutePastTenLogger.info(`${mkt} - \n ${t.toString()}`);

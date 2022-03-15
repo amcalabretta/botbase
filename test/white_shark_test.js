@@ -269,6 +269,24 @@ describe('White Shark Pattern Spotting', () => {
     done();
   });
 
+  it('Should Not detect the pattern if the last payload does not contain at least x+1 candles and are not consecutive', (done) => {
+    strategy.valueCallBack({ type: 'ticker', price: 107 });
+    strategy.valueCallBack({
+      type: 'candlesPastTenMinutes',
+      payload: [[0, 0.8909, 0.8939, 0.8936, 0.8967, 8146.76],
+      [0, 0.892, 0.8951, 0.8951, 0.8932, 9450.78],
+      [0, 0.8952, 0.898, 0.8962, 0.8961, 5347.99],
+      [0, 0.8946, 0.8972, 0.8951, 0.8966, 4686.05],
+      [0, 0.8938, 0.8975, 0.8949, 0.8964, 11058.46],
+      [0, 0.894, 0.8962, 0.8961, 0.8962, 17063.37],
+      [0, 0.8951, 0.8987, 0.8983, 0.8951, 41754.58],
+      [0, 0.898, 0.9021, 0.9015, 0.8991, 16429.72],
+      [0, 0.9015, 0.9047, 0.9027, 0.9015, 41941.04]]
+    });
+    sinon.assert.calledWith(stub, new Order(OrderType.NO_OP, 'LTC-EUR', 0, 0, 0, 0), 'Negative Gap');
+    done();
+  });
+
   
   it('Should Not detect the pattern if the wick ratio is not compatible ', (done) => {
     strategy.valueCallBack({ type: 'ticker', price: 107 });

@@ -93,25 +93,25 @@ class WhiteShark {
     const gap = new BigDecimal(lastCandle.open.subtract(secondLastCandle.open).getValue());
     // third check: gap is positive
     if (gap.isNegative()) {//
-      this.logger.info(` Gap ${gap.getValue()} is negative, bailing out.`);
+      this.logger.info(`[3] - [Negative] Gap ${gap.getValue()} is negative, bailing out.`);
       this.orderCallback(new Order(OrderType.NO_OP, this.markets[0], 0, 0, 0, 0),'Negative Gap');
       return;
     }
-    this.logger.info(`[3] Gap ${gap.getValue()} is positive, proceeding.`);
+    this.logger.info(`[3] - [Affirmative] Gap ${gap.getValue()} is positive, proceeding.`);
 
     // fourth check: the ratio between the wick of the last candle and the gap between it and the previous one must be below the wickRatio parameter.
     const wick = lastCandle.lowerWick;
     if (wick.isZero()) {
-      this.logger.info(`[4] Last Candle lowerwick is zero bailing out.`);
+      this.logger.info(`[4] - [Negative] Last Candle lowerwick is zero bailing out.`);
       this.orderCallback(new Order(OrderType.NO_OP, 0, 0, 0, 0, 0));
       return;
     }
     if (wick.asRatioOf(gap).moreThan(this.wickRatio)) {
-      this.logger.info(` Lower Wick ${wick.getValue()} as a ratio of the gap ${gap.getValue()} is higher than ${this.wickRatio.getValue()}, bailing out`);
+      this.logger.info(`[5] - [Negative] Lower Wick ${wick.getValue()} as a ratio of the gap ${gap.getValue()} is higher than ${this.wickRatio.getValue()}, bailing out`);
       this.orderCallback(new Order(OrderType.NO_OP, 0, 0, 0, 0, 0));
       return;
     } else {
-      this.logger.info(` Lower Wick ${wick.getValue()} as a ratio of the gap ${gap.getValue()} is lower than ${this.wickRatio.getValue()}, (actual ratio:${wick.asRatioOf(gap).getValue()})Proceeding`);
+      this.logger.info(`[5] - [Affirmative] Lower Wick ${wick.getValue()} as a ratio of the gap ${gap.getValue()} is lower than ${this.wickRatio.getValue()}, (actual ratio:${wick.asRatioOf(gap).getValue()})Proceeding`);
     }
 
     // fifth and last check: The ratio between the second to last candle and the last one must be lower than the volume ratio.

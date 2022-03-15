@@ -113,7 +113,7 @@ class WhiteShark {
     const wick = lastCandle.lowerWick;
     if (wick.isZero()) {
       this.logger.info(`[4] - [Negative] Last Candle lowerwick is zero bailing out.`);
-      this.orderCallback(new Order(OrderType.NO_OP, 0, 0, 0, 0, 0));
+      this.orderCallback(new Order(OrderType.NO_OP, 0, 0, 0, 0, 0),'Null lowerwick on last candle');
       return;
     }
     if (wick.asRatioOf(gap).moreThan(this.wickRatio)) {
@@ -139,7 +139,6 @@ class WhiteShark {
       case 'ticker':
         this.logger.debug(`Updating price to ${value.price}`);
         this.lastValue = value.price;
-        this.orderCallback(new Order(OrderType.NO_OP, 0, 0, 0, 0));
         break;
       case 'candlesPastTenMinutes':
         this.candles(value.payload);

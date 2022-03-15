@@ -36,16 +36,9 @@ async function main() {
     });
     const availableFunds = new Map();
     const mainLogger = log4js.getLogger('main');
+    const orderLogger = log4js.getLogger('orders');
     const allMarkets = [];
     mainLogger.info(' ***** BOTBASE STARTUP *****');
-    parentPort.on("message", message => {
-      if (message === "exit") {
-        parentPort.postMessage("sold!");
-        parentPort.close();
-      } else {
-        parentPort.postMessage({ going: message });
-      }
-    });
     mainLogger.info('  [1] Setting strategies up:');
     botConfiguration.strategies.forEach((strategy, idx) => {
       const workerId = v4().substring(0, 8);
@@ -56,6 +49,7 @@ async function main() {
         }
       });
       const currentWorker = new Worker('./worker.js', { workerData: { conf: botConfiguration, index: idx, uuid: workerId } });
+      currentWorker.on("message", incoming => orderLogger.info(`${JSON.stringify(incoming)}`));
     });
     const candleChannelMinutePastTenLogger = log4js.getLogger('candleChannelMinutePastTenCategory');
     mainLogger.info('  [2] Getting accounts');

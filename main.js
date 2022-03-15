@@ -1,4 +1,4 @@
-const { Worker, BroadcastChannel } = require('worker_threads');
+const { Worker, BroadcastChannel, parentPort } = require('worker_threads');
 const log4js = require('log4js');
 const CoinbasePro = require('coinbase-pro');
 const moment = require('moment');
@@ -38,6 +38,14 @@ async function main() {
     const mainLogger = log4js.getLogger('main');
     const allMarkets = [];
     mainLogger.info(' ***** BOTBASE STARTUP *****');
+    parentPort.on("message", message => {
+      if (message === "exit") {
+        parentPort.postMessage("sold!");
+        parentPort.close();
+      } else {
+        parentPort.postMessage({ going: message });
+      }
+    });
     mainLogger.info('  [1] Setting strategies up:');
     botConfiguration.strategies.forEach((strategy, idx) => {
       const workerId = v4().substring(0, 8);

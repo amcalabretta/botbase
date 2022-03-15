@@ -70,6 +70,16 @@ class WhiteShark {
     candles.forEach((candle,idx) => {
       this.logger.info(`${idx} - Ts:${candle.ts},${candle.isBullish ? 'Bullish' : 'Bearish'}, lo:${candle.low.getValue()}, hi:${candle.high.getValue()}, op:${candle.open.getValue()}, close:${candle.close.getValue()}, vol:${candle.volume.getValue()}`);
     });
+    if ((new BigDecimal(candles.length - 1)).lessThan(this.numBearishCandles)) {
+      this.logger.info(`[0] - [Negative] Not Enough candles ${candles.length} vs ${this.numBearishCandles.getValue()}, bailing out.`);
+      this.orderCallback(new Order(OrderType.NO_OP, this.markets[0], 0, 0, 0, 0, 0), `Not Enough candles (needed ${this.numBearishCandles.asInt()+1})`);
+    }
+    for (let i=0;i<this.numBearishCandles.asInt()-1;i++) {
+      if (!candles[i].isConsecutiveOf(candles[i+1])) {
+        this.logger.info(`[0] - [Negative] candle nr ${i} and candle ${i+1} are not consecutive`);
+        this.orderCallback(new Order(OrderType.NO_OP, this.markets[0], 0, 0, 0, 0, 0), `Not consecutive candles`);
+      }
+    }
     const lastCandle = candles[0];
     const secondLastCandle = candles[1];
     // first check: the last candle is green.

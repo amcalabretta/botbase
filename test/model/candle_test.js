@@ -83,6 +83,22 @@ describe('Candles Testing', () => {
     });
   });
 
+  describe('The isConsecutiveOf function', () => {
+    it('Should be consecutive', (done) => {
+      const current = new Candle([1647348060, 0.7821, 0.7829, 0.7821, 0.7826, 2165.68]);
+      const previuos = new Candle([1647348000, 0.7821, 0.7829, 0.7821, 0.7826, 2165.68]);
+      assert.strictEqual(current.isConsecutiveOf(previuos), true);
+      done();
+    });
+
+    it('Should not be consecutive', (done) => {
+      const current = new Candle([1647348180, 0.7821, 0.7829, 0.7821, 0.7826, 2165.68]);
+      const previuos = new Candle([1647348060, 0.7821, 0.7829, 0.7821, 0.7826, 2165.68]);
+      assert.strictEqual(current.isConsecutiveOf(previuos), false);
+      done();
+    });
+  });
+
   describe('Immutability', () => {
     it('Should not be possible to change values in a candle once created', (done) => {
       const candle = new Candle([1646131080, 0.7821, 0.7829, 0.7821, 0.7826, 2165.68]);

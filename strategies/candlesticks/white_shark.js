@@ -73,11 +73,13 @@ class WhiteShark {
     if ((new BigDecimal(candles.length - 1)).lessThan(this.numBearishCandles)) {
       this.logger.info(`[0] - [Negative] Not Enough candles ${candles.length} vs ${this.numBearishCandles.getValue()}, bailing out.`);
       this.orderCallback(new Order(OrderType.NO_OP, this.markets[0], 0, 0, 0, 0, 0), `Not Enough candles (needed ${this.numBearishCandles.asInt()+1})`);
+      return;
     }
     for (let i=0;i<this.numBearishCandles.asInt()-1;i++) {
       if (!candles[i].isConsecutiveOf(candles[i+1])) {
         this.logger.info(`[0] - [Negative] candle nr ${i} and candle ${i+1} are not consecutive`);
         this.orderCallback(new Order(OrderType.NO_OP, this.markets[0], 0, 0, 0, 0, 0), `Not consecutive candles`);
+        return;
       }
     }
     const lastCandle = candles[0];

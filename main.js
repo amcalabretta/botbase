@@ -6,6 +6,7 @@ const { loadConfigurationFile } = require('./utils/loadConfigurationFile');
 const { checkAvailabilities } = require('./utils/checkAvailabilities');
 const { checkEnvironmentVariables } = require('./utils/checkEnvironmentVariables');
 const { wsUrl } = require('./model/constants');
+const { restApiUrl } = require('./model/constants');
 const Table = require('easy-table')
 const { BigDecimal } = require('./model/bigdecimal');
 const broadCastChannel = new BroadcastChannel('botbase.broadcast');
@@ -20,6 +21,7 @@ async function main() {
       process.env.apiKey,
       process.env.apiSecret,
       process.env.apiPassphrase,
+      restApiUrl    
     );
     log4js.configure({
       appenders: {
@@ -49,7 +51,10 @@ async function main() {
         }
       });
       const currentWorker = new Worker('./worker.js', { workerData: { conf: botConfiguration, index: idx, uuid: workerId } });
-      currentWorker.on("message", incoming => orderLogger.info(`${JSON.stringify(incoming)}`));
+      currentWorker.on("message", (incoming) => {
+        //const payload = JSON.parse(`${incoming}`);
+        orderLogger.info(`Strategy ID:${incoming.strategyId}, Order type:${incoming.order.type}`);
+      });
     });
     const candleChannelMinutePastTenLogger = log4js.getLogger('candleChannelMinutePastTenCategory');
     mainLogger.info('  [2] Getting accounts');

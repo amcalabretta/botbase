@@ -5,6 +5,7 @@ const { BigDecimal }  = require('./bigdecimal');
 
 class Candle {
   constructor(values) {
+    this.rawTs = values[0];
     this.ts = moment.unix(values[0]).utc().format('DD/MM/YYYY@HH:mm:00');
     this.low = new BigDecimal(values[1]);
     this.high = new BigDecimal(values[2]);
@@ -24,6 +25,11 @@ class Candle {
     }
     Object.freeze(this);
   }
+
+  isConsecutiveOf = (otherCandle) => {
+    return this.rawTs - otherCandle.rawTs === 60;  
+  }
+
 }
 
 exports.Candle = Candle;

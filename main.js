@@ -1,4 +1,4 @@
-const { Worker, BroadcastChannel } = require('worker_threads');
+const { Worker, BroadcastChannel, parentPort } = require('worker_threads');
 const log4js = require('log4js');
 const CoinbasePro = require('coinbase-pro');
 const moment = require('moment');
@@ -8,9 +8,11 @@ const { loadConfigurationFile } = require('./utils/loadConfigurationFile');
 const { checkAvailabilities } = require('./utils/checkAvailabilities');
 const { checkEnvironmentVariables } = require('./utils/checkEnvironmentVariables');
 const { wsUrl } = require('./model/constants');
+const { restApiUrl } = require('./model/constants');
 const { BigDecimal } = require('./model/bigdecimal');
 
 const broadCastChannel = new BroadcastChannel('botbase.broadcast');
+const { Candle } = require('./model/candle');
 
 async function main() {
   try {
@@ -20,6 +22,7 @@ async function main() {
       process.env.apiKey,
       process.env.apiSecret,
       process.env.apiPassphrase,
+      restApiUrl    
     );
     log4js.configure({
       appenders: {
@@ -36,6 +39,7 @@ async function main() {
     });
     const availableFunds = new Map();
     const mainLogger = log4js.getLogger('main');
+    const orderLogger = log4js.getLogger('orders');
     const allMarkets = [];
     mainLogger.info(' ***** BOTBASE STARTUP *****');
     mainLogger.info('  [1] Setting strategies up:');
@@ -48,6 +52,10 @@ async function main() {
         }
       });
       const currentWorker = new Worker('./worker.js', { workerData: { conf: botConfiguration, index: idx, uuid: workerId } });
+      currentWorker.on("message", (incoming) => {
+        //const payload = JSON.parse(`${incoming}`);
+        orderLogger.info(`Strategy ID:${incoming.strategyId}, Order type:${incoming.order.type}`);
+      });
     });
     const candleChannelMinutePastTenLogger = log4js.getLogger('candleChannelMinutePastTenCategory');
     mainLogger.info('  [2] Getting accounts');
@@ -65,8 +73,8 @@ async function main() {
         ((t) => {
           const currentTimeStamp = moment(t.iso);
           const previousTimeStamp = moment(t.iso).subtract(10, 'minutes');
-          candleChannelMinutePastTenLogger.info(`Current: ${currentTimeStamp.utc().format('YYYY-MM-DDTHH:mm:ss.SSS[Z]')}`);  
-          candleChannelMinutePastTenLogger.info(`Previous: ${previousTimeStamp.utc().format('YYYY-MM-DDTHH:mm:ss.SSS[Z]')}`);
+          candleChannelMinutePastTenLogger.info(`Current: ${currentTimeStamp.utc().format('YYYY-MM-DDTHH:mm:00')}`);  
+          candleChannelMinutePastTenLogger.info(`Previous: ${previousTimeStamp.utc().format('YYYY-MM-DDTHH:mm:00')}`);
           allMarkets.forEach((mkt) => {
             client.getProductHistoricRates(mkt, {
               start: previousTimeStamp.utc().format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'),
@@ -79,11 +87,12 @@ async function main() {
                 var t = new Table();
                 marketData.forEach(m=>{
                   t.cell('Timestamp', moment.unix(m[0]).utc().format('DD/MM/YYYY@HH:mm:00'));
-                  t.cell('Low', (new BigDecimal(m[1])).getValue());
-                  t.cell('High', (new BigDecimal(m[2])).getValue());
-                  t.cell('Open', (new BigDecimal(m[3])).getValue());
-                  t.cell('Close', (new BigDecimal(m[4])).getValue());
-                  t.cell('Volume', (new BigDecimal(m[5])).getValue());
+                  t.cell('Low', m[1], Table.number(3));
+                  t.cell('High', m[2], Table.number(3));
+                  t.cell('Open', m[3], Table.number(3));
+                  t.cell('Close', m[4], Table.number(3));
+                  t.cell('Volume', m[5], Table.number(3));
+                  t.cell('Raw TS', m[0]);
                   t.newRow();
                 });  
                 candleChannelMinutePastTenLogger.info(`${mkt} - \n ${t.toString()}`);

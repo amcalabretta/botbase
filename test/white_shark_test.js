@@ -13,7 +13,7 @@ const { Order } = require('../model/order');
 log4js.configure({
   appenders: { out: { type: 'stdout' } },
   // put 'level' (info/debug) instead of 'off' to see the logs as 'level'
-  categories: { default: { appenders: ['out'], level: 'off' } },
+  categories: { default: { appenders: ['out'], level: 'info' } },
 });
 
 describe('White Shark Validation', () => {
@@ -206,7 +206,7 @@ describe('White Shark Pattern Spotting', () => {
     sinon.assert.calledWith(stub, new Order(OrderType.NO_OP, 'LTC-EUR', 0, 0, 0, 0), 'First candle not bullish');
     done();
   });
-  it('Should Not detect the pattern if the first candle is bullish and there are less than x bearish candles before (1) 5675', (done) => {
+  it('Should Not detect the pattern if the first candle is bullish and there are less than x bearish candles before (1)', (done) => {
     strategy.valueCallBack({ type: 'ticker', price: 107 });
     strategy.valueCallBack({
       type: 'candlesPastTenMinutes',
@@ -234,13 +234,6 @@ describe('White Shark Pattern Spotting', () => {
     sinon.assert.calledWith(stub, new Order(OrderType.NO_OP, 'LTC-EUR', 0, 0, 0, 0), 'Last 3 not bearish');
     done();
   });
-/*
-  [2022 - 03 - 12T17: 03: 16.291][DEBUG] default - 0 - Ts: 12 / 03 / 2022@16: 01: 00, Bullish, lo: 0.7265, hi: 0.7275, op: 0.7269, close: 0.7275, vol: 10671.98
-  [2022 - 03 - 12T17: 03: 16.291][DEBUG] default - 1 - Ts: 12 / 03 / 2022@16: 00: 00, Bearish, lo: 0.7275, hi: 0.7278, op: 0.7278, close: 0.7275, vol: 9046.54
-  [2022 - 03 - 12T17: 03: 16.291][DEBUG] default - 2 - Ts: 12 / 03 / 2022@15: 57: 00, Bearish, lo: 0.7276, hi: 0.7289, op: 0.7289, close: 0.7276, vol: 262.62
-  [2022 - 03 - 12T17: 03: 16.291][DEBUG] default - 3 - Ts: 12 / 03 / 2022@15: 56: 00, Bullish, lo: 0.7284, hi: 0.7287, op: 0.7284, close: 0.7287, vol: 43.75
-  [2022 - 03 - 12T17: 03: 16.292][DEBUG] default - 4 - Ts: 12 / 03 / 2022@15: 54: 00, Bullish, lo: 0.7288, hi: 0.7292, op: 0.7288, close: 0.7289, vol: 696.28
-*/
 
   it('Should Not detect the pattern if the gap is negative (i.e. if the opening of the last candle is not above the opening of the previous one)', (done) => {
     strategy.valueCallBack({ type: 'ticker', price: 107 });
@@ -281,21 +274,17 @@ describe('White Shark Pattern Spotting', () => {
   });
 
   
-  it('Should Not detect the pattern if the wick ratio is not compatible ', (done) => {
+  it('Should Not detect the pattern if the wick ratio is not compatible  5675', (done) => {
     strategy.valueCallBack({ type: 'ticker', price: 107 });
-    /*strategy.valueCallBack({
+    strategy.valueCallBack({
       type: 'candlesPastTenMinutes',
-      payload: [[0, 0.8909, 0.8939, 0.8976, 0.9167, 8146.76],
-      [0, 0.892, 0.8951, 0.8951, 0.8932, 9450.78],
-      [0, 0.8952, 0.898, 0.8962, 0.8961, 5347.99],
-      [0, 0.8946, 0.8972, 0.8951, 0.8966, 4686.05],
-      [0, 0.8938, 0.8975, 0.8949, 0.8964, 11058.46],
-      [0, 0.894, 0.8962, 0.8961, 0.8962, 17063.37],
-      [0, 0.8951, 0.8987, 0.8983, 0.8951, 41754.58],
-      [0, 0.898, 0.9021, 0.9015, 0.8991, 16429.72],
-      [0, 0.9015, 0.9047, 0.9027, 0.9015, 41941.04]]
+      
+      payload: [[1647354240, 0.8909, 0.8939, 0.8936, 0.8967, 8146.76],
+      [1647354180, 0.892, 0.8951, 0.8951, 0.8932, 9450.78],
+      [1647354120, 0.8952, 0.898, 0.8962, 0.8961, 5347.99],
+      [1647354060, 0.8952, 0.898, 0.8962, 0.8961, 5347.99]]
     });
-    sinon.assert.calledWith(stub, new Order(OrderType.NO_OP, 'LTC-EUR', 0, 0, 0, 0));*/
+    sinon.assert.calledWith(stub, new Order(OrderType.NO_OP, 'LTC-EUR', 0, 0, 0, 0), 'dsds');
     done();
   });
 

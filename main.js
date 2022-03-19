@@ -7,8 +7,7 @@ const Table = require('easy-table');
 const { loadConfigurationFile } = require('./utils/loadConfigurationFile');
 const { checkAvailabilities } = require('./utils/checkAvailabilities');
 const { checkEnvironmentVariables } = require('./utils/checkEnvironmentVariables');
-const { wsUrl } = require('./model/constants');
-const { restApiUrl } = require('./model/constants');
+const { wsUrl,restApiUrl,restApiUrlSndBox,wsUrlSndBox } = require('./model/constants');
 const { BigDecimal } = require('./model/bigdecimal');
 
 const broadCastChannel = new BroadcastChannel('botbase.broadcast');
@@ -18,12 +17,6 @@ async function main() {
   try {
     checkEnvironmentVariables(process.env);
     const botConfiguration = loadConfigurationFile(process.argv);
-    const client = new CoinbasePro.AuthenticatedClient(
-      process.env.apiKey,
-      process.env.apiSecret,
-      process.env.apiPassphrase,
-      restApiUrl    
-    );
     log4js.configure({
       appenders: {
         main: { type: 'file', filename: `${botConfiguration.logging.logDir}/main.log` },
@@ -41,7 +34,14 @@ async function main() {
     const mainLogger = log4js.getLogger('main');
     const orderLogger = log4js.getLogger('orders');
     const allMarkets = [];
+    const client = new CoinbasePro.AuthenticatedClient(
+      process.env.apiKey,
+      process.env.apiSecret,
+      process.env.apiPassphrase,
+      botConfiguration.main.env==='prod'?restApiUrl:restApiUrlSndBox
+    );
     mainLogger.info(' ***** BOTBASE STARTUP *****');
+    mainLogger.info(`  Environment:${botConfiguration.main.env}`);
     mainLogger.info('  [1] Setting strategies up:');
     botConfiguration.strategies.forEach((strategy, idx) => {
       const workerId = v4().substring(0, 8);
@@ -107,7 +107,7 @@ async function main() {
     mainLogger.info(`    Setup candlesPastTenMinutes for markets:${allMarkets}`);
     const websocket = new CoinbasePro.WebsocketClient(
       allMarkets,
-      wsUrl,
+      botConfiguration.main.env==='prod'?wsUrl:wsUrlSndBox,
       {
         key: process.env.apiKey,
         secret: process.env.apiSecret,

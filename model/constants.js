@@ -3,16 +3,16 @@
 */
 
 /** Url used for websocket connection towards coinbase (real) */
-//const wsUrl = 'wss://ws-feed.pro.coinbase.com';
+const wsUrl = 'wss://ws-feed.pro.coinbase.com';
 
 /** Url used for websocket connection towards coinbase (sandobox) */
-const wsUrl = 'wss://ws-feed-public.sandbox.exchange.coinbase.com';
+const wsUrlSndBox = 'wss://ws-feed-public.sandbox.exchange.coinbase.com';
 
 /** Url used for APIs (real) */
-//const restApiUrl = 'https://api.pro.coinbase.com'
+const restApiUrl = 'https://api.pro.coinbase.com'
 
 /** Url used for APIs (sandobox) */
-const restApiUrl = 'https://api-public.sandbox.exchange.coinbase.com'
+const restApiUrlSndBox = 'https://api-public.sandbox.exchange.coinbase.com'
 
 /** Order type used by the strategies to communicate to the worker what to do */
 const OrderType = {
@@ -24,3 +24,5 @@ const OrderType = {
 exports.wsUrl = wsUrl;
 exports.OrderType = OrderType;
 exports.restApiUrl = restApiUrl;
+exports.wsUrlSndBox = wsUrlSndBox;
+exports.restApiUrlSndBox = restApiUrlSndBox;

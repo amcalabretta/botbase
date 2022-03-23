@@ -26,10 +26,7 @@ class Candle {
     Object.freeze(this);
   }
 
-  isConsecutiveOf = (otherCandle) => {
-    return this.rawTs - otherCandle.rawTs === 60;  
-  }
-
+  isConsecutiveOf = (otherCandle) => this.rawTs - otherCandle.rawTs === 60
 }
 
 exports.Candle = Candle;

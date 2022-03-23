@@ -140,7 +140,7 @@ describe('BigDecimal Wrapper', () => {
   describe('The negative Function', () => {
     it('Should be true for a negative number (1)', (done) => {
       const testValue = new BigDecimal(-10);
-      assert.equal(testValue.isNegative(),true);
+      assert.equal(testValue.isNegative(), true);
       done();
     });
 
@@ -155,7 +155,6 @@ describe('BigDecimal Wrapper', () => {
       assert.equal(testValue.isNegative(), true);
       done();
     });
-    
 
     it('Should be false for a positive number (1)', (done) => {
       const testValue = new BigDecimal(10);

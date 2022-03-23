@@ -198,9 +198,9 @@ describe('White Shark Pattern Spotting', () => {
     strategy.valueCallBack({
       type: 'candlesPastTenMinutes',
       payload: [[1647417000, 0.8909, 0.8939, 0.8967, 0.8935, 8146.76],
-      [1647416940, 0.892, 0.8951, 0.8951, 0.8932, 9450.78],
-      [1647416880, 0.8952, 0.898, 0.8962, 0.8961, 5347.99],
-      [1647416820, 0.8946, 0.8972, 0.8951, 0.8966, 4686.05]]
+        [1647416940, 0.892, 0.8951, 0.8951, 0.8932, 9450.78],
+        [1647416880, 0.8952, 0.898, 0.8962, 0.8961, 5347.99],
+        [1647416820, 0.8946, 0.8972, 0.8951, 0.8966, 4686.05]]
 
     });
     sinon.assert.calledWith(stub, new Order(OrderType.NO_OP, 'LTC-EUR', 0, 0, 0, 0), 'First candle not bullish');
@@ -224,12 +224,12 @@ describe('White Shark Pattern Spotting', () => {
     strategy.valueCallBack({
       type: 'candlesPastTenMinutes',
       payload: [
-  [0,0.7295,0.7296, 0.7295, 0.7296, 428.44],
-  [0,0.7295,0.7295, 0.7295, 0.7295, 131.14],
-  [0,0.7291,0.7294, 0.7294, 0.7291, 93.18],
-  [0,0.7294, 0.7302,0.7302, 0.7294, 4754.58],
-  [0,0.7298, 0.7302, 0.7302, 0.7298, 656.58],
-  [0,0.7299, 0.7303, 0.7303, 0.7299, 1310.4]]
+        [0, 0.7295, 0.7296, 0.7295, 0.7296, 428.44],
+        [0, 0.7295, 0.7295, 0.7295, 0.7295, 131.14],
+        [0, 0.7291, 0.7294, 0.7294, 0.7291, 93.18],
+        [0, 0.7294, 0.7302, 0.7302, 0.7294, 4754.58],
+        [0, 0.7298, 0.7302, 0.7302, 0.7298, 656.58],
+        [0, 0.7299, 0.7303, 0.7303, 0.7299, 1310.4]]
     });
     sinon.assert.calledWith(stub, new Order(OrderType.NO_OP, 'LTC-EUR', 0, 0, 0, 0), 'Last 3 not bearish');
     done();
@@ -253,8 +253,8 @@ describe('White Shark Pattern Spotting', () => {
     strategy.valueCallBack({
       type: 'candlesPastTenMinutes',
       payload: [[0, 0.8909, 0.8939, 0.8936, 0.8967, 8146.76],
-      [0, 0.892, 0.8951, 0.8951, 0.8932, 9450.78],
-      [0, 0.8952, 0.898, 0.8962, 0.8961, 5347.99]]
+        [0, 0.892, 0.8951, 0.8951, 0.8932, 9450.78],
+        [0, 0.8952, 0.898, 0.8962, 0.8961, 5347.99]]
     });
     sinon.assert.calledWith(stub, new Order(OrderType.NO_OP, 'LTC-EUR', 0, 0, 0, 0), 'Not Enough candles (needed 4)');
     done();
@@ -273,19 +273,16 @@ describe('White Shark Pattern Spotting', () => {
     done();
   });
 
-  
   it('Should Not detect the pattern if the wick ratio is not compatible  5675', (done) => {
     strategy.valueCallBack({ type: 'ticker', price: 107 });
     strategy.valueCallBack({
       type: 'candlesPastTenMinutes',
-      
       payload: [[1647354240, 0.8909, 0.8939, 0.8936, 0.8967, 8146.76],
-      [1647354180, 0.892, 0.8951, 0.8951, 0.8932, 9450.78],
-      [1647354120, 0.8952, 0.898, 0.8962, 0.8961, 5347.99],
-      [1647354060, 0.8952, 0.898, 0.8962, 0.8961, 5347.99]]
+        [1647354180, 0.892, 0.8951, 0.8951, 0.8932, 9450.78],
+        [1647354120, 0.8952, 0.898, 0.8962, 0.8961, 5347.99],
+        [1647354060, 0.8952, 0.898, 0.8962, 0.8961, 5347.99]]
     });
     sinon.assert.calledWith(stub, new Order(OrderType.NO_OP, 'LTC-EUR', 0, 0, 0, 0), 'dsds');
     done();
   });
-
 });

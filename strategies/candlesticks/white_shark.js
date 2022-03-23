@@ -67,18 +67,21 @@ class WhiteShark {
 
   candles(values) {
     const candles = values.map((value) => new Candle(value));
-    candles.forEach((candle,idx) => {
-      this.logger.info(`${idx} - Ts:${candle.ts},${candle.isBullish ? 'Bullish' : 'Bearish'}, lo:${candle.low.getValue()}, hi:${candle.high.getValue()}, op:${candle.open.getValue()}, close:${candle.close.getValue()}, vol:${candle.volume.getValue()}`);
+    candles.forEach((candle, idx) => {
+      this.logger.info(`${idx} - Ts:${candle.ts},${candle.isBullish ? 'Bullish' : 'Bearish'}, 
+                      lo:${candle.low.getValue()}, hi:${candle.high.getValue()}, 
+                      op:${candle.open.getValue()}, cl:${candle.close.getValue()}, 
+                      vol:${candle.volume.getValue()}`);
     });
     if ((new BigDecimal(candles.length - 1)).lessThan(this.numBearishCandles)) {
       this.logger.info(`[0] - [Negative] Not Enough candles ${candles.length} vs ${this.numBearishCandles.getValue()}, bailing out.`);
-      this.orderCallback(new Order(OrderType.NO_OP, this.markets[0], 0, 0, 0, 0, 0), `Not Enough candles (needed ${this.numBearishCandles.asInt()+1})`);
+      this.orderCallback(new Order(OrderType.NO_OP, this.markets[0], 0, 0, 0, 0, 0), `Not Enough candles (needed ${this.numBearishCandles.asInt() + 1})`);
       return;
     }
-    for (let i=0;i<this.numBearishCandles.asInt()-1;i++) {
-      if (!candles[i].isConsecutiveOf(candles[i+1])) {
-        this.logger.info(`[0] - [Negative] candle nr ${i} and candle ${i+1} are not consecutive`);
-        this.orderCallback(new Order(OrderType.NO_OP, this.markets[0], 0, 0, 0, 0, 0), `Not consecutive candles`);
+    for (let i = 0; i < this.numBearishCandles.asInt() - 1; i++) {
+      if (!candles[i].isConsecutiveOf(candles[i + 1])) {
+        this.logger.info(`[0] - [Negative] candle nr ${i} and candle ${i + 1} are not consecutive`);
+        this.orderCallback(new Order(OrderType.NO_OP, this.markets[0], 0, 0, 0, 0, 0), 'Not consecutive candles');
         return;
       }
     }
@@ -87,7 +90,7 @@ class WhiteShark {
     // first check: the last candle is green.
     if (lastCandle.isBearish) {
       this.logger.info('[1] - [Negative] Last candle is not bullish, bailing out.');
-      this.orderCallback(new Order(OrderType.NO_OP, this.markets[0], 0, 0, 0, 0, 0),'First candle not bullish');
+      this.orderCallback(new Order(OrderType.NO_OP, this.markets[0], 0, 0, 0, 0, 0), 'First candle not bullish');
       return;
     }
     this.logger.info('[1] - [Affirmative] Last candle is bullish.');
@@ -104,9 +107,9 @@ class WhiteShark {
     this.logger.info(`[2] - [Affirmative] Last ${this.numBearishCandles.getValue()} are bearish.`);
     const gap = new BigDecimal(lastCandle.open.subtract(secondLastCandle.open).getValue());
     // third check: gap is positive
-    if (gap.isNegative()) {//
+    if (gap.isNegative()) { //
       this.logger.info(`[3] - [Negative] Gap ${gap.getValue()} is negative, bailing out.`);
-      this.orderCallback(new Order(OrderType.NO_OP, this.markets[0], 0, 0, 0, 0),'Negative Gap');
+      this.orderCallback(new Order(OrderType.NO_OP, this.markets[0], 0, 0, 0, 0), 'Negative Gap');
       return;
     }
     this.logger.info(`[3] - [Affirmative] Gap ${gap.getValue()} is positive, proceeding.`);
@@ -114,25 +117,24 @@ class WhiteShark {
     // fourth check: the ratio between the wick of the last candle and the gap between it and the previous one must be below the wickRatio parameter.
     const wick = lastCandle.lowerWick;
     if (wick.isZero()) {
-      this.logger.info(`[4] - [Negative] Last Candle lowerwick is zero bailing out.`);
-      this.orderCallback(new Order(OrderType.NO_OP, 0, 0, 0, 0, 0),'Null lowerwick on last candle');
+      this.logger.info('[4] - [Negative] Last Candle lowerwick is zero bailing out.');
+      this.orderCallback(new Order(OrderType.NO_OP, 0, 0, 0, 0, 0), 'Null lowerwick on last candle');
       return;
     }
     if (wick.asRatioOf(gap).moreThan(this.wickRatio)) {
       this.logger.info(`[5] - [Negative] Lower Wick ${wick.getValue()} as a ratio of the gap ${gap.getValue()} is higher than ${this.wickRatio.getValue()}, bailing out`);
       this.orderCallback(new Order(OrderType.NO_OP, 0, 0, 0, 0, 0));
       return;
-    } else {
-      this.logger.info(`[5] - [Affirmative] Lower Wick ${wick.getValue()} as a ratio of the gap ${gap.getValue()} is lower than ${this.wickRatio.getValue()}, (actual ratio:${wick.asRatioOf(gap).getValue()})Proceeding`);
     }
+    this.logger.info(`[5] - [Affirmative] Lower Wick ${wick.getValue()} as a ratio of the gap ${gap.getValue()} is lower than ${this.wickRatio.getValue()}, (actual ratio:${wick.asRatioOf(gap).getValue()})Proceeding`);
 
     // fifth and last check: The ratio between the second to last candle and the last one must be lower than the volume ratio.
-    if (secondLastCandle.volume.asRatioOf(lastCandle.volume).isMoreThan(this.volumeRatio)){
+    if (secondLastCandle.volume.asRatioOf(lastCandle.volume).isMoreThan(this.volumeRatio)) {
       this.logger.info(` Second to last candle Volume  ${secondLastCandle.volume.getValue()} as a ratio of the gap ${gap.getValue()} is higher than ${this.volumeRatio.getValue()}, bailing out`);
       this.orderCallback(new Order(OrderType.NO_OP, 0, 0, 0, 0, 0));
       return;
     }
-    //preparing the order..
+    // preparing the order..
     this.logger.info('Proceeding with the oder');
   }
 

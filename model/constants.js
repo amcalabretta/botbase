@@ -9,10 +9,10 @@ const wsUrl = 'wss://ws-feed.pro.coinbase.com';
 const wsUrlSndBox = 'wss://ws-feed-public.sandbox.exchange.coinbase.com';
 
 /** Url used for APIs (real) */
-const restApiUrl = 'https://api.pro.coinbase.com'
+const restApiUrl = 'https://api.pro.coinbase.com';
 
 /** Url used for APIs (sandobox) */
-const restApiUrlSndBox = 'https://api-public.sandbox.exchange.coinbase.com'
+const restApiUrlSndBox = 'https://api-public.sandbox.exchange.coinbase.com';
 
 /** Order type used by the strategies to communicate to the worker what to do */
 const OrderType = {

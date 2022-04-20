@@ -13,7 +13,7 @@ const { Order } = require('../model/order');
 log4js.configure({
   appenders: { out: { type: 'stdout' } },
   // put 'level' (info/debug) instead of 'off' to see the logs as 'level'
-  categories: { default: { appenders: ['out'], level: 'info' } },
+  categories: { default: { appenders: ['out'], level: 'off' } },
 });
 
 describe('White Shark Validation', () => {
@@ -273,7 +273,7 @@ describe('White Shark Pattern Spotting', () => {
     done();
   });
 
-  it('Should Not detect the pattern if the wick ratio is not compatible  5675', (done) => {
+  it('Should Not detect the pattern if the wick ratio is not compatible', (done) => {
     strategy.valueCallBack({ type: 'ticker', price: 107 });
     strategy.valueCallBack({
       type: 'candlesPastTenMinutes',

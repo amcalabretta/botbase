@@ -1,10 +1,10 @@
+const log4js = require('log4js');
 const {
   workerData, BroadcastChannel, parentPort
 } = require('worker_threads');
 const { strategyFactory } = require('./utils/loadAllStrategies');
 
 const broadCastChannel = new BroadcastChannel('botbase.broadcast');
-const log4js = require('log4js');
 
 const strategyName = workerData.conf.strategies[workerData.index].name;
 const strategyUUid = workerData.uuid;
@@ -18,7 +18,9 @@ try {
   localLogger.info(` Starting worker for ${strategyName}  /  ${strategyUUid}`);
   const strategy = strategyFactory(workerData.conf.strategies[workerData.index]);
   strategy.logger = localLogger;
-  strategy.orderCallback = (order, reason) => { parentPort.postMessage({ strategyId:strategyUUid, order, reason }); };
+  strategy.orderCallback = (order, reason) => { 
+    parentPort.postMessage({ strategyId:strategyUUid, order, reason }); 
+  };
   broadCastChannel.onmessage = (event) => {
     if (allowedMessageType.includes(event.data.type)) {
       strategy.valueCallBack(event.data);

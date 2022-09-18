@@ -58,22 +58,21 @@ async function main() {
         // const payload = JSON.parse(`${incoming}`);
         orderLogger.info(`Change Strategy ID:${incoming.strategyId}, Order type:${incoming.order.type}`);
 
-        
-        //Limit order (buy)
+        // Limit order (buy)
         const params = {
           type: 'limit',
           side: 'buy',
           price: '75.00', // USD
           size: '1', // BTC
           product_id: 'BTC-USD',
-        }; 
+        };
 
-       /* const params = {
+        /* const params = {
           type: 'market',
           side: 'buy',
           size: '1', // BTC
           product_id: 'BTC-USD',
-        };*/
+        }; */
 
         client.placeOrder(params, (error, response) => {
           const { statusCode } = response;
@@ -146,7 +145,7 @@ async function main() {
         key: process.env.apiKey,
         secret: process.env.apiSecret,
         passphrase: process.env.apiPassphrase,
-      }, { channels: [{ name: 'ticker' },{name:'orders'}] },
+      }, { channels: [{ name: 'ticker' }, {name:'orders'}] },
     );
     websocket.on('message', (data) => {
       mainLogger.info(`${JSON.stringify(data)}`);

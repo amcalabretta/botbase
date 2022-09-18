@@ -18,8 +18,8 @@ try {
   localLogger.info(` Starting worker for ${strategyName}  /  ${strategyUUid}`);
   const strategy = strategyFactory(workerData.conf.strategies[workerData.index]);
   strategy.logger = localLogger;
-  strategy.orderCallback = (order, reason) => { 
-    parentPort.postMessage({ strategyId:strategyUUid, order, reason }); 
+  strategy.orderCallback = (order, reason) => {
+    parentPort.postMessage({ strategyId:strategyUUid, order, reason });
   };
   broadCastChannel.onmessage = (event) => {
     if (allowedMessageType.includes(event.data.type)) {

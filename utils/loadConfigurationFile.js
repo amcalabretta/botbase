@@ -15,8 +15,12 @@ const loadConfigurationFile = (argv) => {
   if (paramTokens.length !== 2 || paramTokens[0] !== '--conf') throw new Error('Usage: node main --conf=/path/to/yaml/file');
   try {
     const data = yaml.load(fs.readFileSync(paramTokens[1], 'utf8'));
-    if (!data.logging.logDir) throw new Error(`Logging directory not found in file ${paramTokens[1]}`);
-    if (!fs.existsSync(data.logging.logDir)) throw new Error(`Logging directory  ${data.logging.logDir} does not exists`);
+    if (!data.logging.logDir) {
+      throw new Error(`Logging directory not found in file ${paramTokens[1]}`);
+    }
+    if (!fs.existsSync(data.logging.logDir)) {
+      throw new Error(`Logging directory  ${data.logging.logDir} does not exists`);
+    }
     return data;
   } catch (e) {
     throw new Error(`${e}`);

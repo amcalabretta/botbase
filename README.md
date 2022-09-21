@@ -63,7 +63,7 @@ node main.js --conf=/path/to/the/configuration/yaml/file.yaml
 
 ### How to unit test
 
-Unit tests are, as you probably guessed, in the 'test' directory, 
+Unit tests are, as you probably guessed, in the 'test' directory,
 to run all the unit tests:
 
 ```bash
@@ -83,7 +83,8 @@ to run the test continuously whilst you are developing:
 npm run test-dev
 ```
 
-you can also run continuous testing on a particular test (quite handy to have the results fast)
+you can also run continuous testing on a particular test
+ (quite handy to have the results fast)
 
 ```bash
 npm run test-dev path/to/your/test/file
@@ -94,6 +95,3 @@ Going further down, you can also continuously running a particular single test:
 ```bash
 npm run test-dev-one --test_file=<file containing the test> --pattern='<Pattern in the description>'
 ```
-
-
-

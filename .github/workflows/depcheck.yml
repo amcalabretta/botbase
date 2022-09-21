@@ -15,4 +15,4 @@ jobs:
       - name: install depcheck
         run: npm install depcheck -g
       - name: check on dependencies 
-        run: depcheck --ignores="eslint,nyc,eslint-plugin-import"
+        run: depcheck --ignores="eslint,nyc,eslint-plugin-import,cognitive-complexity-ts"

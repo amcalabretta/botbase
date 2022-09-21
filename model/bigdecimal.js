@@ -13,26 +13,26 @@ const HUNDRED = new bigDecimal(100);
  */
 
 class BigDecimal extends bigDecimal {
-  lessThan = (oTherValue) => bigDecimal.prototype.compareTo.call(this, oTherValue) === -1
+  lessThan = (oTherValue) => bigDecimal.prototype.compareTo.call(this, oTherValue) === -1;
 
-  moreThan = (oTherValue) => bigDecimal.prototype.compareTo.call(this, oTherValue) === 1
+  moreThan = (oTherValue) => bigDecimal.prototype.compareTo.call(this, oTherValue) === 1;
 
-  equalsTo = (oTherValue) => bigDecimal.prototype.compareTo.call(this, oTherValue) === 0
+  equalsTo = (oTherValue) => bigDecimal.prototype.compareTo.call(this, oTherValue) === 0;
 
   asPercentageOf = (oTherValue) => {
     const div = bigDecimal.prototype.divide.call(this, oTherValue);
     return new BigDecimal(div.multiply(HUNDRED).round(6, bigDecimal.RoundingModes.HALF_EVEN).getValue());
   }
 
-  asRatioOf = (other) => new BigDecimal(bigDecimal.prototype.divide.call(this, other).round(6, bigDecimal.RoundingModes.HALF_EVEN).getValue())
+  asRatioOf = (other) => new BigDecimal(bigDecimal.prototype.divide.call(this, other).round(6, bigDecimal.RoundingModes.HALF_EVEN).getValue());
 
-  isNegative = () => (bigDecimal.prototype.compareTo.call(this, ZERO) === -1)
+  isNegative = () => (bigDecimal.prototype.compareTo.call(this, ZERO) === -1);
 
-  isPositive = () => (bigDecimal.prototype.compareTo.call(this, ZERO) === 1)
+  isPositive = () => (bigDecimal.prototype.compareTo.call(this, ZERO) === 1);
 
-  isZero = () => (bigDecimal.prototype.compareTo.call(this, ZERO) === 0)
+  isZero = () => (bigDecimal.prototype.compareTo.call(this, ZERO) === 0);
 
-  isNotZero = () => (bigDecimal.prototype.compareTo.call(this, ZERO) !== 0)
+  isNotZero = () => (bigDecimal.prototype.compareTo.call(this, ZERO) !== 0);
 
   asInt = () => {
     const value = bigDecimal.prototype.getValue.call(this);

@@ -1,7 +1,7 @@
 /* eslint max-len: ["error", { "code": 150 }] */
 const { Worker, BroadcastChannel } = require('worker_threads');
 const log4js = require('log4js');
-const CoinbasePro = require('coinbase-pro');
+const { CoinbasePro } = require('coinbase-pro-node');
 const moment = require('moment');
 const { v4 } = require('uuid');
 const Table = require('easy-table');
@@ -9,7 +9,7 @@ const { loadConfigurationFile } = require('./utils/loadConfigurationFile');
 const { checkAvailabilities } = require('./utils/checkAvailabilities');
 const { checkEnvironmentVariables } = require('./utils/checkEnvironmentVariables');
 const {
-  wsUrl, restApiUrl, restApiUrlSndBox, wsUrlSndBox
+  wsUrl, wsUrlSndBox
 } = require('./model/constants');
 
 const broadCastChannel = new BroadcastChannel('botbase.broadcast');
@@ -35,12 +35,13 @@ async function main() {
     const mainLogger = log4js.getLogger('main');
     const orderLogger = log4js.getLogger('orders');
     const allMarkets = [];
-    const client = new CoinbasePro.AuthenticatedClient(
-      process.env.apiKey,
-      process.env.apiSecret,
-      process.env.apiPassphrase,
-      botConfiguration.main.env === 'prod' ? restApiUrl : restApiUrlSndBox
-    );
+    const auth = {
+      apiKey: process.env.apiKey,
+      apiSecret: process.env.apiSecret,
+      passphrase: process.env.apiPassphrase,
+      useSandbox: false,
+    };
+    const client = new CoinbasePro(auth);
     mainLogger.info(' ***** BOTBASE STARTUP *****');
     mainLogger.info(`  Environment:${botConfiguration.main.env}`);
     mainLogger.info('  [1] Setting strategies up:');
@@ -57,7 +58,6 @@ async function main() {
       currentWorker.on('message', (incoming) => {
         // const payload = JSON.parse(`${incoming}`);
         orderLogger.info(`Change Strategy ID:${incoming.strategyId}, Order type:${incoming.order.type}`);
-
         // Limit order (buy)
         const params = {
           type: 'limit',
@@ -66,14 +66,6 @@ async function main() {
           size: '1', // BTC
           product_id: 'BTC-USD',
         };
-
-        /* const params = {
-          type: 'market',
-          side: 'buy',
-          size: '1', // BTC
-          product_id: 'BTC-USD',
-        }; */
-
         client.placeOrder(params, (error, response) => {
           const { statusCode } = response;
           const responseBody = JSON.parse(response.body);

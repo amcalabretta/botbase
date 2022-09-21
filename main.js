@@ -145,7 +145,7 @@ async function main() {
         key: process.env.apiKey,
         secret: process.env.apiSecret,
         passphrase: process.env.apiPassphrase,
-      }, { channels: [{ name: 'ticker' }, { name:'orders' }] },
+      }, { channels: [{ name: 'ticker' }, { name:'orders' }] }
     );
     websocket.on('message', (data) => {
       mainLogger.info(`${JSON.stringify(data)}`);

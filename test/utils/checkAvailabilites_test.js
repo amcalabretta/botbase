@@ -13,7 +13,7 @@ describe('checkAvailabilities', () => {
     availableFunds.set('ETH', 12);
     availableFunds.set('BTC', 7);
     const data = loadConfigurationFile(['node', 'main', '--conf=./test/data/checkAvailabilities.yaml']);
-    assert.throws(() => checkAvailabilities(availableFunds, data), { name: 'Error', message: ' Currency:LTC, available funds:34.354543543, funds needed:55' });
+    assert.throws(() => checkAvailabilities(availableFunds, data), { name: 'Error', message: ' Currency:LTC, funds:34.354543543, needed:55' });
     done();
   });
 
@@ -23,7 +23,7 @@ describe('checkAvailabilities', () => {
     availableFunds.set('ETH', 12);
     availableFunds.set('BTC', 7);
     const data = loadConfigurationFile(['node', 'main', '--conf=./test/data/checkAvailabilities.yaml']);
-    assert.throws(() => checkAvailabilities(availableFunds, data), { name: 'Error', message: ' Currency:ETH, available funds:12, funds needed:20' });
+    assert.throws(() => checkAvailabilities(availableFunds, data), { name: 'Error', message: ' Currency:ETH, funds:12, needed:20' });
     done();
   });
 
@@ -33,7 +33,7 @@ describe('checkAvailabilities', () => {
     availableFunds.set('ETH', 20);
     availableFunds.set('BTC', 7);
     const data = loadConfigurationFile(['node', 'main', '--conf=./test/data/checkAvailabilities.yaml']);
-    assert.throws(() => checkAvailabilities(availableFunds, data), { name: 'Error', message: ' Currency:BTC, available funds:7, funds needed:8' });
+    assert.throws(() => checkAvailabilities(availableFunds, data), { name: 'Error', message: ' Currency:BTC, funds:7, needed:8' });
     done();
   });
 
@@ -51,7 +51,7 @@ describe('checkAvailabilities', () => {
     const availableFunds = new Map();
     availableFunds.set('EUR', 12);
     const data = loadConfigurationFile(['node', 'main', '--conf=./test/data/checkAvailabilities.yaml']);
-    assert.throws(() => checkAvailabilities(availableFunds, data), { name: 'Error', message: ' Currency:EUR, available funds:12, funds needed:564.6' });
+    assert.throws(() => checkAvailabilities(availableFunds, data), { name: 'Error', message: ' Currency:EUR, funds:12, needed:564.6' });
     done();
   });
 
@@ -59,7 +59,7 @@ describe('checkAvailabilities', () => {
     const availableFunds = new Map();
     availableFunds.set('USD', 11);
     const data = loadConfigurationFile(['node', 'main', '--conf=./test/data/checkAvailabilities.yaml']);
-    assert.throws(() => checkAvailabilities(availableFunds, data), { name: 'Error', message: ' Currency:USD, available funds:11, funds needed:22' });
+    assert.throws(() => checkAvailabilities(availableFunds, data), { name: 'Error', message: ' Currency:USD, funds:11, needed:22' });
     done();
   });
 

@@ -1,3 +1,4 @@
+/* eslint max-len: ["error", { "code": 120 }] */
 /**
  * Function validating the configuration passed to a strategy, this shall be called in the constructor of each
  * startegy when the configuration is passed.

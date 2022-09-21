@@ -1,3 +1,4 @@
+/* eslint max-len: ["error", { "code": 120 }] */
 /**
  * Function checking an array of values (taken from process.argv)
  * to retrieve the configuration file
@@ -19,7 +20,7 @@ const checkArgs = (argv) => {
 
 const loadConfigurationFile = (argv) => {
   const data = checkArgs(argv);
-  if (!data.logging.logDir) throw new Error(`Logging directory not found in file ${paramTokens[1]}`);
+  if (!data.logging.logDir) throw new Error('Logging directory not found');
   if (!fs.existsSync(data.logging.logDir)) throw new Error(`Logging directory  ${data.logging.logDir} does not exists`);
   return data;
 };

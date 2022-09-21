@@ -1,7 +1,10 @@
+/* eslint prefer-destructuring: ["error", {"array": false,"object": true}, {"enforceForRenamedProperties": false}] */
+/* eslint max-len: ["error", { "code": 150 }] */
+
 'use strict';
 
 const moment = require('moment');
-const { BigDecimal }  = require('./bigdecimal');
+const { BigDecimal } = require('./bigdecimal');
 
 class Candle {
   constructor(values) {

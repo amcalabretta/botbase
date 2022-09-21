@@ -1,3 +1,4 @@
+/* eslint max-len: ["error", { "code": 150 }] */
 /**
  * Function checking whether the availabily currently in CB is enough for the strategies.
  */
@@ -34,7 +35,7 @@ const checkAvailabilities = (availabilityMap, confData) => {
     if (requestedMap.has(key)) {
       const availableAmount = new bigDecimal(value);
       if (availableAmount.compareTo(requestedMap.get(key)) === -1) {
-        throw new Error(` Currency:${key}, available funds:${availableAmount.getPrettyValue()}, funds needed:${requestedMap.get(key).getPrettyValue()}`);
+        throw new Error(` Currency:${key}, funds:${availableAmount.getPrettyValue()}, needed:${requestedMap.get(key).getPrettyValue()}`);
       }
     }
   });

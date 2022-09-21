@@ -1,9 +1,9 @@
+/* eslint max-len: ["error", { "code": 200 }] */
 const mocha = require('mocha');
 
 const { describe } = mocha;
 const { it } = mocha;
 const assert = require('assert');
-const { expect } = require('chai');
 const sinon = require('sinon');
 const log4js = require('log4js');
 const { WhiteShark } = require('../strategies/candlesticks/white_shark');

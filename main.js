@@ -1,4 +1,4 @@
-/* eslint max-len: ["error", { "code": 120 }] */
+/* eslint max-len: ["error", { "code": 150 }] */
 const { Worker, BroadcastChannel } = require('worker_threads');
 const log4js = require('log4js');
 const CoinbasePro = require('coinbase-pro');
@@ -21,7 +21,7 @@ async function main() {
     log4js.configure({
       appenders: {
         main: { type: 'file', filename: `${botConfiguration.logging.logDir}/main.log` },
-        candleChannelMinutePastTen: { type: 'file', filename: `${botConfiguration.logging.logDir}/channels-candles-every-minute-past-10-minutes.log` },
+        candleChannelMinutePastTen: { type: 'file', filename: `${botConfiguration.logging.logDir}/channels-candles-one-min-ten-min-frame.log` },
         ticker: { type: 'file', filename: `${botConfiguration.logging.logDir}/ticker.log` },
         orders: { type: 'file', filename: `${botConfiguration.logging.logDir}/orders.log` },
       },

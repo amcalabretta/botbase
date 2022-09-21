@@ -1,3 +1,4 @@
+
 # BotBase
 
 [![GitHub license](https://img.shields.io/github/license/amcalabretta/botbase?style=plastic)](https://github.com/amcalabretta/botbase/blob/master/LICENSE)
@@ -8,6 +9,7 @@
 [![Codacy coverage](https://img.shields.io/codacy/coverage/18b28f4cd13647bbb3d1e15d8c637b82?style=plastic)](https://app.codacy.com/gh/amcalabretta/botbase/dashboard?branch=master)
 [![Libraries.io dependency status for GitHub repo](https://img.shields.io/librariesio/github/amcalabretta/botbase?style=plastic)](https://libraries.io/github/amcalabretta/botbase)
 [![GitHub Super-Linter](https://github.com/amcalabretta/botbase/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=amcalabretta_botbase&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=amcalabretta_botbase)
 
 
 An experimental bot to automatically trade on coinbase
@@ -61,7 +63,8 @@ node main.js --conf=/path/to/the/configuration/yaml/file.yaml
 
 ### How to unit test
 
-Unit tests are, as you probably guesses, in the 'test' directory, to run all the unit tests:
+Unit tests are, as you probably guessed, in the 'test' directory,
+to run all the unit tests:
 
 ```bash
 npm test
@@ -74,8 +77,23 @@ npm run test-coverage
 ```
 after running the above command, coverage is shown in the *coverage/index.html* file:
 
+to run the test continuously whilst you are developing:
 
+```bash
+npm run test-dev
+```
 
+you can also run continuous testing on a particular test
+ (quite handy to have the results fast)
 
+```bash
+npm run test-dev path/to/your/test/file
+```
 
+Going further down, you can also continuously running a particular single test:
+
+```bash
+npm run test-dev-one --test_file=<file containing the test>
+--pattern='<Pattern in the description>'
+```
 

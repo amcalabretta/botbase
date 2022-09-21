@@ -52,5 +52,7 @@ jobs:
         env:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: master
+          LINTER_RULES_PATH: /
+          VALIDATE_JAVASCRIPT_ES: true
           JAVASCRIPT_ES_CONFIG_FILE: .eslintrc.json
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

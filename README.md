@@ -93,5 +93,7 @@ npm run test-dev path/to/your/test/file
 Going further down, you can also continuously running a particular single test:
 
 ```bash
-npm run test-dev-one --test_file=<file containing the test> --pattern='<Pattern in the description>'
+npm run test-dev-one --test_file=<file containing the test>
+--pattern='<Pattern in the description>'
 ```
+

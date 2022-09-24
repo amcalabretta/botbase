@@ -98,6 +98,6 @@ npm run test-dev-one --test_file=<file containing the test>
 ```
 
 ### How botbase is documented
-Botbase makes use of ([mkdocs](https://www.mkdocs.org/)) and ([github pages](https://pages.github.com/) to keep its documentation in a tidy state.
+Botbase makes use of [mkdocs](https://www.mkdocs.org/) and [github pages](https://pages.github.com/) to keep its documentation in a tidy state.
 
 

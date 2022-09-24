@@ -100,4 +100,12 @@ npm run test-dev-one --test_file=<file containing the test>
 ### How botbase is documented
 Botbase makes use of [mkdocs](https://www.mkdocs.org/) and [github pages](https://pages.github.com/) to keep its documentation in a tidy state.
 
+Documentation is kept in the docs folder, to locally see the current documentation:
+
+```bash
+mkdocs serve
+```
+
+The website will be visible on your [local environment](http://127.0.0.1:8000)
+
 

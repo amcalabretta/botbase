@@ -22,3 +22,7 @@ jobs:
       - name: Prepare mkdocs
         run: |
           pip install mkdocs
+    name: Run mkdocs      
+      - name: create website
+        run: |
+          mkdocs build

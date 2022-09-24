@@ -23,6 +23,7 @@ jobs:
         run: |
           pip install mkdocs
     name: Run mkdocs      
+    steps:
       - name: create website
         run: |
           mkdocs build

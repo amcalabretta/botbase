@@ -25,3 +25,7 @@ jobs:
       - name: create website
         run: |
           mkdocs build
+       - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: docs # The folder the action should deploy.    

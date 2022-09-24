@@ -2,6 +2,7 @@ site_name: Botbase
 site_url: https://example.com/
 nav:
     - Home: index.md
+    - About: index.md
 theme: readthedocs
 docs_dir: documentation
 site_dir: docs     

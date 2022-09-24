@@ -3,4 +3,6 @@ site_url: https://example.com/
 nav:
     - Home: index.md
     - About: about.md
-theme: readthedocs    
+theme: readthedocs
+docs_dir: documentation
+site_dir: docs     

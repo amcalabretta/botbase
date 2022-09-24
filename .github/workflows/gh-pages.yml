@@ -23,6 +23,9 @@ jobs:
       - name: create website
         run: |
           mkdocs build
+      - name: test website
+        run: |
+          ls docs
       - name: Deploy
         uses: actions/upload-artifact@v2
         with:

@@ -31,3 +31,6 @@ jobs:
       - name: Check
         run: |
           ls docs
+      - name: Check (2)
+        run: |
+          cat docs/index.html

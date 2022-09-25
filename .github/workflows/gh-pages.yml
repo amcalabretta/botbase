@@ -28,6 +28,6 @@ jobs:
         with:
           name: website
           path: docs
-       - name: Check
+      - name: Check
         run: |
-          ls docs    
+          ls docs

@@ -1,5 +1,6 @@
 name: Update documentation
-
+permissions:
+  contents: write
 on:
   push:
     branches: [master]
@@ -24,13 +25,6 @@ jobs:
         run: |
           mkdocs build
       - name: Deploy
-        uses: actions/upload-artifact@v2
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          name: website
-          path: docs
-      - name: Check
-        run: |
-          ls docs
-      - name: Check (2)
-        run: |
-          cat docs/index.html
+          folder: docs

@@ -109,3 +109,15 @@ mkdocs serve
 The website will be visible on your [local environment](http://127.0.0.1:8000)
 
 
+### Code Quality
+
+A few tools are used to ensure code quality:
+
+## Codeclimate
+
+To locally run codeclimate:
+
+```
+codeclimate analyze
+```
+

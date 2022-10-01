@@ -48,7 +48,7 @@ async function main() {
         }
       });
       const currentWorker = new Worker('./workers/worker.js', { workerData: { conf: botConfiguration, index: idx, uuid: workerId } });
-      //currentWorker.on('message', strategyMessage);
+      currentWorker.on('message', strategyMessage);
     });  
     mainLogger.info('  [2] Getting accounts');
     const accounts = await client.rest.account.listAccounts();
@@ -61,17 +61,7 @@ async function main() {
     checkAvailabilities(availableFunds, botConfiguration);
     mainLogger.info('  [3] Channels Setup');
     mainLogger.info(`    Setup candlesPastTenMinutes for markets:${allMarkets}`);
-    setInterval( ()=> { getCandles(client, candleChannelMinutePastTenLogger,allMarkets,CandleGranularity.ONE_MINUTE,10); }, 60000 );
-    const productId = 'BTC-USD';
-    const begin = '2020-04-11T00:00:00.000Z';
-    const end = '2020-04-11T10:00:00.000Z';
-    const granularity = CandleGranularity.ONE_MINUTE;
-    const candles = await client.rest.product.getCandles(productId, {
-      end,
-      granularity,
-      start: begin,
-    });
-    //console.log(`done: ${JSON.stringify(candles)}`);
+    setInterval( ()=> { getCandles(client, candleChannelMinutePastTenLogger,allMarkets,CandleGranularity.ONE_MINUTE,10,broadCastChannel); }, 60000 );
   } catch (error) {
     console.error(`${error.message}`);
     process.exit(0);

@@ -26,11 +26,14 @@
     "test-dev-one": "mocha -w --recursive $npm_config_test_file -g $npm_config_pattern",
     "test-coverage-html": "nyc --reporter=html mocha --recursive --exit",
     "test-coverage-text": "nyc --reporter=text mocha --recursive --exit",
-    "coverage": "nyc --reporter=lcovonly mocha --recursive --exit"
+    "coverage": "nyc --reporter=lcovonly mocha --recursive --exit",
+    "upgradable": " ./node_modules/npm-check-updates/build/src/bin/cli.js",
+    "upgrade": " ./node_modules/npm-check-updates/build/src/bin/cli.js -u"
   },
   "devDependencies": {
-    "cognitive-complexity-ts": "^0.6.0",
+    "npm-check-updates": "^16.3.4",
     "@babel/eslint-parser": "^7.17.0",
+    "cognitive-complexity-ts": "^0.6.0",
     "eslint": "^7.24.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.22.1",

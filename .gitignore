@@ -8,4 +8,5 @@ botbase.yaml
 *log*/
 config.yaml
 test/fake/*.log
+docs
 

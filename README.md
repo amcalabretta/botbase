@@ -10,6 +10,7 @@
 [![Libraries.io dependency status for GitHub repo](https://img.shields.io/librariesio/github/amcalabretta/botbase?style=plastic)](https://libraries.io/github/amcalabretta/botbase)
 [![GitHub Super-Linter](https://github.com/amcalabretta/botbase/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=amcalabretta_botbase&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=amcalabretta_botbase)
+[![dependency check](https://github.com/amcalabretta/botbase/actions/workflows/depcheck.yml/badge.svg?branch=master)](https://github.com/amcalabretta/botbase/actions/workflows/depcheck.yml)
 
 
 An experimental bot to automatically trade on coinbase
@@ -95,5 +96,29 @@ Going further down, you can also continuously running a particular single test:
 ```bash
 npm run test-dev-one --test_file=<file containing the test>
 --pattern='<Pattern in the description>'
+```
+
+### How botbase is documented
+Botbase makes use of [mkdocs](https://www.mkdocs.org/) and [github pages](https://pages.github.com/) to keep its documentation in a tidy state.
+
+Documentation is kept in the docs folder, to locally see the current documentation:
+
+```bash
+mkdocs serve
+```
+
+The website will be visible on your [local environment](http://127.0.0.1:8000)
+
+
+### Code Quality
+
+A few tools are used to ensure code quality:
+
+## Codeclimate
+
+To locally run codeclimate:
+
+```
+codeclimate analyze
 ```
 

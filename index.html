@@ -46,6 +46,14 @@
     <li class="toctree-l2"><a class="reference internal" href="#project-layout">Project layout</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#code-and-development-standards">Code and development standards</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#code-quality">Code quality</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#unit-testing">Unit testing</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#issues-management">Issues' management</a>
+    </li>
+        </ul>
     </li>
     </ul>
                 </li>
@@ -78,16 +86,22 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="botbase">Botbase</h1>
-<p>Botbase is an expermintal HFT bot to automate trading </p>
+<p>Botbase is an expermintal HFT bot to automate trading of cryptocurrencies on coinbase, it aims to be the simplest way to automate any trading strategy</p>
 <h2 id="project-layout">Project layout</h2>
-<pre><code>main.js    # The main file, running botbase's backbone
+<pre><code>main.js    # The main file, running botbase's backbone.
 model/
-    ...       # Various classes used for matching entities coming from Coinbase's API.
+    ...       # Various classes used for matching entities coming from Coinbase's API and the ones internally used by botbase.
 strategies/
-    ...       # The actual strategies implementing the trading algorithms.
+    ...       # The actual strategies implementing the trading algorithms.    
+utils/
+    ...       # functions used as utilities.
 </code></pre>
 <h2 id="code-and-development-standards">Code and development standards</h2>
-<p>TBD</p>
+<p>Botbase aims to match the best standards in terms of code security and development standards, mode in details:</p>
+<h3 id="code-quality">Code quality</h3>
+<p>A few tools have been selected to keep track of the current quality</p>
+<h3 id="unit-testing">Unit testing</h3>
+<h3 id="issues-management">Issues' management</h3>
               
             </div>
           </div><footer>
@@ -135,5 +149,5 @@ strategies/
 
 <!--
 MkDocs version : 1.4.0
-Build Date UTC : 2022-10-01 09:59:29.577777+00:00
+Build Date UTC : 2022-10-01 11:19:52.279152+00:00
 -->

@@ -1,2 +1,12 @@
+main:
+  mode: 'SYM'
 logging:
   logDir: "./test/fake"
+  logLevel: "debug"
+strategies:
+  - name: 'White Shark'
+    markets: ['LTC-EUR']
+    cryptoAmounts: [10]
+    euroAmount: 30
+    dollarAmount: 10
+

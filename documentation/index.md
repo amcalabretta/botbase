@@ -1,16 +1,16 @@
-# Welcome to MkDocs
+# Botbase
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
-
-## Commands
-
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs -h` - Print help message and exit.
+Botbase is an expermintal HFT bot to automate trading 
 
 ## Project layout
 
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
+    main.js    # The main file, running botbase's backbone
+    model/
+        ...       # Various classes used for matching entities coming from Coinbase's API.
+    strategies/
+        ...       # The actual strategies implementing the trading algorithms.    
+
+
+## Code and development standards
+
+TBD

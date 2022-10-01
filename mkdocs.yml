@@ -1,8 +1,8 @@
 site_name: Botbase
-site_url: https://example.com/
+site_url: https://amcalabretta.github.io/botbase/
 nav:
     - Home: index.md
-    - About: index.md
+    - Howtos: howto.md
 theme: readthedocs
 docs_dir: documentation
 site_dir: docs     

@@ -5,4 +5,4 @@ nav:
     - Howtos: howto.md
 theme: readthedocs
 docs_dir: documentation
-site_dir: docs     
+site_dir: docs

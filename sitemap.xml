@@ -6,6 +6,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://amcalabretta.github.io/botbase/config/</loc>
+         <lastmod>2022-10-01</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://amcalabretta.github.io/botbase/howto/</loc>
          <lastmod>2022-10-01</lastmod>
          <changefreq>daily</changefreq>

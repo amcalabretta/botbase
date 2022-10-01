@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://amcalabretta.github.io/botbase/howto/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://amcalabretta.github.io/botbase/config/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Howtos - Botbase</title>
+    <title>Configurations - Botbase</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Howtos";
-        var mkdocs_page_input_path = "howto.md";
-        var mkdocs_page_url = "/botbase/howto/";
+        var mkdocs_page_name = "Configurations";
+        var mkdocs_page_input_path = "config.md";
+        var mkdocs_page_url = "/botbase/config/";
       </script>
     
     <script src="../js/jquery-3.6.0.min.js" defer></script>
@@ -44,28 +44,24 @@
                 <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
                 </li>
               </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../howto/">Howtos</a>
+                </li>
+              </ul>
               <ul class="current">
-                <li class="toctree-l1 current"><a class="reference internal current" href="./">Howtos</a>
+                <li class="toctree-l1 current"><a class="reference internal current" href="./">Configurations</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#how-to-run-it">How to run it</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#as-is">As-is</a>
+    <li class="toctree-l2"><a class="reference internal" href="#environment-vartiables">Environment Vartiables</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#pm2">PM2</a>
+    <li class="toctree-l2"><a class="reference internal" href="#pm2">PM2</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#dockerized">Dockerized</a>
+    <li class="toctree-l2"><a class="reference internal" href="#dockerized">Dockerized</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#dockerized-in-pm2">Dockerized in PM2</a>
-    </li>
-        </ul>
+    <li class="toctree-l2"><a class="reference internal" href="#dockerized-in-pm2">Dockerized in PM2</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#configuring-botbase">Configuring Botbase</a>
     </li>
     </ul>
-                </li>
-              </ul>
-              <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../config/">Configurations</a>
                 </li>
               </ul>
       </div>
@@ -82,7 +78,7 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" alt="Docs"></a> &raquo;</li>
-      <li>Howtos</li>
+      <li>Configurations</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -91,10 +87,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="howtos">Howtos</h1>
-<h2 id="how-to-run-it">How to run it</h2>
-<h3 id="as-is">As-is</h3>
-<p>TBD</p>
+                <h1 id="configurations">Configurations</h1>
+<p>Botbase takes is configured by a yaml file and 3 environment variables, the environment variables are used to pass coinbase API's keys (for security reasons, it is highly advisable to not put sensitive information in configuration files that might be mistakenly committed to the repo).</p>
+<h3 id="environment-vartiables">Environment Vartiables</h3>
+<p>There are three environment variables that need to be set in order for botbase to run:</p>
 <h3 id="pm2">PM2</h3>
 <p>TBD</p>
 <h3 id="dockerized">Dockerized</h3>
@@ -107,8 +103,7 @@
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href=".." class="btn btn-neutral float-left" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../config/" class="btn btn-neutral float-right" title="Configurations">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../howto/" class="btn btn-neutral float-left" title="Howtos"><span class="icon icon-circle-arrow-left"></span> Previous</a>
     </div>
 
   <hr/>
@@ -131,10 +126,8 @@
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href=".." style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../howto/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
-    
-      <span><a href="../config/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

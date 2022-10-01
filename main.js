@@ -61,7 +61,6 @@ async function main() {
     checkAvailabilities(availableFunds, botConfiguration);
     mainLogger.info('  [3] Channels Setup');
     mainLogger.info(`    Setup candlesPastTenMinutes for markets:${allMarkets}`);
-    //get candles every minute for the past 10 minutes
     setInterval( ()=> { getCandles(client, candleChannelMinutePastTenLogger,allMarkets,CandleGranularity.ONE_MINUTE,10); }, 60000 );
     const productId = 'BTC-USD';
     const begin = '2020-04-11T00:00:00.000Z';

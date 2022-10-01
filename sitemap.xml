@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-         <loc>https://example.com/</loc>
-         <lastmod>2022-09-26</lastmod>
+         <loc>https://amcalabretta.github.io/botbase/</loc>
+         <lastmod>2022-10-01</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://amcalabretta.github.io/botbase/howto/</loc>
+         <lastmod>2022-10-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>

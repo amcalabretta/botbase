@@ -23,6 +23,13 @@ A few tools have been selected to keep track of the current quality
 
 ### Unit testing
 
+### Security
+
+
+### Package upgrades
+
+Botbase relies on ([libraies.io](https://libraries.io/github/amcalabretta/botbase)) to keep track of the dependencies
+
 ### Issues' management
 
 

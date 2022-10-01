@@ -3,6 +3,7 @@ site_url: https://amcalabretta.github.io/botbase/
 nav:
     - Home: index.md
     - Howtos: howto.md
+    - Configurations: config.md
 theme: readthedocs
 docs_dir: documentation
 site_dir: docs

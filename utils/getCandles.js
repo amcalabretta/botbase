@@ -9,10 +9,11 @@ const getCandles = async (client, logger, markets, granularity, numMinutes, chan
   const previousTimeStamp = moment(time.iso).subtract(numMinutes, 'minutes');
   logger.info(`Current: ${currentTimeStamp.utc().format('YYYY-MM-DDTHH:mm:00.000Z')}`);
   logger.info(`Previous: ${previousTimeStamp.utc().format('YYYY-MM-DDTHH:mm:00.000Z')}`);
+  const allCandles = [];
   for (const mkt in markets) {
     logger.info(`Market:${markets[mkt]}`);
     try {
-      const candles = await client.rest.product.getCandles(markets[mkt], {
+      allCandles[mkt] = client.rest.product.getCandles(markets[mkt], {
         end:currentTimeStamp.utc().format('YYYY-MM-DDTHH:mm:00.000Z'),
         granularity,
         start: previousTimeStamp.utc().format('YYYY-MM-DDTHH:mm:00.000Z')
@@ -34,6 +35,7 @@ const getCandles = async (client, logger, markets, granularity, numMinutes, chan
       logger.error('Error');
     }
   }
+  await Promise.all(allCandles);
 };
 
 exports.getCandles = getCandles;

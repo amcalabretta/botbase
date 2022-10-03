@@ -47,7 +47,7 @@ async function main() {
           allMarkets.push(market);
         }
       });
-      const currentWorker = new Worker('./workers/worker.js', { workerData: { conf: botConfiguration, index: idx, uuid: workerId } });
+      const currentWorker = new Worker('./workers/strategy_worker.js', { workerData: { conf: botConfiguration, index: idx, uuid: workerId } });
       currentWorker.on('message', strategyMessage);
     });  
     mainLogger.info('  [2] Getting accounts');

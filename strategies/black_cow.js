@@ -3,17 +3,14 @@
 */
 /* eslint max-len: ["error", { "code": 220 }] */
 const Joi = require('joi');
-const { OrderType } = require('../../model/constants');
-const { Order } = require('../../model/order');
-const { Candle } = require('../../model/candle');
-const { checkConfiguration } = require('../../utils/checkConfiguration');
-const { BigDecimal } = require('../../model/bigdecimal');
+const { Candle } = require('../model/candle');
+const { checkConfiguration } = require('../utils/checkConfiguration');
+const { BigDecimal } = require('../model/bigdecimal');
 
 const subConfSchema = Joi.object().keys({
   minSlope: Joi.number().integer().min(1).max(10)
     .required()
 });
-
 
 class BlackCow {
   constructor(mainConf) {
@@ -58,4 +55,4 @@ class BlackCow {
   }
 }
 
-exports.WhiteShark = WhiteShark;
+exports.BlackCow = BlackCow;

@@ -10,7 +10,7 @@ const strategyName = workerData.conf.strategies[workerData.index].name;
 const strategyUUid = workerData.uuid;
 log4js.configure({
   appenders: { local: { type: 'file', filename: `${workerData.conf.logging.logDir}/${strategyName.replace(' ', '-')}-${strategyUUid}.log` } },
-  categories: { default: { appenders: ['local'], level: `debug` } }
+  categories: { default: { appenders: ['local'], level: 'debug' } }
 });
 const localLogger = log4js.getLogger();
 const allowedMessageType = ['ticker', 'candlesPastTenMinutes'];

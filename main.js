@@ -1,18 +1,16 @@
-/* eslint max-len: ["error", { "code": 150 }] */
+/* eslint max-len: ["error", { "code": 160 }] */
 const { Worker, BroadcastChannel } = require('worker_threads');
 const log4js = require('log4js');
-const {Candle,CandleGranularity, CoinbasePro, ProductEvent,WebSocketChannelName,WebSocketEvent } = require('coinbase-pro-node');
-const moment = require('moment');
+const { CandleGranularity, CoinbasePro } = require('coinbase-pro-node');
 const { v4 } = require('uuid');
-const Table = require('easy-table');
 const { loadConfigurationFile } = require('./utils/loadConfigurationFile');
 const { strategyMessage } = require('./workers/strategyMessage');
 const { checkAvailabilities } = require('./utils/checkAvailabilities');
 const { checkEnvironmentVariables } = require('./utils/checkEnvironmentVariables');
-const {getCandles} = require('./utils/getCandles');
-const {authentication} = require('./model/auth');
+const { getCandles } = require('./utils/getCandles');
+const { authentication } = require('./model/auth');
+
 const broadCastChannel = new BroadcastChannel('botbase.broadcast');
-const orders = {};
 async function main() {
   try {
     checkEnvironmentVariables(process.env);
@@ -33,7 +31,6 @@ async function main() {
     const client = new CoinbasePro(authentication);
     const availableFunds = new Map();
     const mainLogger = log4js.getLogger('main');
-    const orderLogger = log4js.getLogger('orders');
     const candleChannelMinutePastTenLogger = log4js.getLogger('candleChannelMinutePastTenCategory');
     const allMarkets = [];
     mainLogger.info(' ***** BOTBASE STARTUP *****');
@@ -49,7 +46,7 @@ async function main() {
       });
       const currentWorker = new Worker('./workers/strategy_worker.js', { workerData: { conf: botConfiguration, index: idx, uuid: workerId } });
       currentWorker.on('message', strategyMessage);
-    });  
+    });
     mainLogger.info('  [2] Getting accounts');
     const accounts = await client.rest.account.listAccounts();
     accounts.forEach((account) => {
@@ -61,7 +58,7 @@ async function main() {
     checkAvailabilities(availableFunds, botConfiguration);
     mainLogger.info('  [3] Channels Setup');
     mainLogger.info(`    Setup candlesPastTenMinutes for markets:${allMarkets}`);
-    setInterval( ()=> { getCandles(client, candleChannelMinutePastTenLogger,allMarkets,CandleGranularity.ONE_MINUTE,10,broadCastChannel); }, 60000 );
+    setInterval(() => { getCandles(client, candleChannelMinutePastTenLogger, allMarkets, CandleGranularity.ONE_MINUTE, 10, broadCastChannel); }, 60000);
   } catch (error) {
     console.error(`${error.message}`);
     process.exit(0);

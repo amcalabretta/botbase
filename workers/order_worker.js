@@ -1,1 +1,1 @@
-//https://www.npmjs.com/package/workerpool
+// https://www.npmjs.com/package/workerpool

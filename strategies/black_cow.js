@@ -12,6 +12,11 @@ const subConfSchema = Joi.object().keys({
     .required()
 });
 
+const confSchema = Joi.object().keys({
+  cryptoAmounts: Joi.array().length(1),
+  markets: Joi.array().length(1),
+}).unknown(true);
+
 class BlackCow {
   constructor(mainConf) {
     checkConfiguration(mainConf, confSchema, subConfSchema);

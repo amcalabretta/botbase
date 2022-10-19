@@ -8,7 +8,7 @@ const { strategyMessage } = require('./workers/strategyMessage');
 const { checkAvailabilities } = require('./utils/checkAvailabilities');
 const { checkEnvironmentVariables } = require('./utils/checkEnvironmentVariables');
 const { getCandles } = require('./utils/getCandles');
-const { getAvaliableFunds } = require('./utils/availableFunds');
+const { getAvailableFunds } = require('./utils/getAvailableFunds');
 const { authentication } = require('./model/auth');
 
 const broadCastChannel = new BroadcastChannel('botbase.broadcast');
@@ -48,7 +48,7 @@ async function main() {
       currentWorker.on('message', strategyMessage);
     });
     mainLogger.info('  [2] Getting accounts');
-    const availableFunds = getAvaliableFunds(client, mainLogger);
+    const availableFunds = await getAvailableFunds(client, mainLogger);
     checkAvailabilities(availableFunds, botConfiguration);
     mainLogger.info('  [3] Channels Setup');
     mainLogger.info(`    Setup candlesPastTenMinutes for markets:${allMarkets}`);

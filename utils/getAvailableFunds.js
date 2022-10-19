@@ -1,3 +1,8 @@
+
+/**
+ * function retrieving the available funds on each account
+ */
+
 const getAvailableFunds = async (client, mainLogger) => {
     const accounts = await client.rest.account.listAccounts();
     const availableFunds = new Map();

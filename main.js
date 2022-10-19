@@ -8,6 +8,7 @@ const { strategyMessage } = require('./workers/strategyMessage');
 const { checkAvailabilities } = require('./utils/checkAvailabilities');
 const { checkEnvironmentVariables } = require('./utils/checkEnvironmentVariables');
 const { getCandles } = require('./utils/getCandles');
+const { getAvaliableFunds } = require('./utils/availableFunds');
 const { authentication } = require('./model/auth');
 
 const broadCastChannel = new BroadcastChannel('botbase.broadcast');
@@ -29,7 +30,6 @@ async function main() {
       },
     });
     const client = new CoinbasePro(authentication);
-    const availableFunds = new Map();
     const mainLogger = log4js.getLogger('main');
     const candleChannelMinutePastTenLogger = log4js.getLogger('candleChannelMinutePastTenCategory');
     const allMarkets = [];
@@ -48,13 +48,7 @@ async function main() {
       currentWorker.on('message', strategyMessage);
     });
     mainLogger.info('  [2] Getting accounts');
-    const accounts = await client.rest.account.listAccounts();
-    accounts.forEach((account) => {
-      if (account.balance > 0) {
-        mainLogger.info(`    Currency: ${account.currency}  Balance: ${account.balance} Available: ${account.available}`);
-        availableFunds.set(account.currency, account.available);
-      }
-    });
+    const availableFunds = getAvaliableFunds(client, mainLogger);
     checkAvailabilities(availableFunds, botConfiguration);
     mainLogger.info('  [3] Channels Setup');
     mainLogger.info(`    Setup candlesPastTenMinutes for markets:${allMarkets}`);

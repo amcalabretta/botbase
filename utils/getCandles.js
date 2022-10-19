@@ -15,7 +15,7 @@ const serializeCandle = (candle) => {
 }
 
 /**
- * Function getting the candles from coinbase for a set of
+ * Function getting the candles from coinbase for a set of markets
  */
 const getCandles = async (client, logger, markets, granularity, numMinutes, channel) => {
   const time = await client.rest.time.getTime();
@@ -24,8 +24,8 @@ const getCandles = async (client, logger, markets, granularity, numMinutes, chan
   logger.info(`Current: ${currentTimeStamp.utc().format('YYYY-MM-DDTHH:mm:00.000Z')}`);
   logger.info(`Previous: ${previousTimeStamp.utc().format('YYYY-MM-DDTHH:mm:00.000Z')}`);
   const allCandles = [];
-  for (const mkt in markets) {
-    logger.info(`Market:${markets[mkt]}`);
+  markets.forEach((mkt, i) => {
+    logger.info(`${i + 1}/${markets.length} - :${mkt}`);
     try {
       allCandles[mkt] = client.rest.product.getCandles(markets[mkt], {
         end: currentTimeStamp.utc().format('YYYY-MM-DDTHH:mm:00.000Z'),
@@ -39,7 +39,7 @@ const getCandles = async (client, logger, markets, granularity, numMinutes, chan
     } catch (error) {
       logger.error('Error');
     }
-  }
+  });
   await Promise.all(allCandles);
 };
 

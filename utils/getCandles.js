@@ -1,5 +1,19 @@
 const moment = require('moment');
 const Table = require('easy-table');
+
+const serializeCandle = (candle) => {
+  const t = new Table();
+  t.cell('TS:', c.openTimeInMillis);
+  t.cell('Low', c.low, Table.number(3));
+  t.cell('High', c.high, Table.number(3));
+  t.cell('Open', c.open, Table.number(3));
+  t.cell('Close', c.close, Table.number(3));
+  t.cell('Volume', c.volume, Table.number(3));
+  t.cell('Raw TS', c.openTimeInISO);
+  t.newRow();
+  return t.toString();
+}
+
 /**
  * Function getting the candles from coinbase for a set of
  */
@@ -14,21 +28,12 @@ const getCandles = async (client, logger, markets, granularity, numMinutes, chan
     logger.info(`Market:${markets[mkt]}`);
     try {
       allCandles[mkt] = client.rest.product.getCandles(markets[mkt], {
-        end:currentTimeStamp.utc().format('YYYY-MM-DDTHH:mm:00.000Z'),
+        end: currentTimeStamp.utc().format('YYYY-MM-DDTHH:mm:00.000Z'),
         granularity,
         start: previousTimeStamp.utc().format('YYYY-MM-DDTHH:mm:00.000Z')
       });
-      const t = new Table();
       candles.forEach((c) => {
-        t.cell('TS:', c.openTimeInMillis);
-        t.cell('Low', c.low, Table.number(3));
-        t.cell('High', c.high, Table.number(3));
-        t.cell('Open', c.open, Table.number(3));
-        t.cell('Close', c.close, Table.number(3));
-        t.cell('Volume', c.volume, Table.number(3));
-        t.cell('Raw TS', c.openTimeInISO);
-        t.newRow();
-        logger.info(`${markets[mkt]} - \n ${t.toString()}`);
+        logger.info(`${markets[mkt]} - \n ${serializeCandle(c)}`);
         channel.postMessage({ type: 'candlesPastTenMinutes', market: markets[mkt], payload: {} });
       });
     } catch (error) {

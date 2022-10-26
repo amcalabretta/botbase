@@ -68,7 +68,7 @@ const serializeCandles = (candles) => {
 
 log4js.configure({
     appenders: {
-        local: { type: 'file', filename: `${workerData.conf.logging.logDir}/marketdata-${workerData.market}.log` },
+        local: { type: 'file', filename: `${workerData.conf.logging.logDir}/marketdata-worker-${workerData.market}.log` },
         ticker: { type: 'file', filename: `${workerData.conf.logging.logDir}/ticker.log` }
     },
     categories: {

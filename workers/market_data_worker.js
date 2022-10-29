@@ -95,7 +95,7 @@ async function run() {
                 start: previousTimeStamp.utc().format('YYYY-MM-DDTHH:mm:00.000Z')
             }).then((candles, i) => {
                 log4js.getLogger().info(`${market} (${candles.length})\n ${serializeCandles(candles)}`);
-                //channel.postMessage({ type: 'candlesPastTenMinutes', market: market, payload: {} });
+                channel.postMessage({ type: 'candlesPastTenMinutes', market: market, payload: candles });
             }).catch(error => log4js.getLogger().error(`Error:${error}`));
         }, 60000, workerData.market);
     }, 1000);

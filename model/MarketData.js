@@ -6,11 +6,12 @@ const moment = require('moment');
 const { BigDecimal } = require('./bigdecimal');
 const IgushArray = require("igusharray");
 
+
 class MarketData {
-    constructor(market) {
+    constructor(market, callBack) {
         this.market = market;
         this.lastTradeId = 0;
-        this.lastTimeStamp = moment("1970-01-01T00:00:00.000000Z");
+        this.lastTimeStamp = moment('1970-01-01T00:00:00.000000Z');
         this.prices = new IgushArray(100);
     }
 
@@ -28,13 +29,21 @@ class MarketData {
         }
     }
     /**
-     * 
      * @param {*} ticker 
      */
     ticker = (ticker) => {
-        
+        this.prices.push({
+            seq: ticker.sequence,
+            price: new BigDecimal(ticker.price),
+            time: ticker.time,
+            tradeId: ticker.trade_id,
+            size: ticker.last_size
+        });
     }
 
+    getTickers = () => {
+        return this.prices;
+    }
 }
 
 exports.MarketData = MarketData;

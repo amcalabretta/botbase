@@ -16,6 +16,7 @@ const Table = require('easy-table');
 const {
     workerData, BroadcastChannel, parentPort
 } = require('worker_threads');
+const { MarketData } = require('../model/MarketData');
 
 /** The ticker channel provides real-time price updates every time a match happens. 
  * It batches updates in case of cascading matches, greatly reducing bandwidth requirements. */
@@ -77,7 +78,9 @@ log4js.configure({
 });
 
 
+
 async function run() {
+    const md = new MarketData(workerData.market);
     log4js.getLogger().info(`Starting up market data worker, market:${workerData.market}`);
     const client = new CoinbasePro(authentication);
     setTimeout(() => {
@@ -134,18 +137,16 @@ async function run() {
      * side match is a down-tick.
      */
             case 'match':
-                //log4js.getLogger().info(`-----"${JSON.stringify(message)}".`);
+                log4js.getLogger().info(`-----"${JSON.stringify(message)}".`);
                 break;
             case 'ticker':
-                //{"type":"ticker","sequence":20380820015,"product_id":"BTC-EUR","price":"19587.83","open_24h":"19750.42","volume_24h":"236.80573159","low_24h":"19435.95","high_24h":"19750.42","volume_30d":"10535.37029316","best_bid":"19583.22","best_bid_size":"0.02600000","best_ask":"19587.83","best_ask_size":"0.02098538","side":"buy","time":"2022-10-25T11:46:17.365005Z","trade_id":68051190,"last_size":"0.00501462"}
-                log4js.getLogger().info(`----- ticker ---- \n${JSON.stringify(message)}\n---------`);
+                md.ticker(message);
                 break;
             case 'full':
 
                 break;
             case 'heartbeat':
-                //{"type":"heartbeat","last_trade_id":68051190,"product_id":"BTC-EUR","sequence":20380820787,"time":"2022-10-25T11:46:29.347502Z"}
-                log4js.getLogger().info(`----- heartbeat ---- \n${JSON.stringify(message)}\n---------`);
+                md.heartBit(message);
                 break;
             default:
             //log4js.getLogger().info(`-----"${message.type}".`);

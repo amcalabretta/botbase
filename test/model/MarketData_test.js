@@ -29,4 +29,32 @@ describe('MarketData Testing', () => {
             done();
         });
     });
+
+    describe('Ticker testing', () => {
+        it('should add one ticker', (done) => {
+            const md = new MarketData('BTC-EUR');
+            md.ticker(JSON.parse('{"type":"ticker","sequence":20401309348,"product_id":"BTC-EUR","price":"20608.9","open_24h":"20339.07","volume_24h":"646.52524689","low_24h":"20059.17","high_24h":"20965.95","volume_30d":"10899.20555282","best_bid":"20602.07","best_bid_size":"0.00604328","best_ask":"20611.92","best_ask_size":"0.00969975","side":"buy","time":"2022-10-26T19:40:02.207724Z","trade_id":68077668,"last_size":"0.05"}'));
+            assert.strictEqual(md.getTickers().length, 1);
+            done();
+        });
+
+        it('should add two ticker', (done) => {
+            const md = new MarketData('BTC-EUR');
+            md.ticker(JSON.parse('{"type":"ticker","sequence":20401309348,"product_id":"BTC-EUR","price":"20608.9","open_24h":"20339.07","volume_24h":"646.52524689","low_24h":"20059.17","high_24h":"20965.95","volume_30d":"10899.20555282","best_bid":"20602.07","best_bid_size":"0.00604328","best_ask":"20611.92","best_ask_size":"0.00969975","side":"buy","time":"2022-10-26T19:40:02.207724Z","trade_id":68077668,"last_size":"0.05"}'));
+            md.ticker(JSON.parse('{"type":"ticker","sequence":20401469539,"product_id":"BTC-EUR","price":"20598.3","open_24h":"20260.78","volume_24h":"595.11194792","low_24h":"20059.17","high_24h":"20965.95","volume_30d":"10902.83926537","best_bid":"20593.67","best_bid_size":"0.05000000","best_ask":"20598.30","best_ask_size":"0.02587826","side":"buy","time":"2022-10-26T20:01:45.896217Z","trade_id":68077788,"last_size":"0.00012174"}'));
+            assert.strictEqual(md.getTickers().length, 2);
+            done();
+        });
+
+        it('Tickers should be ordered when added in order', (done) => {
+            const md = new MarketData('BTC-EUR');
+            md.ticker(JSON.parse('{"type":"ticker","sequence":20401309348,"product_id":"BTC-EUR","price":"20608.9","open_24h":"20339.07","volume_24h":"646.52524689","low_24h":"20059.17","high_24h":"20965.95","volume_30d":"10899.20555282","best_bid":"20602.07","best_bid_size":"0.00604328","best_ask":"20611.92","best_ask_size":"0.00969975","side":"buy","time":"2022-10-26T19:40:02.207724Z","trade_id":68077668,"last_size":"0.05"}'));
+            md.ticker(JSON.parse('{"type":"ticker","sequence":20401469539,"product_id":"BTC-EUR","price":"20598.3","open_24h":"20260.78","volume_24h":"595.11194792","low_24h":"20059.17","high_24h":"20965.95","volume_30d":"10902.83926537","best_bid":"20593.67","best_bid_size":"0.05000000","best_ask":"20598.30","best_ask_size":"0.02587826","side":"buy","time":"2022-10-26T20:01:45.896217Z","trade_id":68077788,"last_size":"0.00012174"}'));
+            assert.strictEqual(md.getTickers().length, 2);
+            assert.strictEqual(md.getTickers().get(0).time, '2022-10-26T19:40:02.207724Z');
+            assert.strictEqual(md.getTickers().get(1).time, '2022-10-26T20:01:45.896217Z');
+            done();
+        });
+
+    });
 });

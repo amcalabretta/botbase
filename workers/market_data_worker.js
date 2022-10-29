@@ -101,41 +101,9 @@ async function run() {
     }, 1000);
     client.ws.on(WebSocketEvent.ON_MESSAGE, message => {
         switch (message.type) {
-
-            /**
-     * A valid order has been received and is now active. This message is emitted for every single valid order as soon as
-     * the matching engine receives it whether it fills immediately or not.
-     *
-     * The `received` message does not indicate a resting order on the order book. It simply indicates a new incoming
-     * order which as been accepted by the matching engine for processing. Received orders may cause `match` message to
-     * follow if they are able to begin being filled (taker behavior). Self-trade prevention may also trigger change
-     * messages to follow if the order size needs to be adjusted. Orders which are not fully filled or canceled due to
-     * self-trade prevention result in an `open` message and become resting orders on the order book.
-     *
-     * Market orders (indicated by the `order_type` field) may have an optional `funds` field which indicates how much
-     * quote currency will be used to buy or sell. For example, a `funds` field of "100.00" for the "BTC-USD" product
-     * would indicate a purchase of up to "100.00" USD worth of Bitcoin.
-     */
             case 'received':
-                /* log4js.getLogger().info(`--------------------------------------`);
-                log4js.getLogger().info(`----- Client oid:${message.client_oid}`);
-                log4js.getLogger().info(`----- OrderId:${message.order_id}`);
-                log4js.getLogger().info(`----- Type:${message.order_type}`);
-                log4js.getLogger().info(`----- Size:${message.size}`);
-                log4js.getLogger().info(`----- Price:${message.price}`);
-                log4js.getLogger().info(`----- Side:${message.side}`);
-                log4js.getLogger().info(`----- Product:${message.product_id}`);
-                log4js.getLogger().info(`----- Time:${message.time}`);
-                log4js.getLogger().info(`----- Sequence:${message.sequence}`); */
-                //log4js.getLogger().info(`-----"${JSON.stringify(message)}"`);
+                log4js.getLogger().info(`-----"${JSON.stringify(message)}".`);
                 break;
-
-            /**
-     * A trade occurred between two orders. The aggressor or `taker` order is the one executing immediately after being
-     * received and the `maker` order is a resting order on the book. The `side` field indicates the maker order side. If
-     * the side is `sell` this indicates the maker was a sell order and the `match` is considered an up-tick. A `buy`
-     * side match is a down-tick.
-     */
             case 'match':
                 log4js.getLogger().info(`-----"${JSON.stringify(message)}".`);
                 break;
@@ -143,14 +111,12 @@ async function run() {
                 md.ticker(message);
                 break;
             case 'full':
-
                 break;
             case 'heartbeat':
                 md.heartBit(message);
                 break;
             default:
-            //log4js.getLogger().info(`-----"${message.type}".`);
-            //log4js.getLogger().info(`-----"${JSON.stringify(message)}".`);
+            log4js.getLogger().info(`-----"${message.type}".`);
         }
     });
 

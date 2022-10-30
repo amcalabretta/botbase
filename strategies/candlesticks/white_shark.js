@@ -81,9 +81,8 @@ class WhiteShark {
       return;
     }
     //the last numBerishCandles must be consecutive
-    //FIXME: here it's inefficient
-    for (let i = this.numBearishCandles.asInt(); i > 0; i -= 1) {
-      if (!candles[i+1].isConsecutiveOf(candles[i])) {
+    for (let i = this.candles.length-1; i > 0; i -= 1) {
+      if (!candles[i].isConsecutiveOf(candles[i-1])) {
         this.logger.info(`[0] - [Negative] candle nr ${i} and candle ${i + 1} are not consecutive`);
         this.orderCallback(new Order(OrderType.NO_OP, this.market, 0, 0, 0, 0, 0), 'Not consecutive candles');
         return;
@@ -105,7 +104,7 @@ class WhiteShark {
     }
     if (!allBearish) {
       this.logger.info(`[2] - [Negative] Last ${this.numBearishCandles.getValue()} are not bearish, bailing out.`);
-      this.orderCallback(new Order(OrderType.NO_OP, this.markets[0], 0, 0, 0, 0, 0), `Last ${this.numBearishCandles.getValue()} not bearish`);
+      this.orderCallback(new Order(OrderType.NO_OP, this.market, 0, 0, 0, 0, 0), `Last ${this.numBearishCandles.getValue()} not bearish`);
       return;
     }
     this.logger.info(`[2] - [Affirmative] Last ${this.numBearishCandles.getValue()} are bearish.`);

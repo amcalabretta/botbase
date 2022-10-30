@@ -11,7 +11,7 @@
 [![GitHub Super-Linter](https://github.com/amcalabretta/botbase/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=amcalabretta_botbase&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=amcalabretta_botbase)
 [![dependency check](https://github.com/amcalabretta/botbase/actions/workflows/depcheck.yml/badge.svg?branch=master)](https://github.com/amcalabretta/botbase/actions/workflows/depcheck.yml)
-
+[![Known Vulnerabilities](https://snyk.io/test/github/amcalabretta/botbase/badge.svg)](https://snyk.io/test/github/amcalabretta/botbase)
 
 An experimental bot to automatically trade on coinbase
 

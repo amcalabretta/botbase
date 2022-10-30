@@ -3,7 +3,6 @@
 
 'use strict';
 
-const moment = require('moment');
 const { BigDecimal } = require('./bigdecimal');
 
 class Candle {

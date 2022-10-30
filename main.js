@@ -1,5 +1,5 @@
 /* eslint max-len: ["error", { "code": 160 }] */
-const { Worker, BroadcastChannel } = require('worker_threads');
+const { Worker } = require('worker_threads');
 const log4js = require('log4js');
 const { CoinbasePro } = require('coinbase-pro-node');
 const { v4 } = require('uuid');
@@ -9,7 +9,6 @@ const { checkAvailabilities } = require('./utils/checkAvailabilities');
 const { checkEnvironmentVariables } = require('./utils/checkEnvironmentVariables');
 const { getAvailableFunds } = require('./utils/getAvailableFunds');
 const { authentication } = require('./model/auth');
-
 
 async function main() {
   try {
@@ -58,7 +57,7 @@ async function main() {
     allMarkets.forEach((mkt, i) => {
       mainLogger.info(`      ${i + 1}/${allMarkets.length} - Starting market data worker for ${mkt}`);
       const marketDataWorker = new Worker('./workers/market_data_worker.js', { workerData: { conf: botConfiguration, market: mkt } });
-      //FIXME: here we are adding a bogus callback, probably a way for communicating from the main thread should be done tho
+      // FIXME: here we are adding a bogus callback, probably a way for communicating from the main thread should be done tho
       marketDataWorker.on('message', strategyMessage);
     });
     mainLogger.info('    Market data worker:UP');

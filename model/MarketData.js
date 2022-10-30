@@ -12,6 +12,7 @@ class MarketData {
     this.lastTradeId = 0;
     this.lastTimeStamp = moment('1970-01-01T00:00:00.000000Z');
     this.prices = new IgushArray(100);
+    this.callBack = callBack;
   }
 
     /**

@@ -45,7 +45,9 @@ const confSchema = Joi.object().keys({
 class WhiteShark {
   constructor(mainConf) {
     checkConfiguration(mainConf, confSchema, subConfSchema);
-    this.market = mainConf.markets[0];
+    // const mkt;
+    const [mkt] = mainConf.markets;
+    this.market = mkt;
     this.cryptoAmounts = mainConf.cryptoAmounts;
     this.euroAmount = new BigDecimal(mainConf.euroAmount);
     this.dollarAmount = new BigDecimal(mainConf.dollarAmount);

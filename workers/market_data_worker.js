@@ -9,18 +9,16 @@
  */
 
 const log4js = require('log4js');
-const IgushArray = require('igusharray');
 const moment = require('moment');
 const {
   CandleGranularity, CoinbasePro, WebSocketChannelName, WebSocketEvent
 } = require('coinbase-pro-node');
 const Table = require('easy-table');
 const {
-  workerData, BroadcastChannel, parentPort
+  workerData, BroadcastChannel
 } = require('worker_threads');
 const { authentication } = require('../model/auth');
 const { MarketData } = require('../model/MarketData');
-const { Candle } = require('../model/candle');
 
 /** The ticker channel provides real-time price updates every time a match happens.
  * It batches updates in case of cascading matches, greatly reducing bandwidth requirements. */
@@ -29,7 +27,8 @@ const tickerChannel = {
   product_ids: [workerData.market],
 };
 
-/** To receive heartbeat messages for specific products once a second subscribe to the heartbeat channel.
+/** To receive heartbeat messages for specific products once a second subscribe to
+ * the heartbeat channel.
  * Heartbeats also include sequence numbers and last trade ids that can be used to verify
  * no messages were missed. */
 const heartbeatChannel = {
@@ -94,7 +93,7 @@ async function run() {
         end: currentTimeStamp.utc().format('YYYY-MM-DDTHH:mm:00.000Z'),
         CandleGranularity,
         start: previousTimeStamp.utc().format('YYYY-MM-DDTHH:mm:00.000Z')
-      }).then((candles, i) => {
+      }).then((candles) => {
         log4js.getLogger().info(`${market} (${candles.length})\n ${serializeCandles(candles)}`);
         broadCastChannel.postMessage({ type: 'candlesPastTenMinutes', market, payload: candles });
       }).catch((error) => log4js.getLogger().error(`Error:${error}`));
@@ -131,6 +130,7 @@ async function run() {
     await client.ws.subscribe(heartbeatChannel);
     log4js.getLogger().info(`Channel:${heartbeatChannel.name}`);
     await client.ws.subscribe(fullChannel);
+    await client.ws.subscribe(l2Channel);
   });
   client.ws.connect();
 }

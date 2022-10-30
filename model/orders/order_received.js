@@ -19,6 +19,8 @@ const FastJson = require('fast-json');
 
 class OrderReceived {
   constructor(values) {
+    // FIXME: this class should be completed
+    this.id = values.id;
     FastJson.on('order_id', (value) => {
       this.id = value;
     });

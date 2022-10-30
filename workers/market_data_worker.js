@@ -9,6 +9,7 @@
  */
 
 const log4js = require('log4js');
+const IgushArray = require("igusharray");
 const { authentication } = require('../model/auth');
 const moment = require('moment');
 const { CandleGranularity, CoinbasePro, WebSocketChannelName, WebSocketEvent } = require('coinbase-pro-node');
@@ -17,6 +18,7 @@ const {
     workerData, BroadcastChannel, parentPort
 } = require('worker_threads');
 const { MarketData } = require('../model/MarketData');
+const { Candle } = require('../model/candle');
 
 /** The ticker channel provides real-time price updates every time a match happens. 
  * It batches updates in case of cascading matches, greatly reducing bandwidth requirements. */
@@ -48,6 +50,8 @@ const l2Channel = {
     name: WebSocketChannelName.LEVEL2,
     product_ids: [workerData.market],
 };
+
+const broadCastChannel = new BroadcastChannel('botbase.broadcast');
 
 
 
@@ -95,17 +99,17 @@ async function run() {
                 start: previousTimeStamp.utc().format('YYYY-MM-DDTHH:mm:00.000Z')
             }).then((candles, i) => {
                 log4js.getLogger().info(`${market} (${candles.length})\n ${serializeCandles(candles)}`);
-                channel.postMessage({ type: 'candlesPastTenMinutes', market: market, payload: candles });
+                broadCastChannel.postMessage({ type: 'candlesPastTenMinutes', market: market, payload: candles });
             }).catch(error => log4js.getLogger().error(`Error:${error}`));
         }, 60000, workerData.market);
     }, 1000);
     client.ws.on(WebSocketEvent.ON_MESSAGE, message => {
         switch (message.type) {
             case 'received':
-                log4js.getLogger().info(`-----"${JSON.stringify(message)}".`);
+                //log4js.getLogger().info(`-----"${JSON.stringify(message)}".`);
                 break;
             case 'match':
-                log4js.getLogger().info(`-----"${JSON.stringify(message)}".`);
+                //log4js.getLogger().info(`-----"${JSON.stringify(message)}".`);
                 break;
             case 'ticker':
                 md.ticker(message);
@@ -116,7 +120,7 @@ async function run() {
                 md.heartBit(message);
                 break;
             default:
-            log4js.getLogger().info(`-----"${message.type}".`);
+            //log4js.getLogger().info(`-----"${message.type}".`);
         }
     });
 

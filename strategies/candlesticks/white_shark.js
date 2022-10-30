@@ -45,7 +45,7 @@ const confSchema = Joi.object().keys({
 class WhiteShark {
   constructor(mainConf) {
     checkConfiguration(mainConf, confSchema, subConfSchema);
-    this.markets = mainConf.markets;
+    this.market = mainConf.markets[0];
     this.cryptoAmounts = mainConf.cryptoAmounts;
     this.euroAmount = new BigDecimal(mainConf.euroAmount);
     this.dollarAmount = new BigDecimal(mainConf.dollarAmount);
@@ -65,23 +65,27 @@ class WhiteShark {
    * @param {*} values
    */
 
-  candles(values) {
-    const candles = values.map((value) => new Candle(value));
+  candles(value) {
+    this.logger.info(`Candles received:${JSON.stringify(value)}`);
+    const candles = value.map((c) => new Candle(c));
     candles.forEach((candle, idx) => {
       this.logger.info(`${idx} - Ts:${candle.ts},${candle.isBullish ? 'Bullish' : 'Bearish'}, 
                       lo:${candle.low.getValue()}, hi:${candle.high.getValue()}, 
                       op:${candle.open.getValue()}, cl:${candle.close.getValue()}, 
                       vol:${candle.volume.getValue()}`);
     });
+    //TODO: numBearishCandles can be an int (no need for the lessThan here)
     if ((new BigDecimal(candles.length - 1)).lessThan(this.numBearishCandles)) {
       this.logger.info(`[0] - [Negative] Not Enough candles ${candles.length} vs ${this.numBearishCandles.getValue()}, bailing out.`);
-      this.orderCallback(new Order(OrderType.NO_OP, this.markets[0], 0, 0, 0, 0, 0), `Not Enough candles (needed ${this.numBearishCandles.asInt() + 1})`);
+      this.orderCallback(new Order(OrderType.NO_OP, this.market, 0, 0, 0, 0, 0), `Not Enough candles (needed ${this.numBearishCandles.asInt() + 1})`);
       return;
     }
-    for (let i = 0; i < this.numBearishCandles.asInt() - 1; i += 1) {
-      if (!candles[i].isConsecutiveOf(candles[i + 1])) {
+    //the last numBerishCandles must be consecutive
+    //FIXME: here it's inefficient
+    for (let i = this.numBearishCandles.asInt(); i > 0; i -= 1) {
+      if (!candles[i+1].isConsecutiveOf(candles[i])) {
         this.logger.info(`[0] - [Negative] candle nr ${i} and candle ${i + 1} are not consecutive`);
-        this.orderCallback(new Order(OrderType.NO_OP, this.markets[0], 0, 0, 0, 0, 0), 'Not consecutive candles');
+        this.orderCallback(new Order(OrderType.NO_OP, this.market, 0, 0, 0, 0, 0), 'Not consecutive candles');
         return;
       }
     }
@@ -90,7 +94,7 @@ class WhiteShark {
     // first check: the last candle is green.
     if (lastCandle.isBearish) {
       this.logger.info('[1] - [Negative] Last candle is not bullish, bailing out.');
-      this.orderCallback(new Order(OrderType.NO_OP, this.markets[0], 0, 0, 0, 0, 0), 'First candle not bullish');
+      this.orderCallback(new Order(OrderType.NO_OP, this.market, 0, 0, 0, 0, 0), 'First candle not bullish');
       return;
     }
     this.logger.info('[1] - [Affirmative] Last candle is bullish.');

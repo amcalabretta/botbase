@@ -13,18 +13,16 @@ log4js.configure({
   categories: { default: { appenders: ['local'], level: 'debug' } }
 });
 const localLogger = log4js.getLogger();
-const allowedMessageType = ['ticker', 'candlesPastTenMinutes'];
 try {
   localLogger.info(` Starting worker for ${strategyName}  /  ${strategyUUid}`);
   const strategy = strategyFactory(workerData.conf.strategies[workerData.index]);
   strategy.logger = localLogger;
   strategy.orderCallback = (order, reason) => {
-    parentPort.postMessage({ strategyId:strategyUUid, order, reason });
+    parentPort.postMessage({ strategyId: strategyUUid, order, reason });
   };
   broadCastChannel.onmessage = (event) => {
-    if (allowedMessageType.includes(event.data.type)) {
-      strategy.valueCallBack(event.data);
-    }
+    localLogger.info(`${JSON.stringify(event.data)}`);
+    strategy.valueCallBack(event.data);
   };
 } catch (error) {
   localLogger.error(` Worker Error:${error.message}**${JSON.stringify(error)}`);

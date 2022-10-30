@@ -8,8 +8,8 @@ const ZERO = new bigDecimal(0);
 
 const checkAvailabilities = (availabilityMap, confData) => {
   const requestedMap = new Map();
-  requestedMap.set('USD',ZERO);
-  requestedMap.set('EUR',ZERO);
+  requestedMap.set('USD', ZERO);
+  requestedMap.set('EUR', ZERO);
   confData.strategies.forEach((str) => {
     str.markets.forEach((mkt, idx) => {
       const currency = mkt.substring(0, 3);

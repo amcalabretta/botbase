@@ -12,9 +12,9 @@ const serializeCandles = (candles) => {
     t.cell('Volume', c.volume, Table.number(3));
     t.cell('Raw TS', c.openTimeInISO);
     t.newRow();
-  })
+  });
   return t.toString();
-}
+};
 
 /**
  * Function getting the candles from coinbase for a set of markets
@@ -34,7 +34,7 @@ const getCandles = async (client, logger, markets, granularity, numMinutes, chan
     }).then((candles) => {
       logger.info(`${i + 1}/${markets.length} - :${mkt} \n ${serializeCandles(candles)}`);
       channel.postMessage({ type: 'candlesPastTenMinutes', market: mkt, payload: {} });
-    }).catch(error => logger.error(`Error:${error}`));
+    }).catch((error) => logger.error(`Error:${error}`));
   });
   await Promise.all(allCandles);
 };

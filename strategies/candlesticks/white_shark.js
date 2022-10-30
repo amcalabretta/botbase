@@ -74,15 +74,15 @@ class WhiteShark {
                       op:${candle.open.getValue()}, cl:${candle.close.getValue()}, 
                       vol:${candle.volume.getValue()}`);
     });
-    //TODO: numBearishCandles can be an int (no need for the lessThan here)
+    // TODO: numBearishCandles can be an int (no need for the lessThan here)
     if ((new BigDecimal(candles.length - 1)).lessThan(this.numBearishCandles)) {
       this.logger.info(`[0] - [Negative] Not Enough candles ${candles.length} vs ${this.numBearishCandles.getValue()}, bailing out.`);
       this.orderCallback(new Order(OrderType.NO_OP, this.market, 0, 0, 0, 0, 0), `Not Enough candles (needed ${this.numBearishCandles.asInt() + 1})`);
       return;
     }
-    //the last numBerishCandles must be consecutive
-    for (let i = this.candles.length-1; i > 0; i -= 1) {
-      if (!candles[i].isConsecutiveOf(candles[i-1])) {
+    // the last numBerishCandles must be consecutive
+    for (let i = this.candles.length - 1; i > 0; i -= 1) {
+      if (!candles[i].isConsecutiveOf(candles[i - 1])) {
         this.logger.info(`[0] - [Negative] candle nr ${i} and candle ${i + 1} are not consecutive`);
         this.orderCallback(new Order(OrderType.NO_OP, this.market, 0, 0, 0, 0, 0), 'Not consecutive candles');
         return;

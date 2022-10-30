@@ -8,13 +8,13 @@ const { BigDecimal } = require('./bigdecimal');
 
 class Candle {
   constructor(values) {
-    this.close = new BigDecimal(values['close']);
-    this.high = new BigDecimal(values['high']);
-    this.rawTs = values['openTimeInMillis'];
-    this.ts = values['openTimeInISO'];
-    this.low = new BigDecimal(values['low']);
-    this.open = new BigDecimal(values['open']);
-    this.volume = new BigDecimal(values['volume']);
+    this.close = new BigDecimal(values.close);
+    this.high = new BigDecimal(values.high);
+    this.rawTs = values.openTimeInMillis;
+    this.ts = values.openTimeInISO;
+    this.low = new BigDecimal(values.low);
+    this.open = new BigDecimal(values.open);
+    this.volume = new BigDecimal(values.volume);
     if (this.close.lessThan(this.open)) { // bearish
       this.isBearish = true;
       this.isBullish = false;

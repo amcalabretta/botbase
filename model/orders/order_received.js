@@ -1,5 +1,7 @@
 /* eslint max-len: ["error", { "code": 150 }] */
+
 'use strict';
+
 /** For performance reasons we moved to this library */
 const FastJson = require('fast-json');
 
@@ -16,13 +18,12 @@ const FastJson = require('fast-json');
  */
 
 class OrderReceived {
-    constructor(values) {
-        FastJson.on('order_id', (value) => {
-            this.id = value;    
-        });
-        Object.freeze(this);
-    }
+  constructor(values) {
+    FastJson.on('order_id', (value) => {
+      this.id = value;
+    });
+    Object.freeze(this);
+  }
 }
 
 exports.OrderReceived = OrderReceived;
-

@@ -50,16 +50,16 @@ async function main() {
     mainLogger.info('  [2] Getting accounts');
     const availableFunds = await getAvailableFunds(client);
     availableFunds.forEach((value, key) => {
-        mainLogger.info(`    Currency:${key}, available funds:${value}`);
+      mainLogger.info(`    Currency:${key}, available funds:${value}`);
     });
     checkAvailabilities(availableFunds, botConfiguration);
-    //mainLogger.info('  [3] Channels Setup');
-    //mainLogger.info(`    Setup candlesPastTenMinutes for markets:${allMarkets}`);
-    //setInterval(() => { getCandles(client, candleChannelMinutePastTenLogger, allMarkets, CandleGranularity.ONE_MINUTE, 10, broadCastChannel); }, 60000);
+    // mainLogger.info('  [3] Channels Setup');
+    // mainLogger.info(`    Setup candlesPastTenMinutes for markets:${allMarkets}`);
+    // setInterval(() => { getCandles(client, candleChannelMinutePastTenLogger, allMarkets, CandleGranularity.ONE_MINUTE, 10, broadCastChannel); }, 60000);
     mainLogger.info('  [3] Starting workers:');
     allMarkets.forEach((mkt, i) => {
       mainLogger.info(`      ${i + 1}/${allMarkets.length} - Starting market data worker for ${mkt}`);
-      const marketDataWorker = new Worker('./workers/market_data_worker.js', { workerData: { conf: botConfiguration,market: mkt } });
+      const marketDataWorker = new Worker('./workers/market_data_worker.js', { workerData: { conf: botConfiguration, market: mkt } });
     });
     mainLogger.info('    Market data worker:UP');
   } catch (error) {

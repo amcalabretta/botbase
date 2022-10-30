@@ -1,4 +1,4 @@
-/* eslint max-len: ["error", { "code": 200 }] */
+/* eslint max-len: ["error", { "code": 400 }] */
 const mocha = require('mocha');
 
 const { describe } = mocha;

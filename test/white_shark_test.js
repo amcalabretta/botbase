@@ -21,7 +21,7 @@ describe('White Shark Validation', () => {
     assert.throws(() => new WhiteShark({
       markets: ['LTC-EUR'], cryptoAmounts: [10], euroAmount: 30, dollarAmount: 0
     }),
-    { name: 'Error', message: 'subConf Section missing' });
+      { name: 'Error', message: 'subConf Section missing' });
     done();
   });
 
@@ -35,9 +35,9 @@ describe('White Shark Validation', () => {
         gapRatio: 0.2, wickRatio: 0.05, volumeRatio: 0.9
       }
     }),
-    {
-      name: 'Error', message: 'ValidationError: numBearishCandles is required'
-    });
+      {
+        name: 'Error', message: 'ValidationError: numBearishCandles is required'
+      });
     done();
   });
 
@@ -51,9 +51,9 @@ describe('White Shark Validation', () => {
         gapRatio: 0.2, wickRatio: 0.05, volumeRatio: 0.9, numBearishCandles: -1
       }
     }),
-    {
-      name: 'Error', message: 'ValidationError: numBearishCandles must be greater than or equal to 1'
-    });
+      {
+        name: 'Error', message: 'ValidationError: numBearishCandles must be greater than or equal to 1'
+      });
     done();
   });
 
@@ -67,9 +67,9 @@ describe('White Shark Validation', () => {
         gapRatio: 0.2, wickRatio: 0.05, volumeRatio: 0.9, numBearishCandles: 0
       }
     }),
-    {
-      name: 'Error', message: 'ValidationError: numBearishCandles must be greater than or equal to 1'
-    });
+      {
+        name: 'Error', message: 'ValidationError: numBearishCandles must be greater than or equal to 1'
+      });
     done();
   });
 
@@ -83,9 +83,9 @@ describe('White Shark Validation', () => {
         gapRatio: 0.2, wickRatio: 0.05, volumeRatio: 0.9, numBearishCandles: 'a'
       }
     }),
-    {
-      name: 'Error', message: 'ValidationError: numBearishCandles must be a number'
-    });
+      {
+        name: 'Error', message: 'ValidationError: numBearishCandles must be a number'
+      });
     done();
   });
 
@@ -99,9 +99,9 @@ describe('White Shark Validation', () => {
         gapRatio: 0.2, wickRatio: 0.05, volumeRatio: 0.9, numBearishCandles: 11
       }
     }),
-    {
-      name: 'Error', message: 'ValidationError: numBearishCandles must be less than or equal to 10'
-    });
+      {
+        name: 'Error', message: 'ValidationError: numBearishCandles must be less than or equal to 10'
+      });
     done();
   });
 
@@ -115,9 +115,9 @@ describe('White Shark Validation', () => {
         gapRatio: 0.2, wickRatio: 0.05, volumeRatio: 0.9, numBearishCandles: 10
       }
     }),
-    {
-      name: 'Error', message: 'ValidationError: cryptoAmounts must contain 1 items'
-    });
+      {
+        name: 'Error', message: 'ValidationError: cryptoAmounts must contain 1 items'
+      });
     done();
   });
 
@@ -131,9 +131,9 @@ describe('White Shark Validation', () => {
         gapRatio: 0.2, wickRatio: 0.05, volumeRatio: 0.9, numBearishCandles: 10
       }
     }),
-    {
-      name: 'Error', message: 'ValidationError: markets must contain 1 items'
-    });
+      {
+        name: 'Error', message: 'ValidationError: markets must contain 1 items'
+      });
     done();
   });
 
@@ -147,7 +147,7 @@ describe('White Shark Validation', () => {
         numBearishCandles: 3, wickRatio: 0.05, volumeRatio: 0.9
       }
     }),
-    { name: 'Error', message: 'ValidationError: gapRatio is required' });
+      { name: 'Error', message: 'ValidationError: gapRatio is required' });
     done();
   });
 
@@ -161,7 +161,7 @@ describe('White Shark Validation', () => {
         numBearishCandles: 3, gapRatio: 0.2, volumeRatio: 0.9
       }
     }),
-    { name: 'Error', message: 'ValidationError: wickRatio is required' });
+      { name: 'Error', message: 'ValidationError: wickRatio is required' });
     done();
   });
 
@@ -175,12 +175,13 @@ describe('White Shark Validation', () => {
         numBearishCandles: 3, gapRatio: 0.2, wickRatio: 0.05
       }
     }),
-    { name: 'Error', message: 'ValidationError: volumeRatio is required' });
+      { name: 'Error', message: 'ValidationError: volumeRatio is required' });
     done();
   });
 });
 
 describe('White Shark Pattern Spotting', () => {
+  let stub;
   const strategy = new WhiteShark({
     markets: ['LTC-EUR'],
     cryptoAmounts: [10],
@@ -190,22 +191,22 @@ describe('White Shark Pattern Spotting', () => {
       numBearishCandles: 3, gapRatio: 0.2, buyRatio: 0.3, sellRatio: 0.4, wickRatio: 0.05, volumeRatio: 0.9
     }
   });
-  const stub = sinon.stub(strategy, 'orderCallback').returns({});
+
+  beforeEach(() => {
+    stub = sinon.stub(strategy, 'orderCallback').returns({});
+  });
+
+  afterEach(() => {
+    strategy.orderCallback.restore();
+  });
+
   strategy.logger = log4js.getLogger();
 
-  it('Should Not detect the pattern if the first candle is not bullish', (done) => {
+  it('Should Not detect the pattern if the first candle is bearish', (done) => {
     strategy.valueCallBack({ type: 'ticker', price: 107 });
     strategy.valueCallBack({
       type: 'candlesPastTenMinutes',
       payload: [{
-        base: 'ADA', close: 0.4115, counter: 'EUR', high: 0.4115, low: 0.4112, open: 0.4112, openTimeInISO: '2022-10-29T16:11:00.000Z', openTimeInMillis: 1667059860000, productId: 'ADA-EUR', sizeInMillis: null, volume: 751.41
-      }, {
-        base: 'ADA', close: 0.4121, counter: 'EUR', high: 0.4121, low: 0.4117, open: 0.4117, openTimeInISO: '2022-10-29T16:12:00.000Z', openTimeInMillis: 1667059920000, productId: 'ADA-EUR', sizeInMillis: null, volume: 13669.32
-      }, {
-        base: 'ADA', close: 0.4123, counter: 'EUR', high: 0.4123, low: 0.4118, open: 0.4118, openTimeInISO: '2022-10-29T16:13:00.000Z', openTimeInMillis: 1667059980000, productId: 'ADA-EUR', sizeInMillis: null, volume: 3379.31
-      }, {
-        base: 'ADA', close: 0.4126, counter: 'EUR', high: 0.4126, low: 0.4125, open: 0.4125, openTimeInISO: '2022-10-29T16:14:00.000Z', openTimeInMillis: 1667060040000, productId: 'ADA-EUR', sizeInMillis: null, volume: 3446.52
-      }, {
         base: 'ADA', close: 0.4119, counter: 'EUR', high: 0.4125, low: 0.4119, open: 0.4125, openTimeInISO: '2022-10-29T16:16:00.000Z', openTimeInMillis: 1667060160000, productId: 'ADA-EUR', sizeInMillis: null, volume: 4352.51
       }, {
         base: 'ADA', close: 0.4121, counter: 'EUR', high: 0.4121, low: 0.4121, open: 0.4121, openTimeInISO: '2022-10-29T16:17:00.000Z', openTimeInMillis: 1667060220000, productId: 'ADA-EUR', sizeInMillis: null, volume: 1203.75
@@ -216,9 +217,10 @@ describe('White Shark Pattern Spotting', () => {
       }, {
         base: 'ADA', close: 0.4165, counter: 'EUR', high: 0.4165, low: 0.4149, open: 0.4149, openTimeInISO: '2022-10-29T16:20:00.000Z', openTimeInMillis: 1667060400000, productId: 'ADA-EUR', sizeInMillis: null, volume: 15739.18
       }, {
-        base: 'ADA', close: 0.4183, counter: 'EUR', high: 0.4184, low: 0.4166, open: 0.4166, openTimeInISO: '2022-10-29T16:21:00.000Z', openTimeInMillis: 1667060460000, productId: 'ADA-EUR', sizeInMillis: null, volume: 4666.32
+        base: 'ADA', close: 0.4083, counter: 'EUR', high: 0.4184, low: 0.4166, open: 0.4166, openTimeInISO: '2022-10-29T16:21:00.000Z', openTimeInMillis: 1667060460000, productId: 'ADA-EUR', sizeInMillis: null, volume: 4666.32
       }]
     });
+    sinon.assert.calledOnce(stub);
     sinon.assert.calledWith(stub, new Order(OrderType.NO_OP, 'LTC-EUR', 0, 0, 0, 0), 'First candle not bullish');
     done();
   });
@@ -226,16 +228,20 @@ describe('White Shark Pattern Spotting', () => {
     strategy.valueCallBack({ type: 'ticker', price: 107 });
     strategy.valueCallBack({
       type: 'candlesPastTenMinutes',
-      payload: [{
-        base: 'ADA', close: 0.4115, counter: 'EUR', high: 0.4115, low: 0.4112, open: 0.4112, openTimeInISO: '2022-10-29T16:11:00.000Z', openTimeInMillis: 1667059860000, productId: 'ADA-EUR', sizeInMillis: null, volume: 751.41
-      },
-      {
-        base: 'ADA', close: 0.4121, counter: 'EUR', high: 0.4121, low: 0.4117, open: 0.4117, openTimeInISO: '2022-10-29T16:12:00.000Z', openTimeInMillis: 1667059920000, productId: 'ADA-EUR', sizeInMillis: null, volume: 13669.32
-      },
-      {
-        base: 'ADA', close: 0.4121, counter: 'EUR', high: 0.4121, low: 0.4117, open: 0.4117, openTimeInISO: '2022-10-29T16:12:00.000Z', openTimeInMillis: 1667059920000, productId: 'ADA-EUR', sizeInMillis: null, volume: 13669.32
-      }]
+      payload: [
+        {
+          base: 'ADA', close: 0.4045, counter: 'EUR', high: 0.4115, low: 0.4112, open: 0.4222, openTimeInISO: '2022-10-29T16:11:00.000Z', openTimeInMillis: 1667059860000, productId: 'ADA-EUR', sizeInMillis: null, volume: 751.41
+        }, {
+          base: 'ADA', close: 0.4015, counter: 'EUR', high: 0.4115, low: 0.4112, open: 0.3912, openTimeInISO: '2022-10-29T16:11:00.000Z', openTimeInMillis: 1667059860000, productId: 'ADA-EUR', sizeInMillis: null, volume: 751.41
+        },
+        {
+          base: 'ADA', close: 0.4011, counter: 'EUR', high: 0.4121, low: 0.4117, open: 0.4117, openTimeInISO: '2022-10-29T16:12:00.000Z', openTimeInMillis: 1667059920000, productId: 'ADA-EUR', sizeInMillis: null, volume: 13669.32
+        },
+        {
+          base: 'ADA', close: 0.4281, counter: 'EUR', high: 0.4121, low: 0.4117, open: 0.4119, openTimeInISO: '2022-10-29T16:12:00.000Z', openTimeInMillis: 1667059920000, productId: 'ADA-EUR', sizeInMillis: null, volume: 13669.32
+        }]
     });
+    sinon.assert.calledOnce(stub);
     sinon.assert.calledWith(stub, new Order(OrderType.NO_OP, 'LTC-EUR', 0, 0, 0, 0), 'Last 3 not bearish');
     done();
   });
@@ -258,6 +264,7 @@ describe('White Shark Pattern Spotting', () => {
           base: 'ADA', close: 0.4121, counter: 'EUR', high: 0.4121, low: 0.4117, open: 0.4117, openTimeInISO: '2022-10-29T16:12:00.000Z', openTimeInMillis: 1667059920000, productId: 'ADA-EUR', sizeInMillis: null, volume: 13669.32
         }]
     });
+    sinon.assert.calledOnce(stub);
     sinon.assert.calledWith(stub, new Order(OrderType.NO_OP, 'LTC-EUR', 0, 0, 0, 0), 'Last 3 not bearish');
     done();
   });
@@ -267,18 +274,19 @@ describe('White Shark Pattern Spotting', () => {
     strategy.valueCallBack({
       type: 'candlesPastTenMinutes',
       payload: [{
-        base: 'ADA', close: 0.4115, counter: 'EUR', high: 0.4115, low: 0.4112, open: 0.4112, openTimeInISO: '2022-10-29T16:11:00.000Z', openTimeInMillis: 1667059860000, productId: 'ADA-EUR', sizeInMillis: null, volume: 751.41
+        base: 'ADA', close: 0.4115, counter: 'EUR', high: 0.4115, low: 0.4112, open: 0.4222, openTimeInISO: '2022-10-29T16:11:00.000Z', openTimeInMillis: 1667059860000, productId: 'ADA-EUR', sizeInMillis: null, volume: 751.41
       },
       {
-        base: 'ADA', close: 0.4121, counter: 'EUR', high: 0.4121, low: 0.4117, open: 0.4117, openTimeInISO: '2022-10-29T16:12:00.000Z', openTimeInMillis: 1667059861000, productId: 'ADA-EUR', sizeInMillis: null, volume: 13669.32
+        base: 'ADA', close: 0.4121, counter: 'EUR', high: 0.4121, low: 0.4117, open: 0.4227, openTimeInISO: '2022-10-29T16:12:00.000Z', openTimeInMillis: 1667059861000, productId: 'ADA-EUR', sizeInMillis: null, volume: 13669.32
       },
       {
-        base: 'ADA', close: 0.4121, counter: 'EUR', high: 0.4121, low: 0.4117, open: 0.4117, openTimeInISO: '2022-10-29T16:12:00.000Z', openTimeInMillis: 1667059862000, productId: 'ADA-EUR', sizeInMillis: null, volume: 13669.32
+        base: 'ADA', close: 0.4121, counter: 'EUR', high: 0.4121, low: 0.4117, open: 0.4227, openTimeInISO: '2022-10-29T16:12:00.000Z', openTimeInMillis: 1667059862000, productId: 'ADA-EUR', sizeInMillis: null, volume: 13669.32
       },
       {
-        base: 'ADA', close: 0.4121, counter: 'EUR', high: 0.4121, low: 0.4117, open: 0.4117, openTimeInISO: '2022-10-29T16:12:00.000Z', openTimeInMillis: 1667059863000, productId: 'ADA-EUR', sizeInMillis: null, volume: 13669.32
+        base: 'ADA', close: 0.4521, counter: 'EUR', high: 0.4121, low: 0.4117, open: 0.4122, openTimeInISO: '2022-10-29T16:12:00.000Z', openTimeInMillis: 1667059863000, productId: 'ADA-EUR', sizeInMillis: null, volume: 13669.32
       }]
     });
+    sinon.assert.calledOnce(stub);
     sinon.assert.calledWith(stub, new Order(OrderType.NO_OP, 'LTC-EUR', 0, 0, 0, 0), 'Negative Gap');
     done();
   });
@@ -297,6 +305,7 @@ describe('White Shark Pattern Spotting', () => {
         base: 'ADA', close: 0.4121, counter: 'EUR', high: 0.4121, low: 0.4117, open: 0.4117, openTimeInISO: '2022-10-29T16:12:00.000Z', openTimeInMillis: 1667059920000, productId: 'ADA-EUR', sizeInMillis: null, volume: 13669.32
       }]
     });
+    sinon.assert.calledOnce(stub);
     sinon.assert.calledWith(stub, new Order(OrderType.NO_OP, 'LTC-EUR', 0, 0, 0, 0), 'Not Enough candles (needed 4)');
     done();
   });
@@ -324,18 +333,16 @@ describe('White Shark Pattern Spotting', () => {
         base: 'ADA', close: 0.4121, counter: 'EUR', high: 0.4121, low: 0.4121, open: 0.4121, openTimeInISO: '2022-10-29T16:17:00.000Z', openTimeInMillis: 1667060220000, productId: 'ADA-EUR', sizeInMillis: null, volume: 1203.75
       },
       {
-        base: 'ADA', close: 0.4137, counter: 'EUR', high: 0.4137, low: 0.413, open: 0.413, openTimeInISO: '2022-10-29T16:18:00.000Z', openTimeInMillis: 1667060280000, productId: 'ADA-EUR', sizeInMillis: null, volume: 7693.33
+        base: 'ADA', close: 0.411, counter: 'EUR', high: 0.4137, low: 0.413, open: 0.413, openTimeInISO: '2022-10-29T16:18:00.000Z', openTimeInMillis: 1667060280000, productId: 'ADA-EUR', sizeInMillis: null, volume: 7693.33
       },
       {
-        base: 'ADA', close: 0.4143, counter: 'EUR', high: 0.4143, low: 0.4138, open: 0.414, openTimeInISO: '2022-10-29T16:19:00.000Z', openTimeInMillis: 1667060340000, productId: 'ADA-EUR', sizeInMillis: null, volume: 497.9
+        base: 'ADA', close: 0.410, counter: 'EUR', high: 0.4143, low: 0.4138, open: 0.411, openTimeInISO: '2022-10-29T16:19:00.000Z', openTimeInMillis: 1667060340000, productId: 'ADA-EUR', sizeInMillis: null, volume: 497.9
       },
       {
-        base: 'ADA', close: 0.4165, counter: 'EUR', high: 0.4165, low: 0.4149, open: 0.4149, openTimeInISO: '2022-10-29T16:20:00.000Z', openTimeInMillis: 1667060400000, productId: 'ADA-EUR', sizeInMillis: null, volume: 15739.18
-      },
-      {
-        base: 'ADA', close: 0.4183, counter: 'EUR', high: 0.4184, low: 0.4166, open: 0.4166, openTimeInISO: '2022-10-29T16:21:00.000Z', openTimeInMillis: 1667060460000, productId: 'ADA-EUR', sizeInMillis: null, volume: 4666.32
+        base: 'ADA', close: 0.409, counter: 'EUR', high: 0.4184, low: 0.4166, open: 0.310, openTimeInISO: '2022-10-29T16:21:00.000Z', openTimeInMillis: 1667060460000, productId: 'ADA-EUR', sizeInMillis: null, volume: 4666.32
       }]
     });
+    sinon.assert.calledOnce(stub);
     sinon.assert.calledWith(stub, new Order(OrderType.NO_OP, 'LTC-EUR', 0, 0, 0, 0), 'Not consecutive candles');
     done();
   });

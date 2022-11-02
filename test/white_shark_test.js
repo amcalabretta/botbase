@@ -224,21 +224,19 @@ describe('White Shark Pattern Spotting', () => {
     sinon.assert.calledWith(stub, new Order(OrderType.NO_OP, 'LTC-EUR', 0, 0, 0, 0), 'First candle not bullish');
     done();
   });
-  it('Should Not detect the pattern if the first candle is bullish and there are less than x bearish candles before (1)', (done) => {
+  it('Should Not detect the pattern if the first candle is bullish and there are less than x bearish candles before', (done) => {
     strategy.valueCallBack({ type: 'ticker', price: 107 });
     strategy.valueCallBack({
       type: 'candlesPastTenMinutes',
       payload: [
         {
-          base: 'ADA', close: 0.4045, counter: 'EUR', high: 0.4115, low: 0.4112, open: 0.4222, openTimeInISO: '2022-10-29T16:11:00.000Z', openTimeInMillis: 1667059860000, productId: 'ADA-EUR', sizeInMillis: null, volume: 751.41
+          base: 'ADA', close: 0.4119, counter: 'EUR', high: 0.4125, low: 0.4119, open: 0.4125, openTimeInISO: '2022-10-29T16:16:00.000Z', openTimeInMillis: 1667060160000, productId: 'ADA-EUR', sizeInMillis: null, volume: 4352.51
         }, {
-          base: 'ADA', close: 0.4015, counter: 'EUR', high: 0.4115, low: 0.4112, open: 0.3912, openTimeInISO: '2022-10-29T16:11:00.000Z', openTimeInMillis: 1667059860000, productId: 'ADA-EUR', sizeInMillis: null, volume: 751.41
-        },
-        {
-          base: 'ADA', close: 0.4011, counter: 'EUR', high: 0.4121, low: 0.4117, open: 0.4117, openTimeInISO: '2022-10-29T16:12:00.000Z', openTimeInMillis: 1667059920000, productId: 'ADA-EUR', sizeInMillis: null, volume: 13669.32
-        },
-        {
-          base: 'ADA', close: 0.4281, counter: 'EUR', high: 0.4121, low: 0.4117, open: 0.4119, openTimeInISO: '2022-10-29T16:12:00.000Z', openTimeInMillis: 1667059920000, productId: 'ADA-EUR', sizeInMillis: null, volume: 13669.32
+          base: 'ADA', close: 0.4121, counter: 'EUR', high: 0.4121, low: 0.4121, open: 0.4121, openTimeInISO: '2022-10-29T16:17:00.000Z', openTimeInMillis: 1667060220000, productId: 'ADA-EUR', sizeInMillis: null, volume: 1203.75
+        }, {
+          base: 'ADA', close: 0.4137, counter: 'EUR', high: 0.4137, low: 0.413, open: 0.413, openTimeInISO: '2022-10-29T16:18:00.000Z', openTimeInMillis: 1667060280000, productId: 'ADA-EUR', sizeInMillis: null, volume: 7693.33
+        }, {
+          base: 'ADA', close: 0.4443, counter: 'EUR', high: 0.4143, low: 0.4138, open: 0.414, openTimeInISO: '2022-10-29T16:19:00.000Z', openTimeInMillis: 1667060340000, productId: 'ADA-EUR', sizeInMillis: null, volume: 497.9
         }]
     });
     sinon.assert.calledOnce(stub);
@@ -246,28 +244,7 @@ describe('White Shark Pattern Spotting', () => {
     done();
   });
 
-  it('Should Not detect the pattern if the first candle is bullish and there are less than x bearish candles before (2)', (done) => {
-    strategy.valueCallBack({ type: 'ticker', price: 107 });
-    strategy.valueCallBack({
-      type: 'candlesPastTenMinutes',
-      payload: [
-        {
-          base: 'ADA', close: 0.4115, counter: 'EUR', high: 0.4115, low: 0.4112, open: 0.4112, openTimeInISO: '2022-10-29T16:11:00.000Z', openTimeInMillis: 1667059860000, productId: 'ADA-EUR', sizeInMillis: null, volume: 751.41
-        },
-        {
-          base: 'ADA', close: 0.4121, counter: 'EUR', high: 0.4121, low: 0.4117, open: 0.4117, openTimeInISO: '2022-10-29T16:12:00.000Z', openTimeInMillis: 1667059920000, productId: 'ADA-EUR', sizeInMillis: null, volume: 13669.32
-        },
-        {
-          base: 'ADA', close: 0.4121, counter: 'EUR', high: 0.4121, low: 0.4117, open: 0.4117, openTimeInISO: '2022-10-29T16:12:00.000Z', openTimeInMillis: 1667059920000, productId: 'ADA-EUR', sizeInMillis: null, volume: 13669.32
-        },
-        {
-          base: 'ADA', close: 0.4121, counter: 'EUR', high: 0.4121, low: 0.4117, open: 0.4117, openTimeInISO: '2022-10-29T16:12:00.000Z', openTimeInMillis: 1667059920000, productId: 'ADA-EUR', sizeInMillis: null, volume: 13669.32
-        }]
-    });
-    sinon.assert.calledOnce(stub);
-    sinon.assert.calledWith(stub, new Order(OrderType.NO_OP, 'LTC-EUR', 0, 0, 0, 0), 'Last 3 not bearish');
-    done();
-  });
+ 
 
   it('Should Not detect the pattern if the gap is negative (i.e. if the opening of the last candle is not above the opening of the previous one)', (done) => {
     strategy.valueCallBack({ type: 'ticker', price: 107 });

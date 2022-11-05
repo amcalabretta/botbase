@@ -67,10 +67,10 @@ class WhiteShark {
    */
 
   candles(value) {
-    this.logger.info(`Candles received:${JSON.stringify(value)}`);
+    this.logger.trace(`Candles received:${JSON.stringify(value)}`);
     const candles = value.map((c) => new Candle(c));
     candles.forEach((candle, idx) => {
-      this.logger.info(`${idx} - Ts:${candle.ts},${candle.isBullish ? 'Bullish' : 'Bearish'}, 
+      this.logger.trace(`${idx} - Ts:${candle.ts},${candle.isBullish ? 'Bullish' : 'Bearish'}, 
                       lo:${candle.low.getValue()}, hi:${candle.high.getValue()}, 
                       op:${candle.open.getValue()}, cl:${candle.close.getValue()}, 
                       vol:${candle.volume.getValue()}`);
@@ -112,7 +112,7 @@ class WhiteShark {
     // third check: gap is positive
     if (gap.isNegative()) { //
       this.logger.info(`[3] - [Negative] Gap ${gap.getValue()} is negative, bailing out.`);
-      this.orderCallback(new Order(OrderType.NO_OP, this.market, 0, 0, 0, 0), 'Negative Gap');
+      this.orderCallback(new Order(OrderType.NO_OP, this.market, 0, 0, 0, 0), `Negative Gap (${gap.getValue()})`);
       return;
     }
     this.logger.info(`[3] - [Affirmative] Gap ${gap.getValue()} is positive, proceeding.`);
@@ -124,9 +124,10 @@ class WhiteShark {
       this.orderCallback(new Order(OrderType.NO_OP, 0, 0, 0, 0, 0), 'Null lowerwick on last candle');
       return;
     }
+    this.logger.info(`[4] - [Affirmative] Last Candle lowerwick is not zero (${wick.getValue()})`);
     if (wick.asRatioOf(gap).moreThan(this.wickRatio)) {
-      this.logger.info(`[5] - [Negative] Lower Wick ${wick.getValue()} as a ratio of the gap ${gap.getValue()} is higher than ${this.wickRatio.getValue()}, bailing out`);
-      this.orderCallback(new Order(OrderType.NO_OP, 0, 0, 0, 0, 0));
+      this.logger.info(`[5] - [Negative] Last Candle Lower Wick ${wick.getValue()} as a ratio of the gap ${gap.getValue()} is higher than ${this.wickRatio.getValue()}, bailing out`);
+      this.orderCallback(new Order(OrderType.NO_OP, this.market, 0, 0, 0, 0),`Lower wick (${wick.getValue()}) as a ratio of the gap ${gap.getValue()} is higher than ${this.wickRatio.getValue()} - ${wick.asRatioOf(gap).getValue()}`);
       return;
     }
     this.logger.info(`[5] - [Affirmative] Lower Wick ${wick.getValue()} as a ratio of the gap ${gap.getValue()} is lower than ${this.wickRatio.getValue()}, (actual ratio:${wick.asRatioOf(gap).getValue()})Proceeding`);
@@ -134,7 +135,7 @@ class WhiteShark {
     // fifth and last check: The ratio between the second to last candle and the last one must be lower than the volume ratio.
     if (secondLastCandle.volume.asRatioOf(lastCandle.volume).isMoreThan(this.volumeRatio)) {
       this.logger.info(` Second to last candle Volume  ${secondLastCandle.volume.getValue()} as a ratio of the gap ${gap.getValue()} is higher than ${this.volumeRatio.getValue()}, bailing out`);
-      this.orderCallback(new Order(OrderType.NO_OP, 0, 0, 0, 0, 0));
+      this.orderCallback(new Order(OrderType.NO_OP, this.market, 0, 0, 0, 0));
       return;
     }
     // preparing the order..

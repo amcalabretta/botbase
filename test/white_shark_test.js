@@ -13,7 +13,7 @@ const { Order } = require('../model/order');
 log4js.configure({
   appenders: { out: { type: 'stdout' } },
   // put 'level' (info/debug) instead of 'off' to see the logs as 'level'
-  categories: { default: { appenders: ['out'], level: 'off' } },
+  categories: { default: { appenders: ['out'], level: 'info' } },
 });
 
 describe('White Shark Validation', () => {
@@ -246,25 +246,22 @@ describe('White Shark Pattern Spotting', () => {
 
  
 
-  it('Should Not detect the pattern if the gap is negative (i.e. if the opening of the last candle is not above the opening of the previous one)', (done) => {
+  it('FFF Should Not detect the pattern if the gap is negative (i.e. if the opening of the last candle is not above the opening of the previous one)', (done) => {
     strategy.valueCallBack({ type: 'ticker', price: 107 });
     strategy.valueCallBack({
       type: 'candlesPastTenMinutes',
       payload: [{
-        base: 'ADA', close: 0.4115, counter: 'EUR', high: 0.4115, low: 0.4112, open: 0.4222, openTimeInISO: '2022-10-29T16:11:00.000Z', openTimeInMillis: 1667059860000, productId: 'ADA-EUR', sizeInMillis: null, volume: 751.41
-      },
-      {
-        base: 'ADA', close: 0.4121, counter: 'EUR', high: 0.4121, low: 0.4117, open: 0.4227, openTimeInISO: '2022-10-29T16:12:00.000Z', openTimeInMillis: 1667059861000, productId: 'ADA-EUR', sizeInMillis: null, volume: 13669.32
-      },
-      {
-        base: 'ADA', close: 0.4121, counter: 'EUR', high: 0.4121, low: 0.4117, open: 0.4227, openTimeInISO: '2022-10-29T16:12:00.000Z', openTimeInMillis: 1667059862000, productId: 'ADA-EUR', sizeInMillis: null, volume: 13669.32
-      },
-      {
-        base: 'ADA', close: 0.4521, counter: 'EUR', high: 0.4121, low: 0.4117, open: 0.4122, openTimeInISO: '2022-10-29T16:12:00.000Z', openTimeInMillis: 1667059863000, productId: 'ADA-EUR', sizeInMillis: null, volume: 13669.32
+        base: 'ADA', close: 0.4119, counter: 'EUR', high: 0.4125, low: 0.4119, open: 0.4125, openTimeInISO: '2022-10-29T16:16:00.000Z', openTimeInMillis: 1667060160000, productId: 'ADA-EUR', sizeInMillis: null, volume: 4352.51
+      }, {
+        base: 'ADA', close: 0.4121, counter: 'EUR', high: 0.4121, low: 0.4121, open: 0.4122, openTimeInISO: '2022-10-29T16:17:00.000Z', openTimeInMillis: 1667060220000, productId: 'ADA-EUR', sizeInMillis: null, volume: 1203.75
+      }, {
+        base: 'ADA', close: 0.4137, counter: 'EUR', high: 0.4137, low: 0.413, open: 0.4138, openTimeInISO: '2022-10-29T16:18:00.000Z', openTimeInMillis: 1667060280000, productId: 'ADA-EUR', sizeInMillis: null, volume: 7693.33
+      }, {
+        base: 'ADA', close: 0.4443, counter: 'EUR', high: 0.4143, low: 0.4138, open: 0.405, openTimeInISO: '2022-10-29T16:19:00.000Z', openTimeInMillis: 1667060340000, productId: 'ADA-EUR', sizeInMillis: null, volume: 497.9
       }]
     });
     sinon.assert.calledOnce(stub);
-    sinon.assert.calledWith(stub, new Order(OrderType.NO_OP, 'LTC-EUR', 0, 0, 0, 0), 'Negative Gap');
+    sinon.assert.calledWith(stub, new Order(OrderType.NO_OP, 'LTC-EUR', 0, 0, 0, 0), 'Negative Gap (-0.0088)');
     done();
   });
 

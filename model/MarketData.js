@@ -18,16 +18,16 @@ class MarketData {
   /**
    * Function to take care of the s.c. heartbit, reporting the last trade id.
    *
-   * @param {*} heartBit
+   * @param {*} hB
    * @returns
    */
-  heartBit = (heartBit) => {
-    const time = moment(heartBit.time);
+  heartBit = (hB) => {
+    const time = moment(hB.time);
     if (time.isAfter(this.lastTimeStamp)) {
-      this.lastTradeId = heartBit.last_trade_id;
+      this.lastTradeId = hB.last_trade_id;
       this.lastTimeStamp = time;
     }
-  }
+  };
 
   /**
    * @param {*} ticker
@@ -40,7 +40,7 @@ class MarketData {
       tradeId: ticker.trade_id,
       size: ticker.last_size
     });
-  }
+  };
 
   getTickers = () => this.prices
 }

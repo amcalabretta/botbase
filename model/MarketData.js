@@ -15,34 +15,34 @@ class MarketData {
     this.callBack = callBack;
   }
 
-    /**
-     * Function to take care of the s.c. heartbit, reporting the last trade id.
-     *
-     * @param {*} heartBit
-     * @returns
-     */
-    heartBit = (heartBit) => {
-      const time = moment(heartBit.time);
-      if (time.isAfter(this.lastTimeStamp)) {
-        this.lastTradeId = heartBit.last_trade_id;
-        this.lastTimeStamp = time;
-      }
+  /**
+   * Function to take care of the s.c. heartbit, reporting the last trade id.
+   *
+   * @param {*} heartBit
+   * @returns
+   */
+  heartBit = (heartBit) => {
+    const time = moment(heartBit.time);
+    if (time.isAfter(this.lastTimeStamp)) {
+      this.lastTradeId = heartBit.last_trade_id;
+      this.lastTimeStamp = time;
     }
+  }
 
-    /**
-     * @param {*} ticker
-     */
-    ticker = (ticker) => {
-      this.prices.push({
-        seq: ticker.sequence,
-        price: new BigDecimal(ticker.price),
-        time: ticker.time,
-        tradeId: ticker.trade_id,
-        size: ticker.last_size
-      });
-    }
+  /**
+   * @param {*} ticker
+   */
+  ticker = (ticker) => {
+    this.prices.push({
+      seq: ticker.sequence,
+      price: new BigDecimal(ticker.price),
+      time: ticker.time,
+      tradeId: ticker.trade_id,
+      size: ticker.last_size
+    });
+  }
 
-    getTickers = () => this.prices
+  getTickers = () => this.prices
 }
 
 exports.MarketData = MarketData;

@@ -3,7 +3,7 @@
  * @param {*} market
  */
 const moment = require('moment');
-const IgushArray = require('igusharray');
+const IgushArray = require('../external/igusharray/igushArray');
 const { BigDecimal } = require('./bigdecimal');
 
 class MarketData {

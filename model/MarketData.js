@@ -3,10 +3,10 @@
  * @param {*} market
  */
 const moment = require('moment');
-const IgushArray = require('../external/igusharray/igushArray');
-const { BigDecimal,BigDecimalZero } = require('./bigdecimal');
-const { OrderReceived } = require('../model/orders/order_received');
 const MegaHash = require('megahash');
+const IgushArray = require('../external/igusharray/igushArray');
+const { BigDecimal, BigDecimalZero } = require('./bigdecimal');
+const { OrderReceived } = require('./orders/order_received');
 
 class MarketData {
   constructor(market, logger, callBack) {
@@ -38,21 +38,21 @@ class MarketData {
       this.lastSequence = hB.sequence;
       if (this.lastTradeId !== hB.last_trade_id) {
         this.lastTradeId = hB.last_trade_id;
-        this.logger.info(`[HB] Current Last trade:${this.lastTradeId}`)
-        this.logger.info(`[HB] Current Last sequence:${this.lastSequence}`)
+        this.logger.info(`[HB] Current Last trade:${this.lastTradeId}`);
+        this.logger.info(`[HB] Current Last sequence:${this.lastSequence}`);
       }
     }
   };
 
   orderAdded = (order) => {
     const orderReceived = new OrderReceived(order);
-    if (orderReceived.side==='buy') {
+    if (orderReceived.side === 'buy') {
       this.buyOrders.set(order.order_id, orderReceived);
-      this.numBuyOrders++;
+      this.numBuyOrders += 1;
       this.sizeBuyOrders = this.sizeBuyOrders.add(orderReceived.size);
     } else {
       this.sellOrders.set(order.order_id, orderReceived);
-      this.numSellOrders++;
+      this.numSellOrders += 1;
       this.sizeSellOrders = this.sizeBuyOrders.add(orderReceived.size);
     }
     this.log(`Sell Orders:${this.numSellOrders} / Total Size:${this.sizeSellOrders.getValue()}`);

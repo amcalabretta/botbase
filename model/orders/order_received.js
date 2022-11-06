@@ -2,7 +2,7 @@
 
 'use strict';
 
-const {BigDecimal} = require('../bigdecimal');
+const { BigDecimal } = require('../bigdecimal');
 
 /**
  * {"order_id":"6326d127-ff39-4c9f-9025-705e782070d2",

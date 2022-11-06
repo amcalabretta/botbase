@@ -108,10 +108,10 @@ async function run() {
   });
 
   client.ws.on(WebSocketEvent.ON_OPEN, async () => {
-    for (const wsChannel of wsChannels) {
+    wsChannels.forEach((wsChannel) => {
       log4js.getLogger().info(`Subscribing to ${wsChannel.name}`);
-      await client.ws.subscribe(wsChannel);
-    }
+      client.ws.subscribe(wsChannel);
+    });
   });
   client.ws.connect();
 }

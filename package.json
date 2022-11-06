@@ -10,7 +10,6 @@
   "dependencies": {
     "coinbase-pro-node": "^5.0.0",
     "easy-table": "^1.2.0",
-    "fast-json": "^2.1.1",
     "joi": "^17.6.2",
     "js-big-decimal": "^1.3.9",
     "js-yaml": "^4.1.0",

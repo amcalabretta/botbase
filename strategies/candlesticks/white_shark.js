@@ -19,7 +19,7 @@
  *  - Use the technical indicators to take into account volatility.
  *  - Add the wick calculation
 */
-/* eslint max-len: ["error", { "code": 220 }] */
+/* eslint max-len: ["error", { "code": 250 }] */
 const Joi = require('joi');
 const { OrderType } = require('../../model/constants');
 const { Order } = require('../../model/order');

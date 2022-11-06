@@ -4,7 +4,7 @@
 'use strict';
 
 const { BigDecimal } = require('./bigdecimal');
-// TODO: Add the body to the attributes (it is handy)
+// TODO: Add the body to the attributes (it is handy) and use fastJson to create as we did with the orders coming from coinbase
 class Candle {
   constructor(values) {
     this.close = new BigDecimal(values.close);

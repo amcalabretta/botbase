@@ -41,3 +41,4 @@ class BigDecimal extends bigDecimal {
 }
 
 exports.BigDecimal = BigDecimal;
+exports.BigDecimalZero = ZERO;

@@ -2,8 +2,7 @@
 
 'use strict';
 
-/** For performance reasons we moved to this library */
-const FastJson = require('fast-json');
+const {BigDecimal} = require('../bigdecimal');
 
 /**
  * {"order_id":"6326d127-ff39-4c9f-9025-705e782070d2",
@@ -18,12 +17,12 @@ const FastJson = require('fast-json');
  */
 
 class OrderReceived {
-  constructor(values) {
-    // FIXME: this class should be completed
-    this.id = values.id;
-    FastJson.on('order_id', (value) => {
-      this.id = value;
-    });
+  constructor(orderMessage) {
+    this.id = orderMessage.order_id;
+    this.type = orderMessage.order_type;
+    this.size = new BigDecimal(orderMessage.size);
+    this.price = new BigDecimal(orderMessage.price);
+    this.side = orderMessage.side;
     Object.freeze(this);
   }
 }

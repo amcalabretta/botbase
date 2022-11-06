@@ -20,37 +20,26 @@ const {
 const { authentication } = require('../model/auth');
 const { MarketData } = require('../model/MarketData');
 
-/** The ticker channel provides real-time price updates every time a match happens.
- * It batches updates in case of cascading matches, greatly reducing bandwidth requirements. */
-const tickerChannel = {
-  name: WebSocketChannelName.TICKER,
-  product_ids: [workerData.market],
-};
+/** Websocket channels */
+const wsChannels = [
+  {
+    name: WebSocketChannelName.TICKER,
+    product_ids: [workerData.market],
+  },
+  {
+    name: WebSocketChannelName.HEARTBEAT,
+    product_ids: [workerData.market],
+  },
+  {
+    name: WebSocketChannelName.FULL,
+    product_ids: [workerData.market],
+  },
 
-/** To receive heartbeat messages for specific products once a second subscribe to
- * the heartbeat channel.
- * Heartbeats also include sequence numbers and last trade ids that can be used to verify
- * no messages were missed. */
-const heartbeatChannel = {
-  name: WebSocketChannelName.HEARTBEAT,
-  product_ids: [workerData.market],
-};
-
-/** The full channel provides real-time updates on orders and trades.
- * These updates can be applied on to a level 3 order book snapshot to maintain
- * an accurate and up-to-date copy of the exchange order book. */
-const fullChannel = {
-  name: WebSocketChannelName.FULL,
-  product_ids: [workerData.market],
-};
-
-/** The easiest way to keep a snapshot of the order book is to use the level2 channel.
- * It guarantees delivery of all updates, which reduce a lot of the overhead
- * required when consuming the full channel. */
-const l2Channel = {
-  name: WebSocketChannelName.LEVEL2,
-  product_ids: [workerData.market],
-};
+  {
+    name: WebSocketChannelName.LEVEL2,
+    product_ids: [workerData.market],
+  },
+];
 
 const broadCastChannel = new BroadcastChannel('botbase.broadcast');
 
@@ -72,15 +61,17 @@ const serializeCandles = (candles) => {
 log4js.configure({
   appenders: {
     local: { type: 'file', filename: `${workerData.conf.logging.logDir}/marketdata-worker-${workerData.market}.log` },
-    ticker: { type: 'file', filename: `${workerData.conf.logging.logDir}/ticker.log` }
+    ticker: { type: 'file', filename: `${workerData.conf.logging.logDir}/ticker.log` },
+    md: { type: 'file', filename: `${workerData.conf.logging.logDir}/marketdata-${workerData.market}.log` }
   },
   categories: {
-    default: { appenders: ['local'], level: 'debug' }
+    default: { appenders: ['local'], level: 'debug' },
+    md: { appenders: ['md'], level: 'debug' }
   }
 });
 
 async function run() {
-  const md = new MarketData(workerData.market);
+  const md = new MarketData(workerData.market, log4js.getLogger('md'));
   log4js.getLogger().info(`Starting up market data worker, market:${workerData.market}`);
   const client = new CoinbasePro(authentication);
   setTimeout(() => {
@@ -101,22 +92,14 @@ async function run() {
   }, 1000);
   client.ws.on(WebSocketEvent.ON_MESSAGE, (message) => {
     switch (message.type) {
-      case 'received':
-        // log4js.getLogger().info(`-----"${JSON.stringify(message)}".`);
-        break;
-      case 'match':
-        // log4js.getLogger().info(`-----"${JSON.stringify(message)}".`);
-        break;
-      case 'ticker':
-        md.ticker(message);
-        break;
-      case 'full':
-        break;
       case 'heartbeat':
         md.heartBit(message);
         break;
+      case 'received':
+        md.orderAdded(message);
+        break;
       default:
-            // log4js.getLogger().info(`-----"${message.type}".`);
+        log4js.getLogger().info(`Unknown type:${message.type}`);
     }
   });
 
@@ -125,12 +108,10 @@ async function run() {
   });
 
   client.ws.on(WebSocketEvent.ON_OPEN, async () => {
-    await client.ws.subscribe(tickerChannel);
-    log4js.getLogger().info(`Channel:${tickerChannel.name}`);
-    await client.ws.subscribe(heartbeatChannel);
-    log4js.getLogger().info(`Channel:${heartbeatChannel.name}`);
-    await client.ws.subscribe(fullChannel);
-    await client.ws.subscribe(l2Channel);
+    for (const wsChannel of wsChannels) {
+      log4js.getLogger().info(`Subscribing to ${wsChannel.name}`);
+      await client.ws.subscribe(wsChannel);
+    }
   });
   client.ws.connect();
 }

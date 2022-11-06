@@ -4,7 +4,7 @@
 'use strict';
 
 const { BigDecimal } = require('./bigdecimal');
-//TODO: Add the body to the attributes (it is handy)
+// TODO: Add the body to the attributes (it is handy)
 class Candle {
   constructor(values) {
     this.close = new BigDecimal(values.close);

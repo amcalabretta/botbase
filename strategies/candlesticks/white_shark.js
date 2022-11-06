@@ -75,7 +75,7 @@ class WhiteShark {
                       op:${candle.open.getValue()}, cl:${candle.close.getValue()}, 
                       vol:${candle.volume.getValue()}`);
     });
-    if (candles.length < this.numBearishCandles +1) {
+    if (candles.length < this.numBearishCandles + 1) {
       this.logger.info(`[0] - [Negative] Not Enough candles ${candles.length} vs ${this.numBearishCandles + 1}, bailing out.`);
       this.orderCallback(new Order(OrderType.NO_OP, this.market, 0, 0, 0, 0, 0), `Not Enough candles (needed ${this.numBearishCandles + 1})`);
       return;
@@ -88,8 +88,8 @@ class WhiteShark {
         return;
       }
     }
-    const lastCandle = candles[candles.length-1];
-    const secondLastCandle = candles[candles.length-2];
+    const lastCandle = candles[candles.length - 1];
+    const secondLastCandle = candles[candles.length - 2];
     // first check: the last candle is green.
     if (lastCandle.isBearish) {
       this.logger.info('[1] - [Negative] Last candle is not bullish, bailing out.');
@@ -127,7 +127,7 @@ class WhiteShark {
     this.logger.info(`[4] - [Affirmative] Last Candle lowerwick is not zero (${wick.getValue()})`);
     if (wick.asRatioOf(gap).moreThan(this.wickRatio)) {
       this.logger.info(`[5] - [Negative] Last Candle Lower Wick ${wick.getValue()} as a ratio of the gap ${gap.getValue()} is higher than ${this.wickRatio.getValue()}, bailing out`);
-      this.orderCallback(new Order(OrderType.NO_OP, this.market, 0, 0, 0, 0),`Lower wick (${wick.getValue()}) as a ratio of the gap ${gap.getValue()} is higher than ${this.wickRatio.getValue()} - ${wick.asRatioOf(gap).getValue()}`);
+      this.orderCallback(new Order(OrderType.NO_OP, this.market, 0, 0, 0, 0), `Lower wick (${wick.getValue()}) as a ratio of the gap ${gap.getValue()} is higher than ${this.wickRatio.getValue()} - ${wick.asRatioOf(gap).getValue()}`);
       return;
     }
     this.logger.info(`[5] - [Affirmative] Lower Wick ${wick.getValue()} as a ratio of the gap ${gap.getValue()} is lower than ${this.wickRatio.getValue()}, (actual ratio:${wick.asRatioOf(gap).getValue()})Proceeding`);

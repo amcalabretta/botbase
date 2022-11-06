@@ -13,7 +13,7 @@ const { Order } = require('../model/order');
 log4js.configure({
   appenders: { out: { type: 'stdout' } },
   // put 'level' (info/debug) instead of 'off' to see the logs as 'level'
-  categories: { default: { appenders: ['out'], level: 'info' } },
+  categories: { default: { appenders: ['out'], level: 'off' } },
 });
 
 describe('White Shark Validation', () => {
@@ -21,7 +21,7 @@ describe('White Shark Validation', () => {
     assert.throws(() => new WhiteShark({
       markets: ['LTC-EUR'], cryptoAmounts: [10], euroAmount: 30, dollarAmount: 0
     }),
-      { name: 'Error', message: 'subConf Section missing' });
+    { name: 'Error', message: 'subConf Section missing' });
     done();
   });
 
@@ -35,9 +35,9 @@ describe('White Shark Validation', () => {
         gapRatio: 0.2, wickRatio: 0.05, volumeRatio: 0.9
       }
     }),
-      {
-        name: 'Error', message: 'ValidationError: numBearishCandles is required'
-      });
+    {
+      name: 'Error', message: 'ValidationError: numBearishCandles is required'
+    });
     done();
   });
 
@@ -51,9 +51,9 @@ describe('White Shark Validation', () => {
         gapRatio: 0.2, wickRatio: 0.05, volumeRatio: 0.9, numBearishCandles: -1
       }
     }),
-      {
-        name: 'Error', message: 'ValidationError: numBearishCandles must be greater than or equal to 1'
-      });
+    {
+      name: 'Error', message: 'ValidationError: numBearishCandles must be greater than or equal to 1'
+    });
     done();
   });
 
@@ -67,9 +67,9 @@ describe('White Shark Validation', () => {
         gapRatio: 0.2, wickRatio: 0.05, volumeRatio: 0.9, numBearishCandles: 0
       }
     }),
-      {
-        name: 'Error', message: 'ValidationError: numBearishCandles must be greater than or equal to 1'
-      });
+    {
+      name: 'Error', message: 'ValidationError: numBearishCandles must be greater than or equal to 1'
+    });
     done();
   });
 
@@ -83,9 +83,9 @@ describe('White Shark Validation', () => {
         gapRatio: 0.2, wickRatio: 0.05, volumeRatio: 0.9, numBearishCandles: 'a'
       }
     }),
-      {
-        name: 'Error', message: 'ValidationError: numBearishCandles must be a number'
-      });
+    {
+      name: 'Error', message: 'ValidationError: numBearishCandles must be a number'
+    });
     done();
   });
 
@@ -99,9 +99,9 @@ describe('White Shark Validation', () => {
         gapRatio: 0.2, wickRatio: 0.05, volumeRatio: 0.9, numBearishCandles: 11
       }
     }),
-      {
-        name: 'Error', message: 'ValidationError: numBearishCandles must be less than or equal to 10'
-      });
+    {
+      name: 'Error', message: 'ValidationError: numBearishCandles must be less than or equal to 10'
+    });
     done();
   });
 
@@ -115,9 +115,9 @@ describe('White Shark Validation', () => {
         gapRatio: 0.2, wickRatio: 0.05, volumeRatio: 0.9, numBearishCandles: 10
       }
     }),
-      {
-        name: 'Error', message: 'ValidationError: cryptoAmounts must contain 1 items'
-      });
+    {
+      name: 'Error', message: 'ValidationError: cryptoAmounts must contain 1 items'
+    });
     done();
   });
 
@@ -131,9 +131,9 @@ describe('White Shark Validation', () => {
         gapRatio: 0.2, wickRatio: 0.05, volumeRatio: 0.9, numBearishCandles: 10
       }
     }),
-      {
-        name: 'Error', message: 'ValidationError: markets must contain 1 items'
-      });
+    {
+      name: 'Error', message: 'ValidationError: markets must contain 1 items'
+    });
     done();
   });
 
@@ -147,7 +147,7 @@ describe('White Shark Validation', () => {
         numBearishCandles: 3, wickRatio: 0.05, volumeRatio: 0.9
       }
     }),
-      { name: 'Error', message: 'ValidationError: gapRatio is required' });
+    { name: 'Error', message: 'ValidationError: gapRatio is required' });
     done();
   });
 
@@ -161,7 +161,7 @@ describe('White Shark Validation', () => {
         numBearishCandles: 3, gapRatio: 0.2, volumeRatio: 0.9
       }
     }),
-      { name: 'Error', message: 'ValidationError: wickRatio is required' });
+    { name: 'Error', message: 'ValidationError: wickRatio is required' });
     done();
   });
 
@@ -175,7 +175,7 @@ describe('White Shark Validation', () => {
         numBearishCandles: 3, gapRatio: 0.2, wickRatio: 0.05
       }
     }),
-      { name: 'Error', message: 'ValidationError: volumeRatio is required' });
+    { name: 'Error', message: 'ValidationError: volumeRatio is required' });
     done();
   });
 });
@@ -244,9 +244,7 @@ describe('White Shark Pattern Spotting', () => {
     done();
   });
 
- 
-
-  it('FFF Should Not detect the pattern if the gap is negative (i.e. if the opening of the last candle is not above the opening of the previous one)', (done) => {
+  it('Should Not detect the pattern if the gap is negative (i.e. if the opening of the last candle is not above the opening of the previous one)', (done) => {
     strategy.valueCallBack({ type: 'ticker', price: 107 });
     strategy.valueCallBack({
       type: 'candlesPastTenMinutes',

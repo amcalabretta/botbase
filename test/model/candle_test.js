@@ -6,9 +6,8 @@ const { describe } = mocha;
 const { it } = mocha;
 const assert = require('assert');
 const { Candle } = require('../../model/candle');
-//TODO: add tests for lower wick / body / upper wick for more cases.
+// TODO: add tests for lower wick / body / upper wick for more cases.
 describe('Candles Testing', () => {
-  
   describe('Building a candle', () => {
     it('should have all the values on (bearish case)', (done) => {
       const candle = new Candle({
@@ -23,8 +22,7 @@ describe('Candles Testing', () => {
       done();
     });
   });
-  
-  
+
   describe('Bullish / Bearish detection', () => {
     it('Should be bearish (1)', (done) => {
       const candle = new Candle({
@@ -196,7 +194,6 @@ describe('Candles Testing', () => {
       done();
     });
   });
-
 
   describe('Immutability', () => {
     it('Should not be possible to change values in a candle once created', (done) => {

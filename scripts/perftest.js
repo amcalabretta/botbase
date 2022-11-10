@@ -3,27 +3,11 @@ const seedrandom = require('seedrandom');
 
 const NS_PER_SEC = 1e9;
 const MS_PER_NS = 1e-6;
-var _printf = require('printf');
+const _printf = require('printf');
 let printf = (format, ...args) => console.log(_printf(format, ...args));
 const Table = require('easy-table');
 const { array } = require('joi');
 
-
-/**
- * 
- * const t = new Table();
-  candles.forEach((c) => {
-    t.cell('TS:', c.openTimeInMillis);
-    t.cell('Low', c.low, Table.number(3));
-    t.cell('High', c.high, Table.number(3));
-    t.cell('Open', c.open, Table.number(3));
-    t.cell('Close', c.close, Table.number(3));
-    t.cell('Volume', c.volume, Table.number(3));
-    t.cell('Raw TS', c.openTimeInISO);
-    t.newRow();
-  });
-  return t.toString();
- */
 
 const calcStats = (stats) => {
   let avg = 0;

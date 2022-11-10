@@ -60,7 +60,7 @@ class MarketData {
     }
   };
 
-  // TODO: change the name of this method (market order or something similar?)
+  // TODO: change the name of this method (market order or upsertOrder or something similar?)
   orderAdded = (orderMessage) => {
     //this.log(`Adding order ${JSON.stringify(orderMessage)}`);
     const orderStored = this.orders.get(orderMessage.order_id);
@@ -68,6 +68,7 @@ class MarketData {
       this.orders.set(orderMessage.order_id, new MarketOrder(orderMessage));
     } else { // update order and related data (the time of fillment?)
       //this.log(`Updating order id:${orderReceived.id}, seq:${orderReceived.sequenceNr}`);
+      this.log(`Received an open message ${JSON.stringify(orderMessage)}`);
       this.orders.set(orderMessage.id, MarketOrder.open(orderStored, orderMessage));
     }
   };

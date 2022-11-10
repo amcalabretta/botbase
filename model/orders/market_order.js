@@ -28,7 +28,9 @@ class MarketOrder {
   }
 
   static open = (marketOrder, openMessage) => {
-    marketOrder.statuses.push({ status: OrderStatus.open.description, ts: moment(openMessage.time), sequence: openMessage.sequence })
+    const cloneOrder = { ...marketOrder };
+    cloneOrder.statuses.push({ status: OrderStatus.open.description, ts: moment(openMessage.time), sequence: openMessage.sequence })
+    return cloneOrder;
   }
 }
 

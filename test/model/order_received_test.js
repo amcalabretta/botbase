@@ -18,7 +18,7 @@ describe('MarketOrder Testing', () => {
       assert.strictEqual(testOrder.price.getValue(), '21358.48');
       assert.strictEqual(testOrder.side, 'sell');
       assert.strictEqual(testOrder.statuses.length, 1);
-      assert.strictEqual(testOrder.statuses[0].status, OrderStatus.received);
+      assert.strictEqual(testOrder.statuses[0].status, OrderStatus.received.description);
       assert.strictEqual(testOrder.statuses[0].sequence, 20519096470);
       assert.strictEqual(testOrder.statuses[0].ts.utc().format('YYYY-MM-DDTHH:mm:00.000Z'), '2022-11-06T17:33:00.000+00:00');
       done();

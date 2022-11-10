@@ -28,9 +28,13 @@ class MarketOrder {
   }
 
   static open = (marketOrder, openMessage) => {
-    const cloneOrder = { ...marketOrder };
-    cloneOrder.statuses.push({ status: OrderStatus.open.description, ts: moment(openMessage.time), sequence: openMessage.sequence })
-    return cloneOrder;
+    if (openMessage.type === 'open') {
+      const cloneOrder = { ...marketOrder };
+      cloneOrder.statuses.push({ status: OrderStatus.open.description, ts: moment(openMessage.time), sequence: openMessage.sequence })
+      return cloneOrder;
+    }
+    throw new Error(`Attempting creating an open an order from a message type ${openMessage.type}`);
+
   }
 }
 

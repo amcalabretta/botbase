@@ -9,7 +9,8 @@ const moment = require('moment');
 const { MarketOrder, OrderStatus } = require('../../model/orders/market_order');
 
 const receivedOrder = new MarketOrder(JSON.parse('{"order_id":"bc040674-76ba-40fd-ba46-692b8df2bf4a","order_type":"limit","size":"0.07","price":"21358.48","client_oid":"31b7a558-5df9-11ed-b859-0aaef69347ef","type":"received","side":"sell","product_id":"BTC-EUR","time":"2022-11-06T17:33:58.081009Z","sequence":20519096470}'));
-const openingMessage = {"price":"21358.48","order_id":"bc040674-76ba-40fd-ba46-692b8df2bf4a","remaining_size":"8557.04","type":"open","side":"buy","product_id":"ADA-EUR","time":"2022-11-10T09:37:27.786434Z","sequence":1967808639};
+const openingMessage = { "price": "21358.48", "order_id": "bc040674-76ba-40fd-ba46-692b8df2bf4a", "remaining_size": "8557.04", "type": "open", "side": "buy", "product_id": "ADA-EUR", "time": "2022-11-10T09:37:27.786434Z", "sequence": 1967808639 };
+const whateverMessage = { "price": "21358.48", "order_id": "bc040674-76ba-40fd-ba46-692b8df2bf4a", "remaining_size": "8557.04", "type": "whatever", "side": "buy", "product_id": "ADA-EUR", "time": "2022-11-10T09:37:27.786434Z", "sequence": 1967808639 };
 
 describe('MarketOrder Testing', () => {
   describe('Constructor testing', () => {
@@ -38,7 +39,7 @@ describe('MarketOrder Testing', () => {
 
   describe('Normal Operation', () => {
     it('should Move to open after received', (done) => {
-      const newMarketOrder = MarketOrder.open(receivedOrder,openingMessage);
+      const newMarketOrder = MarketOrder.open(receivedOrder, openingMessage);
       assert.strictEqual(newMarketOrder.id, 'bc040674-76ba-40fd-ba46-692b8df2bf4a');
       assert.strictEqual(newMarketOrder.type, 'limit');
       assert.strictEqual(newMarketOrder.size.getValue(), '0.07');
@@ -53,7 +54,20 @@ describe('MarketOrder Testing', () => {
       assert.strictEqual(newMarketOrder.statuses[1].ts.utc().format('YYYY-MM-DDTHH:mm:00.000Z'), '2022-11-10T09:37:00.000+00:00');
       done();
     });
-    
+
+  });
+
+  describe('Validation', () => {
+    it('Should Not move to open if the message is not an open', (done) => {
+      assert.throws(() => {
+        MarketOrder.open(receivedOrder, whateverMessage);
+      },
+        {
+          name: 'Error', message: "Attempting creating an open an order from a message type whatever"
+        });
+      done();
+    });
+
   });
 
   describe('Immutability', () => {

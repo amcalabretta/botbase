@@ -10,6 +10,7 @@
 
 const log4js = require('log4js');
 const moment = require('moment');
+const cron = require('node-cron');
 const {
   CandleGranularity, CoinbasePro, WebSocketChannelName, WebSocketEvent
 } = require('coinbase-pro-node');
@@ -57,6 +58,22 @@ const serializeCandles = (candles) => {
   });
   return t.toString();
 };
+
+const dumpData = (marketData, logger) => {
+  logger.info(' Data Dump');
+  var key = hashMap.nextKey();
+  while (key) {
+    //logger.info(`Key ${key}, value:${JSON.stringify(hashMap.get(key))}`);
+    const marketOrder = hashMap.get(key);
+    logger.info(`Key ${key}, value:${JSON.stringify(hashMap.get(key))}`);
+    key = hashMap.nextKey(key);
+  }
+}
+
+const scheduler = (marketData, logger) => {
+  cron.schedule('* * * * *', () => dumpData(marketData, logger));
+}
+
 
 log4js.configure({
   appenders: {
@@ -111,6 +128,20 @@ async function run() {
         the matching engine receives it whether it fills immediately or not.
       */
       case 'received':
+        /**
+     * The order is no longer on the order book. Sent for all orders for which there was a received message. This message
+     * can result from an order being canceled or filled. There will be no more messages for this `order_id ` after a
+     * done message. The `remaining_size` indicates how much of the order went unfilled; this will be "0" for `filled`
+     * orders.
+     *
+     * All `market` orders will not have a `remaining_size` or `price` field as they are never on the open order book at
+     * a given price.
+     *
+     * A `done` message will be sent for received orders which are fully filled or canceled due to self-trade prevention.
+     * There will be no `open` message for such orders. All `done` messages for orders which are not on the book should
+     * be ignored when maintaining a real-time order book.
+     */
+      case 'done':
       /**
      * The order is now open on the order book. This message will only be sent for orders which
      * are not fully filled immediately.
@@ -120,7 +151,7 @@ async function run() {
         md.orderAdded(message);
         break;
       default:
-        log4js.getLogger().info(`Unknown type:${message.type}`);
+        //log4js.getLogger().info(`Unknown type:${message.type}`);
     }
   });
 
@@ -135,6 +166,7 @@ async function run() {
     });
   });
   client.ws.connect();
+  scheduler(md, log4js.getLogger());
 }
 
 run().catch((err) => log4js.getLogger().error(err));

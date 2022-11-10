@@ -5,26 +5,10 @@
 const moment = require('moment');
 
 const MegaHash = require('megahash');
-const cron = require('node-cron');
 const IgushArray = require('../external/igusharray/igushArray');
 const { BigDecimal, BigDecimalZero } = require('./bigdecimal');
 const { MarketOrder } = require('./orders/market_order');
 
-
-const dumpHashMap = (hashMap, logger) => {
-  logger.info(' Dumping the hash');
-  var key = hashMap.nextKey();
-  while (key) {
-    //logger.info(`Key ${key}, value:${JSON.stringify(hashMap.get(key))}`);
-    const marketOrder = hashMap.get(key);
-    logger.info(`Key ${key}, value:${JSON.stringify(hashMap.get(key))}`);
-    key = hashMap.nextKey(key);
-  }
-}
-
-const scheduler = (hashMap, logger) => {
-  cron.schedule('* * * * *', () => dumpHashMap(hashMap, logger));
-}
 
 class MarketData {
   constructor(market, logger, callBack) {
@@ -38,7 +22,6 @@ class MarketData {
     this.sellOrders = new MegaHash();
     this.orders = new MegaHash();
     this.callBack = callBack;
-    scheduler(this.orders, this.logger);
   }
 
   /**
@@ -62,16 +45,30 @@ class MarketData {
 
   // TODO: change the name of this method (market order or upsertOrder or something similar?)
   orderAdded = (orderMessage) => {
-    //this.log(`Adding order ${JSON.stringify(orderMessage)}`);
-    const orderStored = this.orders.get(orderMessage.order_id);
-    if (orderStored === undefined) { // new order
-      this.orders.set(orderMessage.order_id, new MarketOrder(orderMessage));
-    } else { // update order and related data (the time of fillment?)
-      //this.log(`Updating order id:${orderReceived.id}, seq:${orderReceived.sequenceNr}`);
-      this.log(`Received an open message ${JSON.stringify(orderMessage)}`);
-      this.orders.set(orderMessage.id, MarketOrder.open(orderStored, orderMessage));
+    const currentOrder = this.orders.get(orderMessage.order_id);
+    switch (orderMessage.type) {
+      case 'received':
+        this.orders.set(orderMessage.order_id, new MarketOrder(orderMessage));
+        break;
+      case 'open':
+        if (currentOrder!==undefined) {
+          this.orders.set(orderMessage.order_id, MarketOrder.open(this.orders.get(orderMessage.order_id), orderMessage));
+        }
+        break;
+      case 'done':
+        this.orders.set(orderMessage.order_id, MarketOrder.done(this.orders.get(orderMessage.order_id), orderMessage));
+        break;
+      default:
+        this.log(` Unknown message received: ${JSON.stringify(orderMessage)}`);
     }
   };
+
+
+  validateMessage = (orderMessage) => {
+    const orderStored = this.orders.get(orderMessage.order_id);
+    if (orderMessage.type === 'received' && orderStored !== undefined) throw new Error(`Same order ID found in MarketData upon receiving a received message`);
+    
+  }
 
   /**
    * @param {*} ticker

@@ -8,7 +8,8 @@ const { BigDecimal } = require('../bigdecimal');
 // TODO: Change name: Probably should be something like 'MarketOrderStatus'? (see below)
 const OrderStatus = Object.freeze({
   open: Symbol('OPN'),
-  received: Symbol('RCV')
+  received: Symbol('RCV'),
+  done: Symbol('DNE')
 });
 
 
@@ -30,11 +31,19 @@ class MarketOrder {
   static open = (marketOrder, openMessage) => {
     if (openMessage.type === 'open') {
       const cloneOrder = { ...marketOrder };
-      cloneOrder.statuses.push({ status: OrderStatus.open.description, ts: moment(openMessage.time), sequence: openMessage.sequence })
+      cloneOrder.statuses.push({ status: OrderStatus.open.description, ts: moment(openMessage.time), sequence: openMessage.sequence });
       return cloneOrder;
     }
     throw new Error(`Attempting creating an open an order from a message type ${openMessage.type}`);
+  }
 
+  static done = (marketOrder, doneMessage) => {
+    if (doneMessage.type === 'done') {
+      const cloneOrder = { ...marketOrder };
+      cloneOrder.statuses.push({ status: OrderStatus.done.description, ts: moment(doneMessage.time), sequence: doneMessage.sequence });
+      return cloneOrder;
+    }
+    throw new Error(`Attempting set an as done from a message type ${doneMessage.type}`);
   }
 }
 

@@ -60,9 +60,19 @@ const serializeCandles = (candles) => {
 
 log4js.configure({
   appenders: {
-    local: { type: 'file', filename: `${workerData.conf.logging.logDir}/marketdata-worker-${workerData.market}.log` },
+    local: {
+      type: 'file',
+      filename: `${workerData.conf.logging.logDir}/marketdata-worker-${workerData.market}.log`
+    },
     ticker: { type: 'file', filename: `${workerData.conf.logging.logDir}/ticker.log` },
-    md: { type: 'file', filename: `${workerData.conf.logging.logDir}/marketdata-${workerData.market}.log` }
+    md: {
+      type: 'file',
+      filename: `${workerData.conf.logging.logDir}/marketdata-${workerData.market}.log`,
+      layout: {
+        type: 'pattern',
+        pattern: '[%d{yyyy-MM-ddThh.mm.ss}] - %m'
+      }
+    }
   },
   categories: {
     default: { appenders: ['local'], level: 'debug' },
@@ -95,7 +105,18 @@ async function run() {
       case 'heartbeat':
         md.heartBit(message);
         break;
+      /**
+        A valid order has been received and is now active.
+        This message is emitted for every single valid order as soon as
+        the matching engine receives it whether it fills immediately or not.
+      */
       case 'received':
+      /**
+     * The order is now open on the order book. This message will only be sent for orders which
+     * are not fully filled immediately.
+     * The `remaining_size` will indicate how much of the order is unfilled and going on the book.
+     * */
+      case 'open':
         md.orderAdded(message);
         break;
       default:

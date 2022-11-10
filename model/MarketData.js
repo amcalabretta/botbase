@@ -3,10 +3,28 @@
  * @param {*} market
  */
 const moment = require('moment');
+
 const MegaHash = require('megahash');
+const cron = require('node-cron');
 const IgushArray = require('../external/igusharray/igushArray');
 const { BigDecimal, BigDecimalZero } = require('./bigdecimal');
-const { OrderReceived } = require('./orders/order_received');
+const { MarketOrder } = require('./orders/market_order');
+
+
+const dumpHashMap = (hashMap, logger) => {
+  logger.info(' Dumping the hash');
+  var key = hashMap.nextKey();
+  while (key) {
+    //logger.info(`Key ${key}, value:${JSON.stringify(hashMap.get(key))}`);
+    const marketOrder = hashMap.get(key);
+    logger.info(`Key ${key}, value:${JSON.stringify(hashMap.get(key))}`);
+    key = hashMap.nextKey(key);
+  }
+}
+
+const scheduler = (hashMap, logger) => {
+  cron.schedule('* * * * *', () => dumpHashMap(hashMap, logger));
+}
 
 class MarketData {
   constructor(market, logger, callBack) {
@@ -18,11 +36,9 @@ class MarketData {
     this.prices = new IgushArray(100);
     this.buyOrders = new MegaHash();
     this.sellOrders = new MegaHash();
+    this.orders = new MegaHash();
     this.callBack = callBack;
-    this.numBuyOrders = 0;
-    this.sizeBuyOrders = BigDecimalZero;
-    this.numSellOrders = 0;
-    this.sizeSellOrders = BigDecimalZero;
+    scheduler(this.orders, this.logger);
   }
 
   /**
@@ -38,25 +54,22 @@ class MarketData {
       this.lastSequence = hB.sequence;
       if (this.lastTradeId !== hB.last_trade_id) {
         this.lastTradeId = hB.last_trade_id;
-        this.logger.info(`[HB] Current Last trade:${this.lastTradeId}`);
-        this.logger.info(`[HB] Current Last sequence:${this.lastSequence}`);
+        // this.logger.info(`[HB] Current Last trade:${this.lastTradeId}`);
+        // this.logger.info(`[HB] Current Last sequence:${this.lastSequence}`);
       }
     }
   };
 
-  orderAdded = (order) => {
-    const orderReceived = new OrderReceived(order);
-    if (orderReceived.side === 'buy') {
-      this.buyOrders.set(order.order_id, orderReceived);
-      this.numBuyOrders += 1;
-      this.sizeBuyOrders = this.sizeBuyOrders.add(orderReceived.size);
-    } else {
-      this.sellOrders.set(order.order_id, orderReceived);
-      this.numSellOrders += 1;
-      this.sizeSellOrders = this.sizeBuyOrders.add(orderReceived.size);
+  // TODO: change the name of this method (market order or something similar?)
+  orderAdded = (orderMessage) => {
+    //this.log(`Adding order ${JSON.stringify(orderMessage)}`);
+    const orderStored = this.orders.get(orderMessage.order_id);
+    if (orderStored === undefined) { // new order
+      this.orders.set(orderMessage.order_id, new MarketOrder(orderMessage));
+    } else { // update order and related data (the time of fillment?)
+      //this.log(`Updating order id:${orderReceived.id}, seq:${orderReceived.sequenceNr}`);
+      this.orders.set(orderMessage.id, MarketOrder.open(orderStored, orderMessage));
     }
-    this.log(`Sell Orders:${this.numSellOrders} / Total Size:${this.sizeSellOrders.getValue()}`);
-    this.log(`Buy Orders:${this.numBuyOrders} / Total Size:${this.sizeBuyOrders.getValue()}`);
   };
 
   /**
@@ -70,6 +83,13 @@ class MarketData {
       tradeId: ticker.trade_id,
       size: ticker.last_size
     });
+  };
+
+  /**
+   * Market data snapshot
+   */
+  mdSnapShot = () => {
+
   };
 
   log = (string) => {

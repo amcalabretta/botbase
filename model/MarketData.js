@@ -45,29 +45,31 @@ class MarketData {
 
   // TODO: change the name of this method (market order or upsertOrder or something similar?)
   orderAdded = (orderMessage) => {
-    const currentOrder = this.orders.get(orderMessage.order_id);
-    switch (orderMessage.type) {
-      case 'received':
-        this.orders.set(orderMessage.order_id, new MarketOrder(orderMessage));
-        break;
-      case 'open':
-        if (currentOrder!==undefined) {
+    try {
+      const currentOrder = this.orders.get(orderMessage.order_id);
+      this.validateMessage(orderMessage, currentOrder);
+      switch (orderMessage.type) {
+        case 'received':
+          this.orders.set(orderMessage.order_id, new MarketOrder(orderMessage));
+          break;
+        case 'open':
           this.orders.set(orderMessage.order_id, MarketOrder.open(this.orders.get(orderMessage.order_id), orderMessage));
-        }
-        break;
-      case 'done':
-        this.orders.set(orderMessage.order_id, MarketOrder.done(this.orders.get(orderMessage.order_id), orderMessage));
-        break;
-      default:
-        this.log(` Unknown message received: ${JSON.stringify(orderMessage)}`);
+          break;
+        case 'done':
+          this.orders.set(orderMessage.order_id, MarketOrder.done(this.orders.get(orderMessage.order_id), orderMessage));
+          break;
+        default:
+          this.log(` Unknown message received: ${JSON.stringify(orderMessage)}`);
+      }
+    } catch (error) {
+      this.log(` Error taking order: ${error}`);
     }
   };
 
-
-  validateMessage = (orderMessage) => {
-    const orderStored = this.orders.get(orderMessage.order_id);
-    if (orderMessage.type === 'received' && orderStored !== undefined) throw new Error(`Same order ID found in MarketData upon receiving a received message`);
-    
+  validateMessage = (orderMessage, currentOrder) => {
+    if (currentOrder !== undefined && orderMessage.type === 'received') throw new Error(`Same order ID found in MarketData upon receiving a received message`);
+    if (currentOrder == undefined && orderMessage.type === 'open') throw new Error(`Order open but unknown`);
+    if (currentOrder == undefined && orderMessage.type === 'done') throw new Error(`Order done but unknown`);
   }
 
   /**

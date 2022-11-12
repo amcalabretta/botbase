@@ -1,0 +1,11 @@
+{
+    "order_id": "bad13052-0485-48c2-b388-eeeb044e1953",
+    "order_type": "market",
+    "funds": "14.9103971596",
+    "client_oid": "2bea29c6-4f16-4721-acc9-f90bac7a6194",
+    "type": "received",
+    "side": "buy",
+    "product_id": "BTC-EUR",
+    "time": "2022-11-11T22:23:01.060800Z",
+    "sequence": 20589220232
+}

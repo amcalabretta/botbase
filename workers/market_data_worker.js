@@ -11,6 +11,8 @@
 const log4js = require('log4js');
 const moment = require('moment');
 const cron = require('node-cron');
+const _printf = require('printf');
+
 const {
   CandleGranularity, CoinbasePro, WebSocketChannelName, WebSocketEvent
 } = require('coinbase-pro-node');
@@ -44,6 +46,9 @@ const wsChannels = [
 
 const broadCastChannel = new BroadcastChannel('botbase.broadcast');
 
+
+const log = (format, ...args) => log4js.getLogger().info(_printf(format, ...args));
+
 const serializeCandles = (candles) => {
   const t = new Table();
   candles.forEach((c) => {
@@ -59,19 +64,25 @@ const serializeCandles = (candles) => {
   return t.toString();
 };
 
-const dumpData = (marketData, logger) => {
-  logger.info(' Data Dump');
-  var key = hashMap.nextKey();
+const dumpData = (marketData) => {
+  log(` Data Dump:${marketData.orders.length()}`);
+  var key = marketData.orders.nextKey();
   while (key) {
-    //logger.info(`Key ${key}, value:${JSON.stringify(hashMap.get(key))}`);
-    const marketOrder = hashMap.get(key);
-    logger.info(`Key ${key}, value:${JSON.stringify(hashMap.get(key))}`);
-    key = hashMap.nextKey(key);
+    const marketOrder = marketData.orders.get(key);
+    log(`Key ${key}`);
+    log(' side:%s, type:%s',marketOrder.side,marketOrder.type);
+    log(' size:%s, price:%s',marketOrder.size.value,marketOrder.price.value);
+    log(' statuses %d:',marketData.orders.get(key).statuses.length);
+    marketData.orders.get(key).statuses.forEach(st=>{
+      if (st.status==='OPN') log('   status:%s,time:%s,remaining:%s',st.status,st.ts,st.remaining);
+      else log('   status:%s,time:%s',st.status,st.ts);
+    });
+    key = marketData.orders.nextKey(key);
   }
 }
 
-const scheduler = (marketData, logger) => {
-  cron.schedule('* * * * *', () => dumpData(marketData, logger));
+const scheduler = (marketData) => {
+  cron.schedule('* * * * *', () => dumpData(marketData));
 }
 
 
@@ -79,7 +90,11 @@ log4js.configure({
   appenders: {
     local: {
       type: 'file',
-      filename: `${workerData.conf.logging.logDir}/marketdata-worker-${workerData.market}.log`
+      filename: `${workerData.conf.logging.logDir}/marketdata-worker-${workerData.market}.log`,
+      layout: {
+        type: 'pattern',
+        pattern: '[%d{yyyy-MM-ddThh.mm.ss}] - %m'
+      }
     },
     ticker: { type: 'file', filename: `${workerData.conf.logging.logDir}/ticker.log` },
     md: {
@@ -99,20 +114,20 @@ log4js.configure({
 
 async function run() {
   const md = new MarketData(workerData.market, log4js.getLogger('md'));
-  log4js.getLogger().info(`Starting up market data worker, market:${workerData.market}`);
+  log(`Starting up market data worker, market:${workerData.market}`);
   const client = new CoinbasePro(authentication);
   setTimeout(() => {
     setInterval(async (market) => {
       const time = await client.rest.time.getTime();
       const currentTimeStamp = moment(time.iso);
       const previousTimeStamp = moment(time.iso).subtract(10, 'minutes');
-      log4js.getLogger().info(`From: ${previousTimeStamp.utc().format('YYYY-MM-DDTHH:mm:00.000Z')} To: ${currentTimeStamp.utc().format('YYYY-MM-DDTHH:mm:00.000Z')}`);
+      //log4js.getLogger().info(`From: ${previousTimeStamp.utc().format('YYYY-MM-DDTHH:mm:00.000Z')} To: ${currentTimeStamp.utc().format('YYYY-MM-DDTHH:mm:00.000Z')}`);
       client.rest.product.getCandles(market, {
         end: currentTimeStamp.utc().format('YYYY-MM-DDTHH:mm:00.000Z'),
         CandleGranularity,
         start: previousTimeStamp.utc().format('YYYY-MM-DDTHH:mm:00.000Z')
       }).then((candles) => {
-        log4js.getLogger().info(`${market} (${candles.length})\n ${serializeCandles(candles)}`);
+        //log4js.getLogger().info(`${market} (${candles.length})\n ${serializeCandles(candles)}`);
         broadCastChannel.postMessage({ type: 'candlesPastTenMinutes', market, payload: candles });
       }).catch((error) => log4js.getLogger().error(`Error:${error}`));
     }, 60000, workerData.market);
@@ -166,7 +181,7 @@ async function run() {
     });
   });
   client.ws.connect();
-  scheduler(md, log4js.getLogger());
+  scheduler(md);
 }
 
 run().catch((err) => log4js.getLogger().error(err));

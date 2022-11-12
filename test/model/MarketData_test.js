@@ -7,6 +7,7 @@ const { it } = mocha;
 const assert = require('assert');
 const { MarketData } = require('../../model/MarketData');
 const log4js = require('log4js');
+const fs = require('fs');
 
 log4js.configure({
   appenders: { out: { type: 'stdout' } },
@@ -62,5 +63,33 @@ describe('MarketData Testing', () => {
       assert.strictEqual(md.getTickers().get(1).time, '2022-10-26T20:01:45.896217Z');
       done();
     });
+  });
+
+  describe('Order received testing', () => {
+    it('Should ingest a limit order (received)', (done) => {
+      const limitOrderReceived = JSON.parse(fs.readFileSync('test/data/ws_messages/coinbase_order_received_limit.json', 'utf8'));
+      const md = new MarketData('BTC-EUR',log4js.getLogger());
+      md.orderAdded(limitOrderReceived);
+      //assert.strictEqual(md.orders.length(),1);
+      //assert.strictEqual(md.orders.get(limitOrderReceived.order_id).id,'f8915c1c-fa25-45ca-842b-cebc310de22e');
+      //assert.strictEqual(md.orders.get(limitOrderReceived.order_id).type,'limit');
+      done();
+    });
+
+    it('Should ingest a market order (received)', (done) => {
+      const marketOrderReceived = JSON.parse(fs.readFileSync('test/data/ws_messages/coinbase_order_received_market.json', 'utf8'));
+      const md = new MarketData('BTC-EUR',log4js.getLogger());
+      md.orderAdded(marketOrderReceived);
+      //assert.strictEqual(md.orders.length(),1);
+      //assert.strictEqual(md.orders.get(marketOrderReceived.order_id).id,'bad13052-0485-48c2-b388-eeeb044e1953');
+      //assert.strictEqual(md.orders.get(marketOrderReceived.order_id).type,'market');
+      //assert.strictEqual(md.orders.get(marketOrderReceived.order_id).funds.value,'14.9103971596');
+      //assert.strictEqual(md.orders.get(marketOrderReceived.order_id).side,'buy');
+      //assert.strictEqual(md.orders.get(marketOrderReceived.order_id).statuses.length,1);
+      //assert.strictEqual(md.orders.get(marketOrderReceived.order_id).statuses[0].status,OrderStatus.received.description);
+      //assert.strictEqual(md.orders.get(marketOrderReceived.order_id).statuses[0].ts,'2022-11-11T22:23:01.060800Z');
+      //assert.strictEqual(md.orders.get(marketOrderReceived.order_id).statuses[0].sequence,20589220232);
+      done();
+    });    
   });
 });

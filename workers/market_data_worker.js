@@ -70,7 +70,7 @@ const dumpData = (marketData) => {
   while (key) {
     const marketOrder = marketData.orders.get(key);
     log(`Key ${key}`);
-    log(' side:%s, type:%s',marketOrder.side,marketOrder.type);
+    log(' side:%s, type:%s',marketOrder.side.description,marketOrder.type.description);
     log(' size:%s, price:%s',marketOrder.size.value,marketOrder.price.value);
     log(' statuses %d:',marketData.orders.get(key).statuses.length);
     marketData.orders.get(key).statuses.forEach(st=>{

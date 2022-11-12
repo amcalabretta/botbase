@@ -66,12 +66,12 @@ describe('MarketOrder Testing', () => {
   });
 
   describe('Validation', () => {
-    it('Should Not move to open if the message is not an open', (done) => {
+    it('Should Not move to open if the message is not valid at all', (done) => {
       assert.throws(() => {
         MarketOrder.open(receivedOrder, whateverMessage);
       },
         {
-          name: 'Error', message: "Attempting creating an open an order from a message type whatever"
+          name: 'Error', message: "whatever is not a valid instance"
         });
       done();
     });

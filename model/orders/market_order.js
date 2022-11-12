@@ -42,8 +42,9 @@ class MarketOrder {
     Object.freeze(this);
   }
 
+  //TODO: check about the cloning here, it's probably unnecessary
   static open = (marketOrder, openMessage) => {
-    if (openMessage.type === 'open') {
+    if (OrderStatus.open === parseSymbol(OrderStatus,openMessage.type)) {
       const cloneOrder = { ...marketOrder };
       cloneOrder.statuses.push({ status: OrderStatus.open.description, ts: moment(openMessage.time), sequence: openMessage.sequence, remaining: openMessage.remaining_size });
       return cloneOrder;
@@ -51,8 +52,9 @@ class MarketOrder {
     throw new Error(`Attempting creating an open an order from a message type ${openMessage.type}`);
   }
 
+  //TODO: check about the cloning here, it's probably unnecessary
   static done = (marketOrder, doneMessage) => {
-    if (doneMessage.type === 'done') {
+    if (OrderStatus.done === parseSymbol(OrderStatus,openMessage.type)) {
       const cloneOrder = { ...marketOrder };
       cloneOrder.statuses.push({ status: OrderStatus.done.description, ts: moment(doneMessage.time), sequence: doneMessage.sequence });
       return cloneOrder;

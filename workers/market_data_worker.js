@@ -46,7 +46,6 @@ const wsChannels = [
 
 const broadCastChannel = new BroadcastChannel('botbase.broadcast');
 
-
 const log = (format, ...args) => log4js.getLogger().info(_printf(format, ...args));
 
 const serializeCandles = (candles) => {
@@ -66,25 +65,24 @@ const serializeCandles = (candles) => {
 
 const dumpData = (marketData) => {
   log(` Data Dump:${marketData.orders.length()}`);
-  var key = marketData.orders.nextKey();
+  let key = marketData.orders.nextKey();
   while (key) {
     const marketOrder = marketData.orders.get(key);
     log(`Key ${key}`);
-    log(' side:%s, type:%s',marketOrder.side.description,marketOrder.type.description);
-    log(' size:%s, price:%s',marketOrder.size.value,marketOrder.price.value);
-    log(' statuses %d:',marketData.orders.get(key).statuses.length);
-    marketData.orders.get(key).statuses.forEach(st=>{
-      if (st.status==='OPN') log('   status:%s,time:%s,remaining:%s',st.status,st.ts,st.remaining);
-      else log('   status:%s,time:%s',st.status,st.ts);
+    log(' side:%s, type:%s', marketOrder.side.description, marketOrder.type.description);
+    log(' size:%s, price:%s', marketOrder.size.value, marketOrder.price.value);
+    log(' statuses %d:', marketData.orders.get(key).statuses.length);
+    marketData.orders.get(key).statuses.forEach((st) => {
+      if (st.status === 'OPN') log('   status:%s,time:%s,remaining:%s', st.status, st.ts, st.remaining);
+      else log('   status:%s,time:%s', st.status, st.ts);
     });
     key = marketData.orders.nextKey(key);
   }
-}
+};
 
 const scheduler = (marketData) => {
   cron.schedule('* * * * *', () => dumpData(marketData));
-}
-
+};
 
 log4js.configure({
   appenders: {
@@ -121,13 +119,12 @@ async function run() {
       const time = await client.rest.time.getTime();
       const currentTimeStamp = moment(time.iso);
       const previousTimeStamp = moment(time.iso).subtract(10, 'minutes');
-      //log4js.getLogger().info(`From: ${previousTimeStamp.utc().format('YYYY-MM-DDTHH:mm:00.000Z')} To: ${currentTimeStamp.utc().format('YYYY-MM-DDTHH:mm:00.000Z')}`);
       client.rest.product.getCandles(market, {
         end: currentTimeStamp.utc().format('YYYY-MM-DDTHH:mm:00.000Z'),
         CandleGranularity,
         start: previousTimeStamp.utc().format('YYYY-MM-DDTHH:mm:00.000Z')
       }).then((candles) => {
-        //log4js.getLogger().info(`${market} (${candles.length})\n ${serializeCandles(candles)}`);
+        log4js.getLogger().info(`${market} (${candles.length})\n ${serializeCandles(candles)}`);
         broadCastChannel.postMessage({ type: 'candlesPastTenMinutes', market, payload: candles });
       }).catch((error) => log4js.getLogger().error(`Error:${error}`));
     }, 60000, workerData.market);
@@ -140,19 +137,19 @@ async function run() {
           md.heartBit(message);
           break;
         case 'received':
-          md.orderReceived(messae);
+          md.orderReceived(message);
           break;
         case 'done':
-          md.orderDone(messae);
+          md.orderDone(message);
           break;
         case 'open':
           md.orderOpen(message);
           break;
         default:
-          //log4js.getLogger().info(`Unknown type:${message.type}`);
+        // log4js.getLogger().info(`Unknown type:${message.type}`);
       }
     } catch (error) {
-       log4js.getLogger().info(`Error with message: ${JSON.stringify(message)}`) 
+      log4js.getLogger().info(`Error with message: ${JSON.stringify(message)}`);
     }
   });
 

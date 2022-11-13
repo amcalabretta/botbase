@@ -24,6 +24,7 @@ describe('parseSymbol', () => {
             assert.strictEqual(parseSymbol(MarketOrderStatus, 'done'), MarketOrderStatus.done);
             done();
         });
+        
         it('Should parse the received value', (done) => {
             assert.strictEqual(parseSymbol(MarketOrderStatus, 'received'), MarketOrderStatus.received);
             done();

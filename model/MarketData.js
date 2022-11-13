@@ -6,10 +6,8 @@ const moment = require('moment');
 
 const MegaHash = require('megahash');
 const IgushArray = require('../external/igusharray/igushArray');
-const { BigDecimal, BigDecimalZero } = require('./bigdecimal');
-const { MarketOrder, OrderStatus } = require('./orders/market_order');
-const { parseSymbol } = require('../utils/parseSymbol');
-
+const { BigDecimal } = require('./bigdecimal');
+const { MarketOrder } = require('./orders/market_order');
 
 class MarketData {
   constructor(market, logger, callBack) {
@@ -45,18 +43,18 @@ class MarketData {
 
   /**
    * Message ingesting orders that are received from the order book
-   * @param {*} message 
+   * @param {*} message
    */
   orderReceived = (message) => {
     this.validateMessage(message);
-    if (this.orders.has(message.order_id)) throw new Error(`Received Order with ID ${message.order_id} already ingested`)
-    if (this.sequences.has(message.sequence)) throw new Error(`Received Order with sequence ${message.sequence} already ingested`)
-    this.orders.set(message.order_id,new MarketOrder(message));
-    this.sequences.set(message.sequence,message);
+    if (this.orders.has(message.order_id)) throw new Error(`Received Order with ID ${message.order_id} already ingested`);
+    if (this.sequences.has(message.sequence)) throw new Error(`Received Order with sequence ${message.sequence} already ingested`);
+    this.orders.set(message.order_id, new MarketOrder(message));
+    this.sequences.set(message.sequence, message);
   };
 
   validateMessage = (message) => {
-    if (message.product_id!==this.market) throw new Error(`Attempt to receive an order referring to market ${message.product_id} on a MD instance referring to ${this.market}`);
+    if (message.product_id !== this.market) throw new Error(`Attempt to receive an order referring to market ${message.product_id} on a MD instance referring to ${this.market}`);
   }
 
   /**

@@ -7,21 +7,21 @@ const moment = require('moment');
 const MegaHash = require('megahash');
 const IgushArray = require('../external/igusharray/igushArray');
 const { BigDecimal, BigDecimalZero } = require('./bigdecimal');
-const { MarketOrder } = require('./orders/market_order');
+const { MarketOrder, OrderStatus } = require('./orders/market_order');
+const { parseSymbol } = require('../utils/parseSymbol');
 
 
 class MarketData {
   constructor(market, logger, callBack) {
     this.market = market;
-    this.logger = logger;
     this.lastTradeId = 0;
     this.lastSequence = 0;
     this.lastTimeStamp = moment('1970-01-01T00:00:00.000000Z');
     this.prices = new IgushArray(100);
-    this.buyOrders = new MegaHash();
-    this.sellOrders = new MegaHash();
     this.orders = new MegaHash();
+    this.sequences = new MegaHash();
     this.callBack = callBack;
+    this.logger = logger;
   }
 
   /**
@@ -43,33 +43,20 @@ class MarketData {
     }
   };
 
-  // TODO: change the name of this method (market order or upsertOrder or something similar?)
-  orderAdded = (orderMessage) => {
-    try {
-      const currentOrder = this.orders.get(orderMessage.order_id);
-      this.validateMessage(orderMessage, currentOrder);
-      switch (orderMessage.type) {
-        case 'received':
-          this.orders.set(orderMessage.order_id, new MarketOrder(orderMessage));
-          break;
-        case 'open':
-          this.orders.set(orderMessage.order_id, MarketOrder.open(this.orders.get(orderMessage.order_id), orderMessage));
-          break;
-        case 'done':
-          this.orders.set(orderMessage.order_id, MarketOrder.done(this.orders.get(orderMessage.order_id), orderMessage));
-          break;
-        default:
-          this.log(` Unknown message received: ${JSON.stringify(orderMessage)}`);
-      }
-    } catch (error) {
-      this.log(` Error taking order: ${error}`);
-    }
+  /**
+   * Message ingesting orders that are received from the order book
+   * @param {*} message 
+   */
+  orderReceived = (message) => {
+    this.validateMessage(message);
+    if (this.orders.has(message.order_id)) throw new Error(`Received Order with ID ${message.order_id} already ingested`)
+    if (this.sequences.has(message.sequence)) throw new Error(`Received Order with sequence ${message.sequence} already ingested`)
+    this.orders.set(message.order_id,new MarketOrder(message));
+    this.sequences.set(message.sequence,message);
   };
 
-  validateMessage = (orderMessage, currentOrder) => {
-    if (currentOrder !== undefined && orderMessage.type === 'received') throw new Error(`Same order ID found in MarketData upon receiving a received message`);
-    if (currentOrder == undefined && orderMessage.type === 'open') throw new Error(`Order open but unknown`);
-    if (currentOrder == undefined && orderMessage.type === 'done') throw new Error(`Order done but unknown`);
+  validateMessage = (message) => {
+    if (message.product_id!==this.market) throw new Error(`Attempt to receive an order referring to market ${message.product_id} on a MD instance referring to ${this.market}`);
   }
 
   /**

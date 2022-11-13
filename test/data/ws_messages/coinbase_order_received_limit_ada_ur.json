@@ -1,0 +1,12 @@
+{
+    "order_id": "32d0df79-4d8b-429c-837c-a66222ce97a4",
+    "order_type": "limit",
+    "size": "2909.08",
+    "price": "0.3318",
+    "client_oid": "947169da-606d-4775-b9e0-c29cecdb9636",
+    "type": "received",
+    "side": "buy",
+    "product_id": "ADA-EUR",
+    "time": "2022-11-12T13:51:54.833005Z",
+    "sequence": 1973214235
+  }

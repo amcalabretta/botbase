@@ -4,44 +4,43 @@ const { describe } = mocha;
 const { it } = mocha;
 const assert = require('assert');
 const { parseSymbol } = require('../../utils/parseSymbol');
-const { OrderStatus } = require('../../model/orders/market_order');
-const { OrderType } = require('../../model/orders/market_order');
+const { MarketOrderStatus } = require('../../model/orders/market_order');
+const { MarketOrderType } = require('../../model/orders/market_order');
 
 
 describe('parseSymbol', () => {
     describe('validation', () => {
         it('Should throw an error if a non valid string is passed (status)', (done) => {
-            assert.throws(() => { parseSymbol(OrderStatus, 'whatever'); }, { name: 'Error', message: 'whatever is not a valid instance' });
+            assert.throws(() => { parseSymbol(MarketOrderStatus, 'whatever'); }, { name: 'Error', message: 'whatever is not a valid instance' });
             done();
         });
         it('Should throw an error if a non valid string is passed (type)', (done) => {
-            assert.throws(() => { parseSymbol(OrderType, 'whatever'); }, { name: 'Error', message: 'whatever is not a valid instance' });
+            assert.throws(() => { parseSymbol(MarketOrderType, 'whatever'); }, { name: 'Error', message: 'whatever is not a valid instance' });
             done();
         });
     });
     describe('parsing status', () => {
         it('Should parse the done value', (done) => {
-            assert.strictEqual(parseSymbol(OrderStatus, 'done'), OrderStatus.done);
+            assert.strictEqual(parseSymbol(MarketOrderStatus, 'done'), MarketOrderStatus.done);
             done();
         });
         it('Should parse the received value', (done) => {
-            assert.strictEqual(parseSymbol(OrderStatus, 'received'), OrderStatus.received);
+            assert.strictEqual(parseSymbol(MarketOrderStatus, 'received'), MarketOrderStatus.received);
             done();
         });
         it('Should parse the open value', (done) => {
-            assert.strictEqual(parseSymbol(OrderStatus, 'open'), OrderStatus.open);
+            assert.strictEqual(parseSymbol(MarketOrderStatus, 'open'), MarketOrderStatus.open);
             done();
         });
     });
     describe('parsing type', () => {
         it('Should parse the limit value', (done) => {
-            assert.strictEqual(parseSymbol(OrderType, 'limit'), OrderType.limit);
+            assert.strictEqual(parseSymbol(MarketOrderType, 'limit'), MarketOrderType.limit);
             done();
         });
         it('Should parse the market value', (done) => {
-            assert.strictEqual(parseSymbol(OrderType, 'market'), OrderType.market);
+            assert.strictEqual(parseSymbol(MarketOrderType, 'market'), MarketOrderType.market);
             done();
         });
     });
-
 });

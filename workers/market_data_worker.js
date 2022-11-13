@@ -133,40 +133,26 @@ async function run() {
     }, 60000, workerData.market);
   }, 1000);
   client.ws.on(WebSocketEvent.ON_MESSAGE, (message) => {
-    switch (message.type) {
-      case 'heartbeat':
-        md.heartBit(message);
-        break;
-      /**
-        A valid order has been received and is now active.
-        This message is emitted for every single valid order as soon as
-        the matching engine receives it whether it fills immediately or not.
-      */
-      case 'received':
-        /**
-     * The order is no longer on the order book. Sent for all orders for which there was a received message. This message
-     * can result from an order being canceled or filled. There will be no more messages for this `order_id ` after a
-     * done message. The `remaining_size` indicates how much of the order went unfilled; this will be "0" for `filled`
-     * orders.
-     *
-     * All `market` orders will not have a `remaining_size` or `price` field as they are never on the open order book at
-     * a given price.
-     *
-     * A `done` message will be sent for received orders which are fully filled or canceled due to self-trade prevention.
-     * There will be no `open` message for such orders. All `done` messages for orders which are not on the book should
-     * be ignored when maintaining a real-time order book.
-     */
-      case 'done':
-      /**
-     * The order is now open on the order book. This message will only be sent for orders which
-     * are not fully filled immediately.
-     * The `remaining_size` will indicate how much of the order is unfilled and going on the book.
-     * */
-      case 'open':
-        md.orderAdded(message);
-        break;
-      default:
-        //log4js.getLogger().info(`Unknown type:${message.type}`);
+    log4js.getLogger().info(`--- \n:${JSON.stringify(message, null, 2)}\n`);
+    try {
+      switch (message.type) {
+        case 'heartbeat':
+          md.heartBit(message);
+          break;
+        case 'received':
+          md.orderReceived(messae);
+          break;
+        case 'done':
+          md.orderDone(messae);
+          break;
+        case 'open':
+          md.orderOpen(message);
+          break;
+        default:
+          //log4js.getLogger().info(`Unknown type:${message.type}`);
+      }
+    } catch (error) {
+       log4js.getLogger().info(`Error with message: ${JSON.stringify(message)}`) 
     }
   });
 

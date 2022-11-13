@@ -1,0 +1,12 @@
+{
+    "trade_id": 68361593,
+    "maker_order_id": "a6a3cdc3-1182-4916-8a21-5052cd3155ae",
+    "taker_order_id": "820f507c-0202-474f-8bee-78d14a633795",
+    "size": "0.00244259",
+    "price": "16246.4",
+    "type": "match",
+    "side": "sell",
+    "product_id": "BTC-EUR",
+    "time": "2022-11-12T12:56:51.336242Z",
+    "sequence": 20593826444
+  }

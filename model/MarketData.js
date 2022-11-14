@@ -48,15 +48,24 @@ class MarketData {
   orderReceived = (message) => {
     this.validateMessage(message);
     if (this.orders.has(message.order_id)) throw new Error(`Received Order with ID ${message.order_id} already ingested`);
-    if (this.sequences.has(message.sequence)) throw new Error(`Received Order with sequence ${message.sequence} already ingested`);
     this.orders.set(message.order_id, new MarketOrder(message));
     this.sequences.set(message.sequence, message);
   };
 
   validateMessage = (message) => {
     if (message.product_id !== this.market) throw new Error(`Attempt to receive an order referring to market ${message.product_id} on a MD instance referring to ${this.market}`);
+    if (this.sequences.has(message.sequence)) throw new Error(`Received Order with sequence ${message.sequence} already ingested`);
   }
 
+  orderOpen = (message) => {
+
+  }
+
+  orderDone = (message) => {
+
+  }
+
+  
   /**
    * @param {*} ticker
    */
@@ -83,5 +92,7 @@ class MarketData {
 
   getTickers = () => this.prices
 }
+
+
 
 exports.MarketData = MarketData;

@@ -8,10 +8,12 @@
  * https://nodejs.org/api/worker_threads.html#workershare_env
  */
 
+const {performance,PerformanceObserver} = require('perf_hooks');
 const log4js = require('log4js');
 const moment = require('moment');
 const cron = require('node-cron');
 const _printf = require('printf');
+
 
 const {
   CandleGranularity, CoinbasePro, WebSocketChannelName, WebSocketEvent
@@ -110,6 +112,13 @@ log4js.configure({
   }
 });
 
+const observer = new PerformanceObserver(list => list.getEntries().forEach(entry => console.info(entry)));
+observer.observe({buffered: true, entryTypes: ['measure']});
+
+const mark = (merkerId) => {
+  
+}
+
 async function run() {
   const md = new MarketData(workerData.market, log4js.getLogger('md'));
   log(`Starting up market data worker, market:${workerData.market}`);
@@ -130,6 +139,7 @@ async function run() {
     }, 60000, workerData.market);
   }, 1000);
   client.ws.on(WebSocketEvent.ON_MESSAGE, (message) => {
+    performance.mark(`init.${message.type}`);
     log4js.getLogger().info(`--- \n:${JSON.stringify(message, null, 2)}\n`);
     try {
       switch (message.type) {
@@ -149,8 +159,10 @@ async function run() {
         // log4js.getLogger().info(`Unknown type:${message.type}`);
       }
     } catch (error) {
-      log4js.getLogger().info(`Error with message: ${JSON.stringify(message)}`);
+      log4js.getLogger().info(`Error ${error} with message: ${JSON.stringify(message)}`);
     }
+    performance.mark(`end.${message.type}`);
+    performance.measure(`message.received.${message.type}`, `init.${message.type}`, `end.${message.type}`);
   });
 
   client.ws.on(WebSocketEvent.ON_MESSAGE_ERROR, (errorMessage) => {

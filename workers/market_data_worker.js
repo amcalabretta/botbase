@@ -8,7 +8,6 @@
  * https://nodejs.org/api/worker_threads.html#workershare_env
  */
 
-const {performance,PerformanceObserver} = require('perf_hooks');
 const log4js = require('log4js');
 const moment = require('moment');
 const cron = require('node-cron');
@@ -24,6 +23,7 @@ const {
 } = require('worker_threads');
 const { authentication } = require('../model/auth');
 const { MarketData } = require('../model/MarketData');
+const {performanceFactory} = require('../performance/performanceFactory')
 
 /** Websocket channels */
 const wsChannels = [
@@ -47,6 +47,8 @@ const wsChannels = [
 ];
 
 const broadCastChannel = new BroadcastChannel('botbase.broadcast');
+
+const performanceMeasure = performanceFactory(workerData.conf,'market.data.worked');
 
 const log = (format, ...args) => log4js.getLogger().info(_printf(format, ...args));
 
@@ -112,12 +114,7 @@ log4js.configure({
   }
 });
 
-const observer = new PerformanceObserver(list => list.getEntries().forEach(entry => console.info(entry)));
-observer.observe({buffered: true, entryTypes: ['measure']});
 
-const mark = (merkerId) => {
-  
-}
 
 async function run() {
   const md = new MarketData(workerData.market, log4js.getLogger('md'));
@@ -139,7 +136,7 @@ async function run() {
     }, 60000, workerData.market);
   }, 1000);
   client.ws.on(WebSocketEvent.ON_MESSAGE, (message) => {
-    performance.mark(`init.${message.type}`);
+    performanceMeasure.start('market.data.worker');
     log4js.getLogger().info(`--- \n:${JSON.stringify(message, null, 2)}\n`);
     try {
       switch (message.type) {
@@ -161,8 +158,7 @@ async function run() {
     } catch (error) {
       log4js.getLogger().info(`Error ${error} with message: ${JSON.stringify(message)}`);
     }
-    performance.mark(`end.${message.type}`);
-    performance.measure(`message.received.${message.type}`, `init.${message.type}`, `end.${message.type}`);
+    performanceMeasure.end('market.data.worker');
   });
 
   client.ws.on(WebSocketEvent.ON_MESSAGE_ERROR, (errorMessage) => {

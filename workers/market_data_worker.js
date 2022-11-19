@@ -17,10 +17,11 @@ const _printf = require('printf');
 const {
   CandleGranularity, CoinbasePro, WebSocketChannelName, WebSocketEvent
 } = require('coinbase-pro-node');
-const Table = require('easy-table');
+
 const {
   workerData, BroadcastChannel
 } = require('worker_threads');
+const serializeCandles = require('../utils/serializeCandles');
 const { authentication } = require('../model/auth');
 const { MarketData } = require('../model/MarketData');
 const { performanceFactory } = require('../performance/performanceFactory');
@@ -50,21 +51,6 @@ const broadCastChannel = new BroadcastChannel('botbase.broadcast');
 
 // TODO: try to generalise this function, maybe a constant for 'INFO' etc to be passed before 'format'?
 const log = (format, ...args) => log4js.getLogger().info(_printf(format, ...args));
-
-const serializeCandles = (candles) => {
-  const t = new Table();
-  candles.forEach((c) => {
-    t.cell('TS:', c.openTimeInMillis);
-    t.cell('Low', c.low, Table.number(3));
-    t.cell('High', c.high, Table.number(3));
-    t.cell('Open', c.open, Table.number(3));
-    t.cell('Close', c.close, Table.number(3));
-    t.cell('Volume', c.volume, Table.number(3));
-    t.cell('Raw TS', c.openTimeInISO);
-    t.newRow();
-  });
-  return t.toString();
-};
 
 const scheduler = (marketData, performanceMeasure) => {
   cron.schedule('* * * * *', () => performanceMeasure.log());
@@ -147,7 +133,7 @@ async function run() {
         md.orderOpen(message);
         break;
       default:
-          // log4js.getLogger().info(`Unknown type:${message.type}`);
+      // log4js.getLogger().info(`Unknown type:${message.type}`);
     }
     performanceMeasure.end();
   });

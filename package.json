@@ -31,8 +31,8 @@
     "test-dev-all": "mocha -w --recursive",
     "test-dev-one-file": "mocha -w --recursive $npm_config_test_file",
     "test-dev-one-test": "mocha -w --recursive $npm_config_test_file -g $npm_config_pattern",
-    "test-coverage-html": "nyc --reporter=html mocha --recursive --exit",
-    "test-coverage-text": "nyc --reporter=text mocha --recursive --exit",
+    "test-coverage-html": "nyc --all --reporter=html mocha --recursive --exit",
+    "test-coverage-text": "nyc --all --reporter=text mocha --recursive --exit",
     "coverage": "nyc --reporter=lcovonly mocha --recursive --exit",
     "upgradable": " ./node_modules/npm-check-updates/build/src/bin/cli.js",
     "upgrade": " ./node_modules/npm-check-updates/build/src/bin/cli.js -u"

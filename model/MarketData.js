@@ -36,8 +36,6 @@ class MarketData {
       this.lastSequence = hB.sequence;
       if (this.lastTradeId !== hB.last_trade_id) {
         this.lastTradeId = hB.last_trade_id;
-        // this.logger.info(`[HB] Current Last trade:${this.lastTradeId}`);
-        // this.logger.info(`[HB] Current Last sequence:${this.lastSequence}`);
       }
     }
   };

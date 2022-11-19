@@ -66,25 +66,7 @@ const serializeCandles = (candles) => {
   return t.toString();
 };
 
-const dumpData = (marketData) => {
-  log(` Data Dump:${marketData.orders.length()}`);
-  let key = marketData.orders.nextKey();
-  while (key) {
-    const marketOrder = marketData.orders.get(key);
-    log(`Key ${key}`);
-    log(' side:%s, type:%s', marketOrder.side.description, marketOrder.type.description);
-    log(' size:%s, price:%s', marketOrder.size.value, marketOrder.price.value);
-    log(' statuses %d:', marketData.orders.get(key).statuses.length);
-    marketData.orders.get(key).statuses.forEach((st) => {
-      if (st.status === 'OPN') log('   status:%s,time:%s,remaining:%s', st.status, st.ts, st.remaining);
-      else log('   status:%s,time:%s', st.status, st.ts);
-    });
-    key = marketData.orders.nextKey(key);
-  }
-};
-
 const scheduler = (marketData, performanceMeasure) => {
-  cron.schedule('* * * * *', () => dumpData(marketData));
   cron.schedule('* * * * *', () => performanceMeasure.log());
 };
 
@@ -150,26 +132,22 @@ async function run() {
   }, 1000);
   client.ws.on(WebSocketEvent.ON_MESSAGE, (message) => {
     performanceMeasure.start();
-    log4js.getLogger().info(`--- \n:${JSON.stringify(message, null, 2)}\n`);
-    try {
-      switch (message.type) {
-        case 'heartbeat':
-          md.heartBit(message);
-          break;
-        case 'received':
-          md.orderReceived(message);
-          break;
-        case 'done':
-          md.orderDone(message);
-          break;
-        case 'open':
-          md.orderOpen(message);
-          break;
-        default:
-        // log4js.getLogger().info(`Unknown type:${message.type}`);
-      }
-    } catch (error) {
-      log4js.getLogger().info(`Error ${error} with message: ${JSON.stringify(message)}`);
+    // log4js.getLogger().info(`--- \n:${JSON.stringify(message, null, 2)}\n`);
+    switch (message.type) {
+      case 'heartbeat':
+        md.heartBit(message);
+        break;
+      case 'received':
+        md.orderReceived(message);
+        break;
+      case 'done':
+        md.orderDone(message);
+        break;
+      case 'open':
+        md.orderOpen(message);
+        break;
+      default:
+          // log4js.getLogger().info(`Unknown type:${message.type}`);
     }
     performanceMeasure.end();
   });
@@ -188,4 +166,7 @@ async function run() {
   scheduler(md, performanceMeasure);
 }
 
-run().catch((err) => log4js.getLogger().error(err));
+run().catch((err) => {
+  log(`Error ${err} see stack below`);
+  log(`${err.stack}`);
+});

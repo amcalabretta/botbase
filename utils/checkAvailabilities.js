@@ -4,8 +4,12 @@
  */
 const bigDecimal = require('js-big-decimal');
 
+const ZERO = new bigDecimal(0);
+
 const checkAvailabilities = (availabilityMap, confData) => {
   const requestedMap = new Map();
+  requestedMap.set('USD', ZERO);
+  requestedMap.set('EUR', ZERO);
   confData.strategies.forEach((str) => {
     str.markets.forEach((mkt, idx) => {
       const currency = mkt.substring(0, 3);
@@ -17,18 +21,8 @@ const checkAvailabilities = (availabilityMap, confData) => {
         requestedMap.set(currency, amount);
       }
     });
-    if (requestedMap.has('EUR')) { // sum
-      const currentAmount = requestedMap.get('EUR');
-      requestedMap.set('EUR', currentAmount.add(new bigDecimal(str.euroAmount)));
-    } else { // add
-      requestedMap.set('EUR', new bigDecimal(str.euroAmount));
-    }
-    if (requestedMap.has('USD')) { // sum
-      const currentAmount = requestedMap.get('USD');
-      requestedMap.set('USD', currentAmount.add(new bigDecimal(str.dollarAmount)));
-    } else { // add
-      requestedMap.set('USD', new bigDecimal(str.dollarAmount));
-    }
+    requestedMap.set('EUR', requestedMap.get('EUR').add(new bigDecimal(str.euroAmount)));
+    requestedMap.set('USD', requestedMap.get('USD').add(new bigDecimal(str.dollarAmount)));
   });
 
   availabilityMap.forEach((value, key) => {

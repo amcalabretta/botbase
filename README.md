@@ -5,13 +5,12 @@
 [![Issues](https://img.shields.io/github/issues/amcalabretta/botbase?style=plastic)](https://github.com/amcalabretta/botbase/issues)
 [![Codacy grade](https://img.shields.io/codacy/grade/18b28f4cd13647bbb3d1e15d8c637b82?style=plastic)](https://app.codacy.com/gh/amcalabretta/botbase/dashboard?branch=master)
 [![Code Climate maintainability](https://img.shields.io/codeclimate/maintainability/amcalabretta/botbase?style=plastic)](https://codeclimate.com/github/amcalabretta/botbase)
-[![Travis (.com)](https://img.shields.io/travis/com/amcalabretta/botbase?style=plastic)](https://travis-ci.com/github/amcalabretta/botbase)
 [![Codacy coverage](https://img.shields.io/codacy/coverage/18b28f4cd13647bbb3d1e15d8c637b82?style=plastic)](https://app.codacy.com/gh/amcalabretta/botbase/dashboard?branch=master)
 [![Libraries.io dependency status for GitHub repo](https://img.shields.io/librariesio/github/amcalabretta/botbase?style=plastic)](https://libraries.io/github/amcalabretta/botbase)
 [![GitHub Super-Linter](https://github.com/amcalabretta/botbase/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=amcalabretta_botbase&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=amcalabretta_botbase)
 [![dependency check](https://github.com/amcalabretta/botbase/actions/workflows/depcheck.yml/badge.svg?branch=master)](https://github.com/amcalabretta/botbase/actions/workflows/depcheck.yml)
-
+[![Known Vulnerabilities](https://snyk.io/test/github/amcalabretta/botbase/badge.svg)](https://snyk.io/test/github/amcalabretta/botbase)
 
 An experimental bot to automatically trade on coinbase
 
@@ -94,7 +93,7 @@ npm run test-dev path/to/your/test/file
 Going further down, you can also continuously running a particular single test:
 
 ```bash
-npm run test-dev-one --test_file=<file containing the test>
+npm run test-dev-one-test --test_file=<file containing the test>
 --pattern='<Pattern in the description>'
 ```
 

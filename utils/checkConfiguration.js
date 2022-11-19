@@ -6,7 +6,7 @@
 
 const checkConfiguration = (configuration, mainSchema, startegySchema) => {
   if (!configuration.subConf) {
-    throw new Error('mainConf Section missing');
+    throw new Error('subConf Section missing');
   }
   const validateMainConf = mainSchema.validate(configuration, { errors: { wrap: { label: false, array: false } } });
   if (validateMainConf.error) throw new Error(validateMainConf.error);

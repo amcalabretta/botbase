@@ -2,7 +2,7 @@
 
 ## How to run it
 
-
+node main.js --conf=<path/to/conf/file.yml>
 
 
 ### As-is

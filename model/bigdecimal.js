@@ -37,7 +37,8 @@ class BigDecimal extends bigDecimal {
   asInt = () => {
     const value = bigDecimal.prototype.getValue.call(this);
     return parseInt(value, 10);
-  }
+  };
 }
 
 exports.BigDecimal = BigDecimal;
+exports.BigDecimalZero = ZERO;

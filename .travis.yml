@@ -1,6 +1,16 @@
 language: node_js
+services:
+  - docker
 node_js:
   - 16
+before_install:
+- docker pull nikolaik/python-nodejs
+- docker run -d -p 127.0.0.1:80:4567 carlad/sinatra /bin/sh -c "cd /root/sinatra; bundle exec foreman start;"
+- docker ps -a
+- docker run carlad/sinatra /bin/sh -c "cd /root/sinatra; bundle exec rake test"
+
+
+
 before_script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter

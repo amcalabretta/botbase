@@ -23,7 +23,7 @@ const {
 } = require('worker_threads');
 const { authentication } = require('../model/auth');
 const { MarketData } = require('../model/MarketData');
-const {performanceFactory} = require('../performance/performanceFactory')
+const { performanceFactory } = require('../performance/performanceFactory')
 
 /** Websocket channels */
 const wsChannels = [
@@ -48,8 +48,8 @@ const wsChannels = [
 
 const broadCastChannel = new BroadcastChannel('botbase.broadcast');
 
-const performanceMeasure = performanceFactory(workerData.conf,'market.data.worked');
 
+//TODO: try to generalise this function, maybe a constant for 'INFO' etc to be passed before 'format'?
 const log = (format, ...args) => log4js.getLogger().info(_printf(format, ...args));
 
 const serializeCandles = (candles) => {
@@ -84,8 +84,9 @@ const dumpData = (marketData) => {
   }
 };
 
-const scheduler = (marketData) => {
+const scheduler = (marketData,performanceMeasure) => {
   cron.schedule('* * * * *', () => dumpData(marketData));
+  cron.schedule('* * * * *', () => performanceMeasure.log());
 };
 
 log4js.configure({
@@ -96,7 +97,10 @@ log4js.configure({
       layout: {
         type: 'pattern',
         pattern: '[%d{yyyy-MM-ddThh.mm.ss}] - %m'
-      }
+      },
+      maxLogSize: 104856,
+      backups: 3,
+      compress: true
     },
     ticker: { type: 'file', filename: `${workerData.conf.logging.logDir}/ticker.log` },
     md: {
@@ -106,15 +110,26 @@ log4js.configure({
         type: 'pattern',
         pattern: '[%d{yyyy-MM-ddThh.mm.ss}] - %m'
       }
-    }
+    },
+    perf: {
+      type: 'file',
+      filename: `${workerData.conf.logging.logDir}/marketdata-worker-${workerData.market}-performance.log`,
+      layout: {
+        type: 'pattern',
+        pattern: '[%d{yyyy-MM-ddThh.mm.ss}] - %m'
+      }
+    },
   },
   categories: {
     default: { appenders: ['local'], level: 'debug' },
-    md: { appenders: ['md'], level: 'debug' }
+    md: { appenders: ['md'], level: 'debug' },
+    perf: { appenders: ['perf'], level: 'debug' },
   }
 });
 
 
+const performanceMeasure = performanceFactory(workerData.conf, `market.data.worker.${workerData.market}`);
+performanceMeasure.logger = log4js.getLogger('perf');
 
 async function run() {
   const md = new MarketData(workerData.market, log4js.getLogger('md'));
@@ -136,7 +151,7 @@ async function run() {
     }, 60000, workerData.market);
   }, 1000);
   client.ws.on(WebSocketEvent.ON_MESSAGE, (message) => {
-    performanceMeasure.start('market.data.worker');
+    performanceMeasure.start();
     log4js.getLogger().info(`--- \n:${JSON.stringify(message, null, 2)}\n`);
     try {
       switch (message.type) {
@@ -158,7 +173,7 @@ async function run() {
     } catch (error) {
       log4js.getLogger().info(`Error ${error} with message: ${JSON.stringify(message)}`);
     }
-    performanceMeasure.end('market.data.worker');
+    performanceMeasure.end();
   });
 
   client.ws.on(WebSocketEvent.ON_MESSAGE_ERROR, (errorMessage) => {
@@ -172,7 +187,7 @@ async function run() {
     });
   });
   client.ws.connect();
-  scheduler(md);
+  scheduler(md,performanceMeasure);
 }
 
 run().catch((err) => log4js.getLogger().error(err));

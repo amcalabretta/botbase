@@ -50,9 +50,6 @@ async function main() {
       mainLogger.info(`    Currency:${key}, available funds:${value}`);
     });
     checkAvailabilities(availableFunds, botConfiguration);
-    // mainLogger.info('  [3] Channels Setup');
-    // mainLogger.info(`    Setup candlesPastTenMinutes for markets:${allMarkets}`);
-    // setInterval(() => { getCandles(client, candleChannelMinutePastTenLogger, allMarkets, CandleGranularity.ONE_MINUTE, 10, broadCastChannel); }, 60000);
     mainLogger.info('  [3] Starting workers:');
     allMarkets.forEach((mkt, i) => {
       mainLogger.info(`      ${i + 1}/${allMarkets.length} - Starting market data worker for ${mkt}`);

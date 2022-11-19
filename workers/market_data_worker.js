@@ -118,7 +118,6 @@ async function run() {
   }, 1000);
   client.ws.on(WebSocketEvent.ON_MESSAGE, (message) => {
     performanceMeasure.start();
-    // log4js.getLogger().info(`--- \n:${JSON.stringify(message, null, 2)}\n`);
     switch (message.type) {
       case 'heartbeat':
         md.heartBit(message);
@@ -133,7 +132,7 @@ async function run() {
         md.orderOpen(message);
         break;
       default:
-      // log4js.getLogger().info(`Unknown type:${message.type}`);
+        log4js.getLogger().info(`Unknown type:${message.type}`);
     }
     performanceMeasure.end();
   });

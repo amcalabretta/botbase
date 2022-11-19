@@ -1,3 +1,4 @@
+/* eslint max-len: ["error", { "code": 200 }] */
 /**
  * Market data structure, holds and elaborate the data coming from the WS.
  * @param {*} market
@@ -7,7 +8,7 @@ const moment = require('moment');
 const MegaHash = require('megahash');
 const IgushArray = require('../external/igusharray/igushArray');
 const { BigDecimal } = require('./bigdecimal');
-const { MarketOrder } = require('./orders/market_order');
+const { MarketOrder, MarketOrderStatus } = require('./orders/market_order');
 
 class MarketData {
   constructor(market, logger, callBack) {
@@ -46,8 +47,8 @@ class MarketData {
    * @param {*} message
    */
   orderReceived = (message) => {
-    this.validateMessage(message);
     if (this.orders.has(message.order_id)) throw new Error(`Received Order with ID ${message.order_id} already ingested`);
+    this.validateMessage(message);
     this.orders.set(message.order_id, new MarketOrder(message));
     this.sequences.set(message.sequence, message);
   };
@@ -55,15 +56,23 @@ class MarketData {
   validateMessage = (message) => {
     if (message.product_id !== this.market) throw new Error(`Attempt to receive an order referring to market ${message.product_id} on a MD instance referring to ${this.market}`);
     if (this.sequences.has(message.sequence)) throw new Error(`Received Order with sequence ${message.sequence} already ingested`);
-  }
+  };
 
-  /* orderOpen = (message) => {
-
-  }
+  orderOpen = (message) => {
+    this.validateMessage(message);
+    if (this.orders.has(message.order_id)) {
+      const currentOrder = this.orders.get(message.order_id);
+      currentOrder.statuses.push({ status: MarketOrderStatus.open, ts: moment(message.time), sequence: message.sequence });
+    }
+  };
 
   orderDone = (message) => {
-
-  } */
+    this.validateMessage(message);
+    if (this.orders.has(message.order_id)) {
+      const currentOrder = this.orders.get(message.order_id);
+      currentOrder.statuses.push({ status: MarketOrderStatus.done, ts: moment(message.time), sequence: message.sequence });
+    }
+  };
 
   /**
    * @param {*} ticker
@@ -78,18 +87,11 @@ class MarketData {
     });
   };
 
-  /**
-   * Market data snapshot
-   */
-  mdSnapShot = () => {
-
-  };
-
   log = (string) => {
     this.logger.info(string);
   };
 
-  getTickers = () => this.prices
+  getTickers = () => this.prices;
 }
 
 exports.MarketData = MarketData;

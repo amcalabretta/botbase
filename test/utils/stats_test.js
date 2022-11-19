@@ -12,7 +12,7 @@ const num3 = new BigDecimal('2.2134');
 
 describe('calculateMean', () => {
   it('Should calculate the mean of 1 value as itself', (done) => {
-    assert.strictEqual(calculateMean(BigDecimalZero,1,num1).getValue(), '3.456');
+    assert.strictEqual(calculateMean(BigDecimalZero,0,num1).getValue(), '3.456');
     done();
   });
   it('Should calculate the mean of 2 values', (done) => {

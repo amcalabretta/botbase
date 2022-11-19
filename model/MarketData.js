@@ -57,15 +57,14 @@ class MarketData {
     if (this.sequences.has(message.sequence)) throw new Error(`Received Order with sequence ${message.sequence} already ingested`);
   }
 
-  orderOpen = (message) => {
+  /* orderOpen = (message) => {
 
   }
 
   orderDone = (message) => {
 
-  }
+  } */
 
-  
   /**
    * @param {*} ticker
    */
@@ -92,7 +91,5 @@ class MarketData {
 
   getTickers = () => this.prices
 }
-
-
 
 exports.MarketData = MarketData;

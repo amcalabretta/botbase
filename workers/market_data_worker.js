@@ -1,3 +1,4 @@
+/* eslint max-len: ["error", { "code": 120 }] */
 /**
  * This worker polls coinbase for market data, share the marketes with:
  *
@@ -13,7 +14,6 @@ const moment = require('moment');
 const cron = require('node-cron');
 const _printf = require('printf');
 
-
 const {
   CandleGranularity, CoinbasePro, WebSocketChannelName, WebSocketEvent
 } = require('coinbase-pro-node');
@@ -23,7 +23,7 @@ const {
 } = require('worker_threads');
 const { authentication } = require('../model/auth');
 const { MarketData } = require('../model/MarketData');
-const { performanceFactory } = require('../performance/performanceFactory')
+const { performanceFactory } = require('../performance/performanceFactory');
 
 /** Websocket channels */
 const wsChannels = [
@@ -48,8 +48,7 @@ const wsChannels = [
 
 const broadCastChannel = new BroadcastChannel('botbase.broadcast');
 
-
-//TODO: try to generalise this function, maybe a constant for 'INFO' etc to be passed before 'format'?
+// TODO: try to generalise this function, maybe a constant for 'INFO' etc to be passed before 'format'?
 const log = (format, ...args) => log4js.getLogger().info(_printf(format, ...args));
 
 const serializeCandles = (candles) => {
@@ -84,7 +83,7 @@ const dumpData = (marketData) => {
   }
 };
 
-const scheduler = (marketData,performanceMeasure) => {
+const scheduler = (marketData, performanceMeasure) => {
   cron.schedule('* * * * *', () => dumpData(marketData));
   cron.schedule('* * * * *', () => performanceMeasure.log());
 };
@@ -126,7 +125,6 @@ log4js.configure({
     perf: { appenders: ['perf'], level: 'debug' },
   }
 });
-
 
 const performanceMeasure = performanceFactory(workerData.conf, `market.data.worker.${workerData.market}`);
 performanceMeasure.logger = log4js.getLogger('perf');
@@ -187,7 +185,7 @@ async function run() {
     });
   });
   client.ws.connect();
-  scheduler(md,performanceMeasure);
+  scheduler(md, performanceMeasure);
 }
 
 run().catch((err) => log4js.getLogger().error(err));

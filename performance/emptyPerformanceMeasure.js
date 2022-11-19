@@ -1,15 +1,12 @@
 /**
-
+*
 */
 /* eslint max-len: ["error", { "code": 250 }] */
 
-
 class EmptyPerformanceMeasure {
-  constructor(tag) {}
+  start = () => {}
 
-  start = (point) => {}
-
-  end = (point) => {}
+  end = () => {}
 }
 
 exports.EmptyPerformanceMeasure = EmptyPerformanceMeasure;

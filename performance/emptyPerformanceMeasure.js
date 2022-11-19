@@ -1,12 +1,13 @@
+/* eslint class-methods-use-this: 0 */
+
 /**
-*
+* Empty performance measurer
 */
-/* eslint max-len: ["error", { "code": 250 }] */
 
 class EmptyPerformanceMeasure {
-  start = () => {}
+  start = () => {};
 
-  end = () => {}
+  end = () => {};
 }
 
 exports.EmptyPerformanceMeasure = EmptyPerformanceMeasure;

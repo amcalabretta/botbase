@@ -63,6 +63,7 @@ class MarketData {
     if (this.orders.has(message.order_id)) {
       const currentOrder = this.orders.get(message.order_id);
       const marketStatus = message.type === 'open' ? MarketOrderStatus.open : MarketOrderStatus.done;
+
       currentOrder.statuses.push({ status:marketStatus, ts: moment(message.time), sequence: message.sequence });
       this.logger.info(` Updating order with id ${message.order_id} -> ${marketStatus} \n message:\n${JSON.stringify(message, null, 2)}\n original one:${JSON.stringify(currentOrder, null, 2)}`);
     }

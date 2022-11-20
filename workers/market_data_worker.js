@@ -126,10 +126,8 @@ async function run() {
         md.orderReceived(message);
         break;
       case 'done':
-        md.orderDone(message);
-        break;
       case 'open':
-        md.orderOpen(message);
+        md.orderUpdated(message);
         break;
       default:
         log4js.getLogger().info(`Unknown type:${message.type}`);

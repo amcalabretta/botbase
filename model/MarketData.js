@@ -49,6 +49,7 @@ class MarketData {
     this.validateMessage(message);
     this.orders.set(message.order_id, new MarketOrder(message));
     this.sequences.set(message.sequence, message);
+    this.logger.info(` Received order with id ${message.order_id}`);
   };
 
   validateMessage = (message) => {
@@ -56,19 +57,14 @@ class MarketData {
     if (this.sequences.has(message.sequence)) throw new Error(`Received Order with sequence ${message.sequence} already ingested`);
   };
 
-  orderOpen = (message) => {
+  /** Open or done */
+  orderUpdated = (message) => {
     this.validateMessage(message);
     if (this.orders.has(message.order_id)) {
       const currentOrder = this.orders.get(message.order_id);
-      currentOrder.statuses.push({ status: MarketOrderStatus.open, ts: moment(message.time), sequence: message.sequence });
-    }
-  };
-
-  orderDone = (message) => {
-    this.validateMessage(message);
-    if (this.orders.has(message.order_id)) {
-      const currentOrder = this.orders.get(message.order_id);
-      currentOrder.statuses.push({ status: MarketOrderStatus.done, ts: moment(message.time), sequence: message.sequence });
+      const marketStatus = message.type === 'open' ? MarketOrderStatus.open : MarketOrderStatus.done;
+      currentOrder.statuses.push({ status:marketStatus, ts: moment(message.time), sequence: message.sequence });
+      this.logger.info(` Updating order with id ${message.order_id} -> ${marketStatus} \n message:\n${JSON.stringify(message, null, 2)}\n original one:${JSON.stringify(currentOrder, null, 2)}`);
     }
   };
 

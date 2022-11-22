@@ -61,22 +61,24 @@ class MarketData {
   validate = (message) => {
     if (message.product_id !== this.market) throw new Error(`Attempt to receive an order referring to market ${message.product_id} on a MD instance referring to ${this.market}`);
     if (this.sequences.has(message.sequence)) throw new Error(`Received Order with sequence ${message.sequence} already ingested`);
+    if (!this.orders.has(message.order_id)
+      && [MarketOrderStatus.open, MarketOrderStatus.done].includes(message.type)) {
+      throw new Error(`Order ${message.order_id} was not received`);
+    }
   };
 
   /** Open or done */
   orderUpdated = (message) => {
     this.validate(message);
-    if (this.orders.has(message.order_id)) {
-      const currentOrder = this.orders.get(message.order_id);
-      const marketStatus = message.type === 'open' ? MarketOrderStatus.open : MarketOrderStatus.done;
-      const status = { status: marketStatus, ts: moment(message.time), sequence: message.sequence };
-      if (marketStatus === MarketOrderStatus.done) {
-        status.reason = parseSymbol(MarketOrderOutcome, message.reason);
-      }
-      currentOrder.statuses.push(status);
-      this.orders.set(message.order_id, currentOrder);
-      this.logger.info(` Updating order with id ${message.order_id} -> ${marketStatus}`);
+    const currentOrder = this.orders.get(message.order_id);
+    const marketStatus = message.type === 'open' ? MarketOrderStatus.open : MarketOrderStatus.done;
+    const status = { status: marketStatus, ts: moment(message.time), sequence: message.sequence };
+    if (marketStatus === MarketOrderStatus.done) {
+      status.reason = parseSymbol(MarketOrderOutcome, message.reason);
     }
+    currentOrder.statuses.push(status);
+    this.orders.set(message.order_id, currentOrder);
+    this.logger.info(` Updating order with id ${message.order_id} -> ${marketStatus}`);
   };
 
   /** Match between two orders */

@@ -79,6 +79,18 @@ describe('MarketData Testing', () => {
       done();
     });
 
+    it ('Should throw an error in case an update comes and the order is not known',(done) => {
+      const md = new MarketData('BTC-EUR', log4js.getLogger());
+      const openFirstOrderMessage = loadMessage('005_coinbase_buy_order_open_limit_btc_eur.json');
+      assert.throws(() => {
+        md.orderUpdated(openFirstOrderMessage);
+      },
+        {
+          name: 'Error', message: `Order ${openFirstOrderMessage.order_id} was not received`
+        });
+      done();  
+    });
+
     it('Should ingest an order as received-open-done (reason:canceled)', (done) => {
       const md = new MarketData('BTC-EUR', log4js.getLogger());
       const receivedOrderMessage = loadMessage('001_coinbase_buy_order_received_limit_btc_eur.json');
@@ -154,12 +166,13 @@ describe('MarketData Testing', () => {
     });
 
     it('Should not ingest a received order that is not received', (done) => {
+      const message = loadMessage('008_coinbase_buy_order_open_limit_buy.json');
       assert.throws(() => {
         const md = new MarketData('BTC-EUR', log4js.getLogger());
-        md.orderReceived(loadMessage('coinbase_order_open.json'))
+        md.orderReceived(message);
       },
         {
-          name: 'Error', message: "Attempting creating an order from a non received one open"
+          name: 'Error', message: `Order ${message.order_id} was not received`
         });
       done();
     });

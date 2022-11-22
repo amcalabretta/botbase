@@ -1,0 +1,11 @@
+{
+    "order_id": "dd7b0225-e320-44dd-ac70-d4e3975a8fcc",
+    "reason": "canceled",
+    "price": "15746.62",
+    "remaining_size": "0.09226687",
+    "type": "done",
+    "side": "buy",
+    "product_id": "BTC-EUR",
+    "time": "2022-11-20T22:12:41.074319Z",
+    "sequence": 20658322029
+  }

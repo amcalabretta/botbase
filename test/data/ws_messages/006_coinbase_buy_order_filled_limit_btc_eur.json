@@ -1,0 +1,11 @@
+{
+    "order_id": "f2d53e5c-06d6-4350-be50-0949161a5686",
+    "reason": "filled",
+    "price": "15761.72",
+    "remaining_size": "0",
+    "type": "done",
+    "side": "buy",
+    "product_id": "BTC-EUR",
+    "time": "2022-11-21T14:12:25.266322Z",
+    "sequence": 20665166658
+  }

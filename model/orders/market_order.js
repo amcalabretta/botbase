@@ -23,6 +23,11 @@ const MarketOrderType = Object.freeze({
   market: 'market'
 });
 
+const MarketOrderOutcome = Object.freeze({
+  canceled: 'canceled',
+  filled: 'filled'
+});
+
 // Levaraging on the Megahash (that should be fast enough) and the sequence number, we should be able to track the life of
 // every single order on the market.
 class MarketOrder {
@@ -53,3 +58,4 @@ exports.MarketOrder = MarketOrder;
 exports.MarketOrderStatus = MarketOrderStatus;
 exports.MarketOrderType = MarketOrderType;
 exports.MarketOrderSide = MarketOrderSide;
+exports.MarketOrderOutcome = MarketOrderOutcome;

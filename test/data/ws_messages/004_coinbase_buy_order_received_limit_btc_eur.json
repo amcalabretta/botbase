@@ -1,0 +1,12 @@
+{
+    "order_id": "f2d53e5c-06d6-4350-be50-0949161a5686",
+    "order_type": "limit",
+    "size": "0.00633101",
+    "price": "15761.72",
+    "client_oid": "b92b37a6-92dc-4e4d-9560-e5a1ff2a104b",
+    "type": "received",
+    "side": "buy",
+    "product_id": "BTC-EUR",
+    "time": "2022-11-21T14:12:17.878537Z",
+    "sequence": 20665165854
+}

@@ -54,7 +54,7 @@ describe('MarketOrder Testing', () => {
     });
 
     it('should throw an error when being created from a non received type', (done) => {
-      assert.throws(() => loadOrder('coinbase_order_match.json'),
+      assert.throws(() => loadOrder('007_coinbase_order_match_btc_eur.json'),
         {
           name: 'Error', message: "Attempting creating an order from a non received one match"
         });

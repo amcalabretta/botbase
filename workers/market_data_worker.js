@@ -21,7 +21,6 @@ const {
 const {
   workerData, BroadcastChannel
 } = require('worker_threads');
-const serializeCandles = require('../utils/serializeCandles');
 const { authentication } = require('../model/auth');
 const { MarketData } = require('../model/MarketData');
 const { performanceFactory } = require('../performance/performanceFactory');
@@ -45,6 +44,12 @@ const wsChannels = [
     name: WebSocketChannelName.LEVEL2,
     product_ids: [workerData.market],
   },
+
+  {
+    name: WebSocketChannelName.MATCHES,
+    product_ids: [workerData.market],
+  },
+
 ];
 
 const broadCastChannel = new BroadcastChannel('botbase.broadcast');
@@ -111,26 +116,31 @@ async function run() {
         CandleGranularity,
         start: previousTimeStamp.utc().format('YYYY-MM-DDTHH:mm:00.000Z')
       }).then((candles) => {
-        log4js.getLogger().info(`${market} (${candles.length})\n ${serializeCandles(candles)}`);
+        // log4js.getLogger().info(`${market} (${candles.length})\n ${serializeCandles(candles)}`);
         broadCastChannel.postMessage({ type: 'candlesPastTenMinutes', market, payload: candles });
       }).catch((error) => log4js.getLogger().error(`Error:${error}`));
     }, 60000, workerData.market);
   }, 1000);
+
   client.ws.on(WebSocketEvent.ON_MESSAGE, (message) => {
     performanceMeasure.start();
-    switch (message.type) {
-      case 'heartbeat':
-        md.heartBit(message);
-        break;
-      case 'received':
-        md.orderReceived(message);
-        break;
-      case 'done':
-      case 'open':
-        md.orderUpdated(message);
-        break;
-      default:
-        log4js.getLogger().info(`Unknown type:${message.type}`);
+    try {
+      switch (message.type) {
+        case 'heartbeat':
+          md.heartBit(message);
+          break;
+        case 'received':
+          md.orderReceived(message);
+          break;
+        case 'done':
+        case 'open':
+          md.orderUpdated(message);
+          break;
+        default:
+          throw new Error(`${message.type} is not known`);
+      }
+    } catch (err) {
+      log(` Error while ingesting message:${err}`);
     }
     performanceMeasure.end();
   });

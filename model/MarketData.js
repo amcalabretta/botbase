@@ -8,7 +8,10 @@ const moment = require('moment');
 const MegaHash = require('megahash');
 const IgushArray = require('../external/igusharray/igushArray');
 const { BigDecimal } = require('./bigdecimal');
-const { MarketOrder, MarketOrderStatus } = require('./orders/market_order');
+const {
+  MarketOrder, MarketOrderStatus, MarketOrderOutcome
+} = require('./orders/market_order');
+const { parseSymbol } = require('../utils/parseSymbol');
 
 class MarketData {
   constructor(market, logger, callBack) {
@@ -21,6 +24,9 @@ class MarketData {
     this.sequences = new MegaHash();
     this.callBack = callBack;
     this.logger = logger;
+    this.candlesBySecond = new MegaHash();
+    this.sellQuantity = new MegaHash();// amount of cryptos on the sell buy at a certain price (price being the key)
+    this.buyQuantity = new MegaHash();// amount of cryptos on the buy side at a certain price (price being the key)
   }
 
   /**
@@ -46,25 +52,41 @@ class MarketData {
    */
   orderReceived = (message) => {
     if (this.orders.has(message.order_id)) throw new Error(`Received Order with ID ${message.order_id} already ingested`);
-    this.validateMessage(message);
+    this.validate(message);
     this.orders.set(message.order_id, new MarketOrder(message));
     this.sequences.set(message.sequence, message);
     this.logger.info(` Received order with id ${message.order_id}`);
   };
 
-  validateMessage = (message) => {
+  validate = (message) => {
     if (message.product_id !== this.market) throw new Error(`Attempt to receive an order referring to market ${message.product_id} on a MD instance referring to ${this.market}`);
     if (this.sequences.has(message.sequence)) throw new Error(`Received Order with sequence ${message.sequence} already ingested`);
   };
 
   /** Open or done */
   orderUpdated = (message) => {
-    this.validateMessage(message);
+    this.validate(message);
     if (this.orders.has(message.order_id)) {
       const currentOrder = this.orders.get(message.order_id);
       const marketStatus = message.type === 'open' ? MarketOrderStatus.open : MarketOrderStatus.done;
-      currentOrder.statuses.push({ status:marketStatus, ts: moment(message.time), sequence: message.sequence });
-      this.logger.info(` Updating order with id ${message.order_id} -> ${marketStatus} \n message:\n${JSON.stringify(message, null, 2)}\n original one:${JSON.stringify(currentOrder, null, 2)}`);
+      const status = { status: marketStatus, ts: moment(message.time), sequence: message.sequence };
+      if (marketStatus === MarketOrderStatus.done) {
+        status.reason = parseSymbol(MarketOrderOutcome, message.reason);
+      }
+      currentOrder.statuses.push(status);
+      this.orders.set(message.order_id, currentOrder);
+      this.logger.info(` Updating order with id ${message.order_id} -> ${marketStatus}`);
+    }
+  };
+
+  /** Match between two orders */
+  match = (message) => {
+    this.validate(message);
+    const sellOrder = this.orders.get(message.maker_order_id);
+    const buyOrder = this.orders.get(message.taker_order_id);
+    // validate the match
+    if (sellOrder === undefined || buyOrder === undefined) {
+      throw new Error('Cannot match as at least one of the orders are not ingested');
     }
   };
 

@@ -6,6 +6,7 @@ const assert = require('assert');
 const { parseSymbol } = require('../../utils/parseSymbol');
 const { MarketOrderStatus } = require('../../model/orders/market_order');
 const { MarketOrderType } = require('../../model/orders/market_order');
+const { MarketOrderOutcome } = require('../../model/orders/market_order');
 
 
 describe('parseSymbol', () => {
@@ -41,6 +42,16 @@ describe('parseSymbol', () => {
         });
         it('Should parse the market value', (done) => {
             assert.strictEqual(parseSymbol(MarketOrderType, 'market'), MarketOrderType.market);
+            done();
+        });
+    });
+    describe('parsing outcome', () => {
+        it('Should parse the canceled value', (done) => {
+            assert.strictEqual(parseSymbol(MarketOrderOutcome, 'canceled'), MarketOrderOutcome.canceled);
+            done();
+        });
+        it('Should parse the filled value', (done) => {
+            assert.strictEqual(parseSymbol(MarketOrderOutcome, 'filled'), MarketOrderOutcome.filled);
             done();
         });
     });

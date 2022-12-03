@@ -1,6 +1,6 @@
 #include <iostream>
 // Class header
-#include "my_class.h"
+#include "crypto_exchanges.h"
 
 namespace Exchange
 {

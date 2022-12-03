@@ -1,7 +1,7 @@
 //NODE bindings
 #include <napi.h>
 //C++ Class I want to return to NODE.JS
-#include "my_class.h"
+#include "crypto_exchanges.h"
 
 //Instance of My_class I want to return to NODE.JS
 Exchange::CryptoExchanges g_instance;

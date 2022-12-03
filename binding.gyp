@@ -5,7 +5,7 @@
         "cflags_cc!": ["-fno-exceptions"],
         "sources": [
             "native/node_bindings.cpp",
-            "native/my_class.cpp"
+            "native/crypto_exchanges.cpp"
         ],
         'include_dirs': [
             "<!@(node -p \"require('node-addon-api').include\")"

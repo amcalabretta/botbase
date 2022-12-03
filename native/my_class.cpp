@@ -2,7 +2,7 @@
 // Class header
 #include "my_class.h"
 
-namespace User
+namespace Exchange
 {
     // Constructor
     My_class::My_class(void)

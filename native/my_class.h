@@ -1,7 +1,7 @@
 //Size of the int array
 #define INT_ARRAY_SIZE	2
 
-namespace User
+namespace Exchange
 {
 	//Class I want to return to NODE.JS
 	class My_class

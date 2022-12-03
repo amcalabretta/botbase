@@ -9,9 +9,15 @@ const { checkAvailabilities } = require('./utils/checkAvailabilities');
 const { checkEnvironmentVariables } = require('./utils/checkEnvironmentVariables');
 const { getAvailableFunds } = require('./utils/getAvailableFunds');
 const { authentication } = require('./model/auth');
+//const { getAccounts } = require('./external/coinbase/getAccounts');
+const { my_custom_cpp_module } = require('./external/coinbase/apiCall');
+
 
 async function main() {
   try {
+    tmp = my_custom_cpp_module.get_my_float();
+    console.log( tmp );
+    process.exit(0);
     checkEnvironmentVariables(process.env);
     const botConfiguration = loadConfigurationFile(process.argv);
     log4js.configure({

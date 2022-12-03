@@ -56,6 +56,8 @@ for more details on how to create the values above, refer to the wiki.
 
 ### How to run it
 
+You will first need to prepare the native part, for performance reasons (an HFT Bot needs to be fast).
+
 To run the bot, type:
 ```bash
 node main.js --conf=/path/to/the/configuration/yaml/file.yaml

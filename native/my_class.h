@@ -4,11 +4,11 @@
 namespace Exchange
 {
 	//Class I want to return to NODE.JS
-	class My_class
+	class CryptoExchanges
 	{
 		public:
 			//Constructor
-			My_class( void );
+			CryptoExchanges( void );
 			//Public references
 			float &my_float( void );
 			int &my_int( int index );

@@ -4,7 +4,7 @@
 #include "my_class.h"
 
 //Instance of My_class I want to return to NODE.JS
-Exchange::My_class g_instance;
+Exchange::CryptoExchanges g_instance;
 
 //Aid function that constructs a NODE.JS array from a C++ pointer
 template <typename T>
@@ -37,7 +37,7 @@ Napi::Array construct_array( Napi::Env env, T *array_data, unsigned int array_si
 Napi::Object init(Napi::Env env, Napi::Object exports)
 {
 	//Construct the instance of My_class I want to return to NODE.JS
-	g_instance = Exchange::My_class();
+	g_instance = Exchange::CryptoExchanges();
 		//Register methods accessible from the outside in the NODE.JS environment
 	//Return a standard type
 	exports.Set( "get_my_float", Napi::Function::New(env, get_my_float) );
@@ -72,7 +72,7 @@ Napi::Object get_my_class(const Napi::CallbackInfo& info)
 		Napi::TypeError::New(env, "ERR: Expecting no arguments").ThrowAsJavaScriptException();
 	}
 	//Get a copy of the instance of the class I want to return
-	Exchange::My_class tmp = g_instance;
+	Exchange::CryptoExchanges tmp = g_instance;
 	//Construct empty return object in the NODE.JS environment
 	Napi::Object ret_tmp = Napi::Object::New( env );
 	//Manually create and fill the fields of the return object

@@ -16,7 +16,7 @@
     "log4js": "^6.7.1",
     "moment": "^2.29.4",
     "pm2": "^5.2.2",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.1"
   },
   "scripts": {
     "lint": "eslint -c .eslintrc .",

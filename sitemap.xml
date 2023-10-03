@@ -2,17 +2,17 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://amcalabretta.github.io/botbase/</loc>
-         <lastmod>2023-04-21</lastmod>
+         <lastmod>2023-10-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://amcalabretta.github.io/botbase/config/</loc>
-         <lastmod>2023-04-21</lastmod>
+         <lastmod>2023-10-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://amcalabretta.github.io/botbase/howto/</loc>
-         <lastmod>2023-04-21</lastmod>
+         <lastmod>2023-10-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>
